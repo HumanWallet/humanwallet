@@ -9,7 +9,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "watch-build": "tsup --watch"
+    "watch-build": "tsup --watch",
+    "lint": "eslint . --fix",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "sdk",
@@ -23,9 +25,9 @@
   ],
   "type": "module",
   "devDependencies": {
-    "@zerodev/webauthn-key": "^5.4.4",
     "tsup": "^8.0.1",
     "typescript": "^5.9.2",
+    "@zerodev/webauthn-key": "^5.4.4",
     "viem": "^2.34.0"
   },
   "dependencies": {
