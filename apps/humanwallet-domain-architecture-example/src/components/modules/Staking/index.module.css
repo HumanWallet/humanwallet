@@ -1,0 +1,28 @@
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-m);
+}
+
+.successContainer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-m);
+}
+
+.successText {
+  align-items: center;
+  display: flex;
+  color: var(--color-text-highlighted);
+  gap: var(--size-xs);
+  margin: var(--size-m) 0;
+}
+
+.successIcon {
+  width: var(--size-l);
+}
+
+.explorerLink {
+  width: 100%;
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Oops! Something isn’t quite right",
+  "description": "Sorry, it looks like something didn’t go as expected. Could you try another page?",
+  "unknownError": {
+    "title": "An unexpected error occurred",
+    "description": "We couldn’t find what you were looking for. Would you mind trying another page?",
+    "code": "We don’t have specific information about this error"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "Sorry, but the page you’re looking for doesn’t exist."
+  },
+  "backHome": "Go back to the main page"
+}

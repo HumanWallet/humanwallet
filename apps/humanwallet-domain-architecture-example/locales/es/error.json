@@ -1,0 +1,14 @@
+{
+  "title": "¡Ups! Algo no va bien",
+  "description": "Lo siento, parece que algo no salió como esperábamos. ¿Podrías probar con otra página?",
+  "unknownError": {
+    "title": "Ocurrió un error inesperado",
+    "description": "No hemos podido encontrar lo que buscabas. ¿Te importaría intentar con otra página?",
+    "code": "No tenemos información específica sobre este error"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "Lo sentimos, pero la página que buscas no existe."
+  },
+  "backHome": "Volver a la página principal"
+}
