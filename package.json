@@ -1,0 +1,8 @@
+{
+  "name": "humanwallet",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}
