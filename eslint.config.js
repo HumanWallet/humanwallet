@@ -14,7 +14,26 @@ export default tseslint.config([
       },
     },
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    ignores: ["node_modules", "dist", "build", "coverage", "public", "public/**", "public/**/*", "public/**/*.*"],
+    ignores: [
+      "node_modules",
+      "dist",
+      "build",
+      "coverage",
+      "public",
+      "public/**",
+      "public/**/*",
+      "public/**/*.*",
+      // Generated bundle files
+      "**/bundle-*.js",
+      "**/chunk-*.js",
+      "**/*-[A-Z0-9]*.js",
+      // Large minified files
+      "**/*esm*.js",
+      "**/ccip-*.js",
+      "**/secp256k1-*.js",
+      // TypeScript declaration files
+      "**/*.d.ts",
+    ],
     plugins: { js, prettier },
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {

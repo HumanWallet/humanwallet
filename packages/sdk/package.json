@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsup",
     "watch-build": "tsup --watch",
-    "lint": "eslint . --fix",
+    "lint": "eslint src --fix",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
