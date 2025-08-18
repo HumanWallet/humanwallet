@@ -22,14 +22,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [],
-  "exclude": ["node_modules", "dist", "build"],
-  "references": [
-    {
-      "path": "./packages/sdk"
-    },
-    {
-      "path": "./apps/humanwallet-domain-architecture-example"
-    }
-  ]
+  "files": [],
+  "exclude": ["node_modules", "dist", "build"]
 }
