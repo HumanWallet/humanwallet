@@ -52,7 +52,7 @@ dev-sdk: ## Start development mode for SDK (watch mode)
 
 dev-demo: ## Start development mode for demo app
 	@echo "Starting demo app..."
-	cd apps/humanwallet-domain-architecture-example && npm run dev --workspace=apps/demo
+	 npm run dev --workspace=apps/humanwallet-domain-architecture-example
 
 # Test commands
 test: ## Run tests for all packages
@@ -101,7 +101,7 @@ clean: ## Clean all build artifacts and node_modules
 	rm -rf node_modules
 	rm -rf packages/*/node_modules
 	rm -rf apps/*/node_modules
-	rm -rf apps/*/packages/*/node_modules
+
 
 clean-dist: ## Clean only build artifacts (dist folders)
 	@echo "Cleaning build artifacts..."
@@ -114,7 +114,7 @@ clean-sdk: ## Clean SDK build artifacts
 
 clean-demo: ## Clean demo app build artifacts
 	@echo "Cleaning demo app..."
-	rm -rf apps/humanwallet-domain-architecture-example/apps/demo/dist
+	rm -rf apps/humanwallet-domain-architecture-example/dist
 
 # Package management
 deps: ## Show dependency tree for all packages
@@ -141,14 +141,7 @@ publish-sdk: ## Publish SDK to registry
 	@echo "Publishing SDK..."
 	cd packages/sdk && npm publish
 
-# Docker commands (for demo app)
-docker-build: ## Build Docker image for demo app
-	@echo "Building Docker image..."
-	cd apps/humanwallet-domain-architecture-example && docker build -t humanwallet-demo .
 
-docker-run: ## Run Docker container for demo app
-	@echo "Running Docker container..."
-	docker run -p 3000:80 humanwallet-demo
 
 # Utility commands
 workspace-info: ## Show workspace information
