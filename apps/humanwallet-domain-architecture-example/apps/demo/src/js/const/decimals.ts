@@ -1,3 +1,0 @@
-export const DECIMALS_TOKEN_AMOUNT = 2
-export const DECIMALS_CURRENCY_AMOUNT = 2
-export const DECIMALS_PERCENTAGE = 2
