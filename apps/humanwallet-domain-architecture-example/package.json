@@ -1,42 +1,41 @@
 {
-  "name": "humanwallet",
-  "version": "1.0.0",
+  "name": "humanwallet-domain-architecture-example",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "workspaces": [
-    "apps/demo",
-    "packages/*"
-  ],
-  "engines": {
-    "node": "22"
-  },
   "scripts": {
-    "build": "npx ultra-runner --r --build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
     "lint": "eslint . --fix",
-    "ts:check": "tsc --noEmit",
-    "pretty": "prettier --write \"./**/src/**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.24.1",
-    "@typescript-eslint/parser": "^8.24.1",
-    "eslint": "^9.20.1",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^5.1.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "eslint-plugin-storybook": "^0.11.3",
-    "inquirer": "12.2.0",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.1",
-    "ultra-runner": "^3.10.5",
-    "zod": "^3.23.8"
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "viem": "^2.22.8"
+    "@tutellus/tutellus-components": "^36",
+    "@tutellus/tutellus-theme": "^4",
+    "@wagmi/core": "^2.19.0",
+    "@zerodev/passkey-validator": "^5.5.5",
+    "@zerodev/sdk": "^5.4.41",
+    "classnames": "^2.5.1",
+    "i18next": "^25.3.6",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-i18next": "^15.6.1",
+    "react-router": "^7.8.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react-swc": "^4.0.0",
+    "eslint": "^9.33.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.39.1",
+    "vite": "^7.1.2"
   }
 }
