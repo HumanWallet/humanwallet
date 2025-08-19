@@ -193,12 +193,13 @@ export class ZeroDevEthereumRepository implements AccountAbstractionEthereumRepo
     const { userOpHash } = transaction
     if (!userOpHash) throw new Error("No user operation hash provided")
 
-    const { success } = await this.sdk.waitForUserOperation(userOpHash)
+    const { success, receipt } = await this.sdk.waitForUserOperation(userOpHash)
     const updatedStatus = success ? Transaction.STATUS.SUCCESS : Transaction.STATUS.REVERTED
 
     return Transaction.create({
       ...transaction.serialize(),
       status: updatedStatus,
+      hash: receipt?.transactionHash,
     })
   }
 
