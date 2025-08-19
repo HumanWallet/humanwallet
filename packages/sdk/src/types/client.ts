@@ -101,4 +101,9 @@ export interface ClientRepositoryInterface {
    * The address of the kernel account.
    */
   address: Address | undefined
+
+  /**
+   * Whether the client has an account.
+   */
+  hasAccount: () => Promise<boolean>
 }

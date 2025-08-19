@@ -1,9 +1,8 @@
 import type { UseCase } from "../../_kernel/architecture.js"
 import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
-import type { AccountAbstractionEthereumRepository, EthereumRepository } from "../Repositories/index.js"
+import type { EthereumRepository } from "../Repositories/index.js"
 import type { WalletState } from "../Models/WalletState.js"
-import type { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 
 export class ReconnectEthereumUseCase implements UseCase<void, WalletState> {
   static create({
@@ -12,28 +11,21 @@ export class ReconnectEthereumUseCase implements UseCase<void, WalletState> {
     repositories: {
       WagmiEthereumRepository: WagmiEthereumRepository
       ZeroDevEthereumRepository: ZeroDevEthereumRepository
-      IDBEthereumRepository: IDBEthereumRepository
     }
   }) {
-    return new ReconnectEthereumUseCase(
-      repositories.WagmiEthereumRepository,
-      repositories.ZeroDevEthereumRepository,
-      repositories.IDBEthereumRepository,
-    )
+    return new ReconnectEthereumUseCase(repositories.WagmiEthereumRepository, repositories.ZeroDevEthereumRepository)
   }
 
   constructor(
     private readonly injectedRepository: EthereumRepository,
-    private readonly accountAbstractionRepository: AccountAbstractionEthereumRepository,
-    private readonly idbRepository: IDBEthereumRepository,
+    private readonly accountAbstractionRepository: ZeroDevEthereumRepository,
   ) {}
 
   async execute(): Promise<WalletState> {
-    const webAuthnKey = await this.idbRepository.getWebAuthnKey()
+    const hasAccount = await this.accountAbstractionRepository.hasAccount()
 
-    if (webAuthnKey) {
-      const walletState = await this.accountAbstractionRepository.reconnect()
-      return walletState
+    if (hasAccount) {
+      return await this.accountAbstractionRepository.reconnect()
     } else {
       return await this.injectedRepository.reconnect()
     }

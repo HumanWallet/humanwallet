@@ -42,7 +42,7 @@ export class ClientRepository implements ClientRepositoryInterface {
 
   // Core instances
   private kernelClient?: KernelClient
-  private kernelAccount?: Awaited<KernelAccount>
+  private sessionKeyAccount?: Awaited<KernelAccount>
 
   constructor(bundlerRpc: string, paymasterRpc: string, passkeyUrl: string, chain: Chain) {
     this.passkeyUrl = passkeyUrl
@@ -81,12 +81,8 @@ export class ClientRepository implements ClientRepositoryInterface {
     return this._paymasterClient
   }
 
-  /**
-   * Getter for the kernel account address.
-   * @returns The account address if initialized, undefined otherwise
-   */
-  public get address(): Address | undefined {
-    return this.kernelAccount?.address
+  public get address() {
+    return this.sessionKeyAccount?.address
   }
 
   /**
@@ -126,14 +122,14 @@ export class ClientRepository implements ClientRepositoryInterface {
     if (this.kernelClient) return // Already initialized
 
     const validator = await this.getPasskeyValidator(webAuthnKey)
-    this.kernelAccount = await createKernelAccount(this.publicClient, {
+    this.sessionKeyAccount = await createKernelAccount(this.publicClient, {
       entryPoint: getEntryPoint(ENTRY_POINT_VERSION),
       plugins: { sudo: validator },
       kernelVersion: KERNEL_V3_1,
     })
 
     this.kernelClient = createKernelAccountClient({
-      account: this.kernelAccount,
+      account: this.sessionKeyAccount,
       chain: this.chain,
       client: this.publicClient,
       bundlerTransport: this.bundlerTransport,
@@ -174,11 +170,12 @@ export class ClientRepository implements ClientRepositoryInterface {
 
     await Promise.all([this.webAuthnKeyStorageRepository.setWebAuthnKey(key), this.createAccountAndClient(key)])
 
-    if (!this.address) {
+    const address = await this.address
+    if (!address) {
       throw new Error("Account not created")
     }
 
-    return this.address
+    return address
   }
 
   /**
@@ -186,9 +183,13 @@ export class ClientRepository implements ClientRepositoryInterface {
    */
   public async disconnect(): Promise<void> {
     this.kernelClient = undefined
-    this.kernelAccount = undefined
+    this.sessionKeyAccount = undefined
 
     await this.webAuthnKeyStorageRepository.deleteWebAuthnKey()
+  }
+
+  public async hasAccount(): Promise<boolean> {
+    return !!(await this.webAuthnKeyStorageRepository.getWebAuthnKey())
   }
 
   /**
@@ -200,8 +201,8 @@ export class ClientRepository implements ClientRepositoryInterface {
       await this.createAccountAndClient(key)
 
       // Ensure the account is properly initialized
-      if (this.kernelAccount?.address) {
-        return this.kernelAccount.address
+      if (this.sessionKeyAccount?.address) {
+        return this.sessionKeyAccount.address
       }
     }
 
@@ -287,11 +288,11 @@ export class ClientRepository implements ClientRepositoryInterface {
    * @throws Error if the kernel client is not initialized
    */
   public async signTypedData(args: SignTypedDataParameters) {
-    if (!this.kernelAccount?.address) {
+    if (!this.sessionKeyAccount?.address) {
       throw new Error(KERNEL_CLIENT_NOT_INITIALIZED_ERROR)
     }
 
-    const signature = await this.kernelAccount.signTypedData(args)
+    const signature = await this.sessionKeyAccount.signTypedData(args)
     return parseSignature(signature)
   }
 

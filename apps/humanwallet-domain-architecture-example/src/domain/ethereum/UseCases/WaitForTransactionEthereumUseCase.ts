@@ -44,6 +44,7 @@ export class WaitForTransactionEthereumUseCase implements UseCase<WaitForTransac
     if (type === WalletState.TYPES.INJECTED) {
       finishedTransaction = await this.injectedRepository.waitForTransaction({ transaction })
     } else if (type === WalletState.TYPES.ABSTRACTED) {
+      console.log("waitForTransaction", transaction)
       if (transaction.hash) {
         finishedTransaction = await this.accountAbstractionRepository.waitForTransaction({ transaction })
       } else if (transaction.userOpHash) {

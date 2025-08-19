@@ -46,7 +46,6 @@ export const EthereumContext = ({ children }: EthereumProviderProps) => {
     if (wallet.status === WalletState.STATUS.CONNECTING) return
     setWallet(WalletState.create({ status: WalletState.STATUS.CONNECTING }))
   }
-
   const setEmptyState = () => setWallet(WalletState.empty())
 
   const updateWalletState = async () => {
@@ -57,7 +56,9 @@ export const EthereumContext = ({ children }: EthereumProviderProps) => {
 
         setWallet(updatedWallet)
       })
-      .catch(setEmptyState)
+      .catch(() => {
+        setEmptyState()
+      })
   }
 
   const connectWallet = async ({ connector }: ConnectEthereumUseCaseInput) => {
@@ -81,7 +82,13 @@ export const EthereumContext = ({ children }: EthereumProviderProps) => {
 
   const login = async ({ username }: { username: string }) => {
     setLoadingState()
-    window.domain.LoginEthereumUseCase.execute({ username }).then(setWallet).catch(setEmptyState)
+    window.domain.LoginEthereumUseCase.execute({ username })
+      .then((wallet) => {
+        setWallet(wallet)
+      })
+      .catch(() => {
+        setEmptyState()
+      })
   }
 
   const waitForNextBlockNumber = async (): Promise<number> => {

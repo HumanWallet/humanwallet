@@ -31,11 +31,12 @@ import type { Hash } from "viem"
 import { ContractFunctionExecutionError, parseSignature, UserRejectedRequestError, type Address } from "viem"
 import { DomainError } from "../../_kernel/DomainError"
 import { ErrorCodes } from "../../_kernel/ErrorCodes"
+import { wagmiConfig } from "../../../js/wagmi"
 
 export class WagmiEthereumRepository implements InjectedEthereumRepository {
   static create(config: Config) {
     if (typeof window === "undefined") throw new Error("WagmiEthereumRepository can only be used in the browser")
-    const wagmiConfig = window.wagmiConfig
+
     if (!wagmiConfig) throw new Error("wagmiConfig is not defined")
     return new WagmiEthereumRepository(config, wagmiConfig)
   }

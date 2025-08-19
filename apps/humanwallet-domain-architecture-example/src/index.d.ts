@@ -9,7 +9,5 @@ declare global {
     publicClient: PublicClient
     wagmiConfig: WagmiConfig
     blockNumber: number
-    kernelClient: any // Account abstraction
-    kernelAccount: any // Account abstraction
   }
 }

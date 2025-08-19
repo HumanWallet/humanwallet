@@ -32,12 +32,10 @@ import { IDBEthereumRepository } from "./ethereum/Repositories/IDBEthereumReposi
 export class Domain {
   #config: Config
 
-  private async getRepositories() {
-    return {
-      WagmiEthereumRepository: WagmiEthereumRepository.create(this.#config),
-      ZeroDevEthereumRepository: ZeroDevEthereumRepository.create(this.#config),
-      IDBEthereumRepository: IDBEthereumRepository.create(),
-    }
+  #repositories: {
+    WagmiEthereumRepository: WagmiEthereumRepository
+    ZeroDevEthereumRepository: ZeroDevEthereumRepository
+    IDBEthereumRepository: IDBEthereumRepository
   }
 
   static create(config: Base) {
@@ -46,10 +44,19 @@ export class Domain {
 
   constructor(config: Base) {
     this.#config = Config.create(config)
+    this.#repositories = {
+      WagmiEthereumRepository: WagmiEthereumRepository.create(this.#config),
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository.create(this.#config),
+      IDBEthereumRepository: IDBEthereumRepository.create(),
+    }
   }
 
   get config() {
     return this.#config
+  }
+
+  get repositories() {
+    return this.#repositories
   }
 
   /** Ethereum */
@@ -80,7 +87,7 @@ export class Domain {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         const Klass = await loader().then((mod) => mod[name])
-        const uc = Klass.create({ config: this.#config, repositories: await this.getRepositories() })
+        const uc = Klass.create({ config: this.#config, repositories: this.#repositories })
 
         return uc.execute(input) as O
       },
