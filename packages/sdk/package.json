@@ -33,6 +33,7 @@
   "dependencies": {
     "@zerodev/passkey-validator": "^5.5.5",
     "@zerodev/sdk": "^5.4.28",
-    "idb-keyval": "^6.2.2"
+    "idb-keyval": "^6.2.2",
+    "core": "file:../core"
   }
 }
