@@ -48,7 +48,6 @@ export class WaitForTransactionEthereumUseCase implements UseCase<WaitForTransac
         finishedTransaction = await this.accountAbstractionRepository.waitForTransaction({ transaction })
       } else if (transaction.userOpHash) {
         const finishedUserOpTransaction = await this.accountAbstractionRepository.waitForUserOperation({ transaction })
-
         if (finishedUserOpTransaction.hash) {
           finishedTransaction = await this.accountAbstractionRepository.waitForTransaction({
             transaction: finishedUserOpTransaction,
