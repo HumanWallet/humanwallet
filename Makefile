@@ -22,6 +22,14 @@ install-sdk: ## Install dependencies for SDK package only
 	@echo "Installing SDK dependencies..."
 	npm install --workspace=packages/sdk
 
+install-types: ## Install dependencies for types package only
+	@echo "Installing types dependencies..."
+	npm install --workspace=packages/types
+
+install-core: ## Install dependencies for core package only
+	@echo "Installing core dependencies..."
+	npm install --workspace=packages/core
+
 install-demo: ## Install dependencies for demo app only
 	@echo "Installing demo app dependencies..."
 	npm install --workspace=apps/humanwallet-domain-architecture-example
@@ -34,6 +42,14 @@ build: ## Build all packages
 build-sdk: ## Build SDK package only
 	@echo "Building SDK..."
 	npm run build --workspace=packages/sdk
+
+build-types: ## Build types package only
+	@echo "Building types..."
+	npm run build --workspace=packages/types
+
+build-core: ## Build core package only
+	@echo "Building core..."
+	npm run build --workspace=packages/core
 
 build-demo: ## Build demo app only
 	@echo "Building demo app..."
@@ -50,9 +66,17 @@ dev-sdk: ## Start development mode for SDK (watch mode)
 	@echo "Starting SDK in watch mode..."
 	npm run watch-build --workspace=packages/sdk
 
+dev-types: ## Start development mode for types (watch mode)
+	@echo "Starting types in watch mode..."
+	npm run watch-build --workspace=packages/types
+
+dev-core: ## Start development mode for core (watch mode)
+	@echo "Starting core in watch mode..."
+	npm run watch-build --workspace=packages/core
+
 dev-demo: ## Start development mode for demo app
 	@echo "Starting demo app..."
-	 npm run dev --workspace=apps/humanwallet-domain-architecture-example
+	npm run dev --workspace=apps/humanwallet-domain-architecture-example
 
 # Test commands
 test: ## Run tests for all packages
@@ -62,6 +86,14 @@ test: ## Run tests for all packages
 test-sdk: ## Run tests for SDK package only
 	@echo "Running SDK tests..."
 	npm run test --workspace=packages/sdk --if-present
+
+test-types: ## Run tests for types package only
+	@echo "Running types tests..."
+	npm run test --workspace=packages/types --if-present
+
+test-core: ## Run tests for core package only
+	@echo "Running core tests..."
+	npm run test --workspace=packages/core --if-present
 
 test-demo: ## Run tests for demo app
 	@echo "Running demo app tests..."
@@ -75,6 +107,14 @@ lint: ## Run linting for all packages
 lint-sdk: ## Run linting for SDK package only
 	@echo "Running SDK linting..."
 	npm run lint --workspace=packages/sdk --if-present
+
+lint-types: ## Run linting for types package only
+	@echo "Running types linting..."
+	npm run lint --workspace=packages/types --if-present
+
+lint-core: ## Run linting for core package only
+	@echo "Running core linting..."
+	npm run lint --workspace=packages/core --if-present
 
 format: ## Format code for all packages
 	@echo "Formatting code..."
@@ -94,6 +134,14 @@ typecheck-sdk: ## Run TypeScript type checking for SDK only
 	@echo "Running SDK type checking..."
 	cd packages/sdk && npx tsc --noEmit
 
+typecheck-types: ## Run TypeScript type checking for types only
+	@echo "Running types type checking..."
+	cd packages/types && npx tsc --noEmit
+
+typecheck-core: ## Run TypeScript type checking for core only
+	@echo "Running core type checking..."
+	cd packages/core && npx tsc --noEmit
+
 # Cleanup commands
 clean: ## Clean all build artifacts and node_modules
 	@echo "Cleaning all packages..."
@@ -111,6 +159,14 @@ clean-dist: ## Clean only build artifacts (dist folders)
 clean-sdk: ## Clean SDK build artifacts
 	@echo "Cleaning SDK..."
 	rm -rf packages/sdk/dist
+
+clean-types: ## Clean types build artifacts
+	@echo "Cleaning types..."
+	rm -rf packages/types/dist
+
+clean-core: ## Clean core build artifacts
+	@echo "Cleaning core..."
+	rm -rf packages/core/dist
 
 clean-demo: ## Clean demo app build artifacts
 	@echo "Cleaning demo app..."
@@ -137,9 +193,31 @@ version-sdk: ## Update SDK version (use VERSION=x.x.x)
 	fi
 	cd packages/sdk && npm version $(VERSION)
 
+version-types: ## Update types version (use VERSION=x.x.x)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Usage: make version-types VERSION=x.x.x"; \
+		exit 1; \
+	fi
+	cd packages/types && npm version $(VERSION)
+
+version-core: ## Update core version (use VERSION=x.x.x)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Usage: make version-core VERSION=x.x.x"; \
+		exit 1; \
+	fi
+	cd packages/core && npm version $(VERSION)
+
 publish-sdk: ## Publish SDK to registry
 	@echo "Publishing SDK..."
 	cd packages/sdk && npm publish
+
+publish-types: ## Publish types to registry
+	@echo "Publishing types..."
+	cd packages/types && npm publish
+
+publish-core: ## Publish core to registry
+	@echo "Publishing core..."
+	cd packages/core && npm publish
 
 
 
