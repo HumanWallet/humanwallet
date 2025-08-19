@@ -1,13 +1,15 @@
 import { STAKING_ABI } from "../../../contracts/abis/stakingABI.js"
 import { TOKEN_ABI } from "../../../contracts/abis/tokenABI.js"
 import { CONTRACT_ADDRESSES } from "../../../contracts/addresses/index.js"
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
 import type { Transaction } from "../../ethereum/Models/Transaction.js"
 import { TransactionType } from "../../ethereum/Models/Transaction.js"
 import { GetWalletStateEthereumService } from "../../ethereum/Service/GetWalletStateEthereumService.js"
 import { WriteContractsEthereumService } from "../../ethereum/Service/WriteContractsEthereumService.js"
 import type { WriteContractEthereumInput } from "../../ethereum/Repositories/index.js"
+import type { WagmiEthereumRepository } from "../../ethereum/Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../../ethereum/Repositories/ZeroDevEthereumRepository.js"
+import type { IDBEthereumRepository } from "../../ethereum/Repositories/IDBEthereumRepository.js"
 
 export type MintAndStakeTokenUseCaseInput = void
 export type MintAndStakeTokenUseCaseOutput = Transaction
@@ -15,10 +17,18 @@ export type MintAndStakeTokenUseCaseOutput = Transaction
 export class MintAndStakeTokenUseCase
   implements UseCase<MintAndStakeTokenUseCaseInput, MintAndStakeTokenUseCaseOutput>
 {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new MintAndStakeTokenUseCase(
-      GetWalletStateEthereumService.create({ config }),
-      WriteContractsEthereumService.create({ config }),
+      GetWalletStateEthereumService.create({ repositories }),
+      WriteContractsEthereumService.create({ repositories }),
     )
   }
 

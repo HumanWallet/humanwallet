@@ -1,21 +1,31 @@
 import { parseEther } from "viem"
 import { TOKEN_ABI } from "../../../contracts/abis/tokenABI.js"
 import { CONTRACT_ADDRESSES } from "../../../contracts/addresses/index.js"
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
 import type { Transaction } from "../../ethereum/Models/Transaction.js"
 import { TransactionType } from "../../ethereum/Models/Transaction.js"
 import { GetWalletStateEthereumService } from "../../ethereum/Service/GetWalletStateEthereumService.js"
 import { WriteContractEthereumService } from "../../ethereum/Service/WriteContractEthereumService.js"
+import type { WagmiEthereumRepository } from "../../ethereum/Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../../ethereum/Repositories/ZeroDevEthereumRepository.js"
+import type { IDBEthereumRepository } from "../../ethereum/Repositories/IDBEthereumRepository.js"
 
 export type MintTokenUseCaseInput = void
 export type MintTokenUseCaseOutput = Transaction
 
 export class MintTokenUseCase implements UseCase<MintTokenUseCaseInput, MintTokenUseCaseOutput> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new MintTokenUseCase(
-      GetWalletStateEthereumService.create({ config }),
-      WriteContractEthereumService.create({ config }),
+      GetWalletStateEthereumService.create({ repositories }),
+      WriteContractEthereumService.create({ repositories }),
     )
   }
 

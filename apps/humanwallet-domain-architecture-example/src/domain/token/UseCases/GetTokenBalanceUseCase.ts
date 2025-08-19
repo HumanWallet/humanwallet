@@ -1,7 +1,9 @@
 import { TOKEN_ABI } from "../../../contracts/abis/tokenABI.js"
 import { CONTRACT_ADDRESSES } from "../../../contracts/addresses/index.js"
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
+import type { IDBEthereumRepository } from "../../ethereum/Repositories/IDBEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../../ethereum/Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../../ethereum/Repositories/ZeroDevEthereumRepository.js"
 import { GetWalletStateEthereumService } from "../../ethereum/Service/GetWalletStateEthereumService.js"
 import { ReadContractEthereumService } from "../../ethereum/Service/ReadContractEthereumService.js"
 import { formatEther } from "viem"
@@ -10,10 +12,18 @@ export type GetTokenBalanceUseCaseInput = void
 export type GetTokenBalanceUseCaseOutput = number
 
 export class GetTokenBalanceUseCase implements UseCase<GetTokenBalanceUseCaseInput, GetTokenBalanceUseCaseOutput> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new GetTokenBalanceUseCase(
-      GetWalletStateEthereumService.create({ config }),
-      ReadContractEthereumService.create({ config }),
+      GetWalletStateEthereumService.create({ repositories }),
+      ReadContractEthereumService.create({ repositories }),
     )
   }
 

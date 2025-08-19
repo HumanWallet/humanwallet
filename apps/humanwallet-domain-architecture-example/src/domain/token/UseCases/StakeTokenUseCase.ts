@@ -1,12 +1,14 @@
 import { parseEther } from "viem"
 import { STAKING_ABI } from "../../../contracts/abis/stakingABI.js"
 import { CONTRACT_ADDRESSES } from "../../../contracts/addresses/index.js"
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
 import type { Transaction } from "../../ethereum/Models/Transaction.js"
 import { TransactionType } from "../../ethereum/Models/Transaction.js"
 import { GetWalletStateEthereumService } from "../../ethereum/Service/GetWalletStateEthereumService.js"
 import { WriteContractEthereumService } from "../../ethereum/Service/WriteContractEthereumService.js"
+import type { WagmiEthereumRepository } from "../../ethereum/Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../../ethereum/Repositories/ZeroDevEthereumRepository.js"
+import type { IDBEthereumRepository } from "../../ethereum/Repositories/IDBEthereumRepository.js"
 
 export type StakeTokenUseCaseInput = {
   amount: number
@@ -15,10 +17,18 @@ export type StakeTokenUseCaseInput = {
 export type StakeTokenUseCaseOutput = Transaction
 
 export class StakeTokenUseCase implements UseCase<StakeTokenUseCaseInput, StakeTokenUseCaseOutput> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new StakeTokenUseCase(
-      GetWalletStateEthereumService.create({ config }),
-      WriteContractEthereumService.create({ config }),
+      GetWalletStateEthereumService.create({ repositories }),
+      WriteContractEthereumService.create({ repositories }),
     )
   }
 
