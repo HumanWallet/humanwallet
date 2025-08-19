@@ -1,0 +1,33 @@
+{
+  "name": "types",
+  "version": "0.0.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "watch-build": "tsup --watch",
+    "lint": "eslint src --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "sdk",
+    "typescript",
+    "web3",
+    "viem",
+    "ethereum",
+    "tsup",
+    "webauthn",
+    "human wallet"
+  ],
+  "type": "module",
+  "devDependencies": {
+    "@zerodev/sdk": "^5.4.41",
+    "@zerodev/webauthn-key": "^5.4.4",
+    "typescript": "^5.9.2",
+    "viem": "^2.34.0"
+  }
+}
