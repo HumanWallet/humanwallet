@@ -1,17 +1,24 @@
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 import type { WalletState } from "../Models/WalletState.js"
-import { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
+import type { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 import type { AccountAbstractionEthereumRepository, InjectedEthereumRepository } from "../Repositories/index.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 
 export class DisconnectEthereumUseCase implements UseCase<void, WalletState> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new DisconnectEthereumUseCase(
-      IDBEthereumRepository.create(),
-      WagmiEthereumRepository.create(config),
-      ZeroDevEthereumRepository.create(config),
+      repositories.IDBEthereumRepository,
+      repositories.WagmiEthereumRepository,
+      repositories.ZeroDevEthereumRepository,
     )
   }
 

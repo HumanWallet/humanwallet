@@ -1,10 +1,10 @@
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
 import type { Transaction } from "../Models/Transaction.js"
 import { WalletState } from "../Models/WalletState.js"
+import type { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 import type { AccountAbstractionEthereumRepository, InjectedEthereumRepository } from "../Repositories/index.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 import { GetWalletStateEthereumService } from "../Service/GetWalletStateEthereumService.js"
 import { SetTransactionEthereumService } from "../Service/SetTransactionEthereumService.js"
 
@@ -13,12 +13,20 @@ export interface WaitForTransactionEthereumUseCaseInput {
 }
 
 export class WaitForTransactionEthereumUseCase implements UseCase<WaitForTransactionEthereumUseCaseInput, Transaction> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new WaitForTransactionEthereumUseCase(
-      WagmiEthereumRepository.create(config),
-      ZeroDevEthereumRepository.create(config),
-      GetWalletStateEthereumService.create({ config }),
-      SetTransactionEthereumService.create({ config }),
+      repositories.WagmiEthereumRepository,
+      repositories.ZeroDevEthereumRepository,
+      GetWalletStateEthereumService.create({ repositories }),
+      SetTransactionEthereumService.create({ repositories }),
     )
   }
 

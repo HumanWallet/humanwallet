@@ -1,28 +1,35 @@
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 import type { AccountAbstractionEthereumRepository, EthereumRepository } from "../Repositories/index.js"
 import type { WalletState } from "../Models/WalletState.js"
-import { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
+import type { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 
 export class ReconnectEthereumUseCase implements UseCase<void, WalletState> {
-  constructor(
-    private readonly injectedRepository: EthereumRepository,
-    private readonly accountAbstractionRepository: AccountAbstractionEthereumRepository,
-    private readonly idb: IDBEthereumRepository,
-  ) {}
-
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new ReconnectEthereumUseCase(
-      WagmiEthereumRepository.create(config),
-      ZeroDevEthereumRepository.create(config),
-      IDBEthereumRepository.create(),
+      repositories.WagmiEthereumRepository,
+      repositories.ZeroDevEthereumRepository,
+      repositories.IDBEthereumRepository,
     )
   }
 
+  constructor(
+    private readonly injectedRepository: EthereumRepository,
+    private readonly accountAbstractionRepository: AccountAbstractionEthereumRepository,
+    private readonly idbRepository: IDBEthereumRepository,
+  ) {}
+
   async execute(): Promise<WalletState> {
-    const webAuthnKey = await this.idb.getWebAuthnKey()
+    const webAuthnKey = await this.idbRepository.getWebAuthnKey()
 
     if (webAuthnKey) {
       const walletState = await this.accountAbstractionRepository.reconnect()

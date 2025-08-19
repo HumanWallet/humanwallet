@@ -1,14 +1,22 @@
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
 import { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 import type { LocalEthereumRepositoryInterface } from "../Repositories/index.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 import { GetWalletStateEthereumService } from "../Service/GetWalletStateEthereumService.js"
 
 export class CleanTransactionsEthereumUseCase implements UseCase<void, void> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+    }
+  }) {
     return new CleanTransactionsEthereumUseCase(
       IDBEthereumRepository.create(),
-      GetWalletStateEthereumService.create({ config }),
+      GetWalletStateEthereumService.create({ repositories }),
     )
   }
 

@@ -1,3 +1,5 @@
+// TODO: This use case is not needed anymore, we should remove it
+
 import type { UseCase } from "../../_kernel/architecture.js"
 import { publicClient } from "../../../js/viem/index.js"
 

@@ -27,6 +27,7 @@ import type {
 } from "./token/UseCases/GetTokenAllowanceUseCase.js"
 import { WagmiEthereumRepository } from "./ethereum/Repositories/WagmiEthereumRepository.js"
 import { ZeroDevEthereumRepository } from "./ethereum/Repositories/ZeroDevEthereumRepository.js"
+import { IDBEthereumRepository } from "./ethereum/Repositories/IDBEthereumRepository.js"
 
 export class Domain {
   #config: Config
@@ -35,6 +36,7 @@ export class Domain {
     return {
       WagmiEthereumRepository: WagmiEthereumRepository.create(this.#config),
       ZeroDevEthereumRepository: ZeroDevEthereumRepository.create(this.#config),
+      IDBEthereumRepository: IDBEthereumRepository.create(),
     }
   }
 

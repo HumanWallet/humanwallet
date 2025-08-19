@@ -1,6 +1,5 @@
-import type { Config } from "../../_config/index.js"
 import type { UseCase } from "../../_kernel/architecture.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 import { type Connector } from "@wagmi/core"
 import { WalletState } from "../Models/WalletState.js"
 
@@ -9,8 +8,8 @@ export interface ConnectEthereumUseCaseInput {
 }
 
 export class ConnectEthereumUseCase implements UseCase<ConnectEthereumUseCaseInput, WalletState> {
-  static create({ config }: { config: Config }) {
-    return new ConnectEthereumUseCase(WagmiEthereumRepository.create(config))
+  static create({ repositories }: { repositories: { WagmiEthereumRepository: WagmiEthereumRepository } }) {
+    return new ConnectEthereumUseCase(repositories.WagmiEthereumRepository)
   }
 
   constructor(private readonly repository: WagmiEthereumRepository) {}
