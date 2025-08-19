@@ -1,32 +1,34 @@
-import type { Config } from "../../_config/index.js"
 import type { Service } from "../../_kernel/architecture.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 import type { WalletState } from "../Models/WalletState.js"
-import { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 import type { AccountAbstractionEthereumRepository, InjectedEthereumRepository } from "../Repositories/index.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 
 export class GetWalletStateEthereumService implements Service<void, WalletState> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+    }
+  }) {
     return new GetWalletStateEthereumService(
-      IDBEthereumRepository.create(),
-      WagmiEthereumRepository.create(config),
-      ZeroDevEthereumRepository.create(config),
+      repositories.WagmiEthereumRepository,
+      repositories.ZeroDevEthereumRepository,
     )
   }
 
   constructor(
-    private readonly idb: IDBEthereumRepository,
     private readonly injectedRepository: InjectedEthereumRepository,
     private readonly accountAbstractionRepository: AccountAbstractionEthereumRepository,
   ) {}
 
   async execute(): Promise<WalletState> {
-    const webAuthnKey = await this.idb.getWebAuthnKey()
+    const address = await (await this.accountAbstractionRepository.getWalletState()).account
 
-    if (webAuthnKey) {
-      const walletState = await this.accountAbstractionRepository.getWalletState()
-      return walletState
+    if (address) {
+      return await this.accountAbstractionRepository.getWalletState()
     } else {
       return await this.injectedRepository.getWalletState()
     }

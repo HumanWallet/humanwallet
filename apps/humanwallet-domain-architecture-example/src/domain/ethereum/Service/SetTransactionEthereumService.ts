@@ -1,20 +1,29 @@
 import type { Service } from "../../_kernel/architecture.js"
-import { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
+import type { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 import { Transaction } from "../Models/Transaction.js"
-import type { Config } from "../../_config/index.js"
 import { GetWalletStateEthereumService } from "./GetWalletStateEthereumService.js"
 import { dispatchDomainEvent, DomainEvents } from "../../_kernel/Events.js"
 import type { LocalEthereumRepositoryInterface } from "../Repositories/index.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 
 export type SetTransactionEthereumServiceInput = {
   transaction: Transaction
 }
 
 export class SetTransactionEthereumService implements Service<SetTransactionEthereumServiceInput, Transaction> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new SetTransactionEthereumService(
-      GetWalletStateEthereumService.create({ config }),
-      IDBEthereumRepository.create(),
+      GetWalletStateEthereumService.create({ repositories }),
+      repositories.IDBEthereumRepository,
     )
   }
 

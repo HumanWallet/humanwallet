@@ -1,21 +1,27 @@
-import type { Config } from "../../_config/index.js"
 import type { Service } from "../../_kernel/architecture.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 import type {
   AccountAbstractionEthereumRepository,
   InjectedEthereumRepository,
   ReadContractEthereumInput,
 } from "../Repositories/index.js"
 import { GetWalletStateEthereumService } from "./GetWalletStateEthereumService.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 import { WalletState } from "../Models/WalletState.js"
 
 export class ReadContractEthereumService implements Service<ReadContractEthereumInput, unknown> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+    }
+  }) {
     return new ReadContractEthereumService(
-      GetWalletStateEthereumService.create({ config }),
-      WagmiEthereumRepository.create(config),
-      ZeroDevEthereumRepository.create(config),
+      GetWalletStateEthereumService.create({ repositories }),
+      repositories.WagmiEthereumRepository,
+      repositories.ZeroDevEthereumRepository,
     )
   }
 

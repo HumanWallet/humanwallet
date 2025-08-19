@@ -1,6 +1,5 @@
-import type { Config } from "../../_config/index.js"
 import type { Service } from "../../_kernel/architecture.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 import type {
   AccountAbstractionEthereumRepository,
   InjectedEthereumRepository,
@@ -8,20 +7,29 @@ import type {
 } from "../Repositories/index.js"
 import type { Transaction } from "../Models/Transaction.js"
 import { GetWalletStateEthereumService } from "./GetWalletStateEthereumService.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 import { WalletState } from "../Models/WalletState.js"
 import { SetTransactionEthereumService } from "./SetTransactionEthereumService.js"
 import { dispatchDomainEvent, DomainEvents } from "../../_kernel/Events.js"
 import { DomainError } from "../../_kernel/DomainError.js"
 import { ErrorCodes } from "../../_kernel/ErrorCodes.js"
+import type { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
 
 export class WriteContractEthereumService implements Service<WriteContractEthereumInput, Transaction> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new WriteContractEthereumService(
-      GetWalletStateEthereumService.create({ config }),
-      WagmiEthereumRepository.create(config),
-      ZeroDevEthereumRepository.create(config),
-      SetTransactionEthereumService.create({ config }),
+      GetWalletStateEthereumService.create({ repositories }),
+      repositories.WagmiEthereumRepository,
+      repositories.ZeroDevEthereumRepository,
+      SetTransactionEthereumService.create({ repositories }),
     )
   }
 

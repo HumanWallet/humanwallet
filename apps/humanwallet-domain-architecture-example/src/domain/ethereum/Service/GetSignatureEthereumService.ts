@@ -1,13 +1,12 @@
-import type { Config } from "../../_config/index.js"
 import type { Service } from "../../_kernel/architecture.js"
-import { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 import type {
   AccountAbstractionEthereumRepository,
   InjectedEthereumRepository,
   SignTypedDataEthereumInput,
 } from "../Repositories/index.js"
 import { GetWalletStateEthereumService } from "./GetWalletStateEthereumService.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 import { WalletState } from "../Models/WalletState.js"
 import { type Signature } from "viem"
 import { dispatchDomainEvent, DomainEvents } from "../../_kernel/Events.js"
@@ -15,11 +14,18 @@ import { DomainError } from "../../_kernel/DomainError.js"
 import { ErrorCodes } from "../../_kernel/ErrorCodes.js"
 
 export class GetSignatureEthereumService implements Service<SignTypedDataEthereumInput, Signature> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+    }
+  }) {
     return new GetSignatureEthereumService(
-      GetWalletStateEthereumService.create({ config }),
-      WagmiEthereumRepository.create(config),
-      ZeroDevEthereumRepository.create(config),
+      GetWalletStateEthereumService.create({ repositories }),
+      repositories.WagmiEthereumRepository,
+      repositories.ZeroDevEthereumRepository,
     )
   }
 

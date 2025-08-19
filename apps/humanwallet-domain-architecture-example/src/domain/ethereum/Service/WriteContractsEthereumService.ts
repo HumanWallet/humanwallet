@@ -1,4 +1,3 @@
-import type { Config } from "../../_config/index.js"
 import type { Service } from "../../_kernel/architecture.js"
 import type {
   AccountAbstractionEthereumRepository,
@@ -7,19 +6,29 @@ import type {
 } from "../Repositories/index.js"
 import type { Transaction } from "../Models/Transaction.js"
 import { GetWalletStateEthereumService } from "./GetWalletStateEthereumService.js"
-import { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
+import type { ZeroDevEthereumRepository } from "../Repositories/ZeroDevEthereumRepository.js"
 import { WalletState } from "../Models/WalletState.js"
 import { SetTransactionEthereumService } from "./SetTransactionEthereumService.js"
 import { dispatchDomainEvent, DomainEvents } from "../../_kernel/Events.js"
 import { DomainError } from "../../_kernel/DomainError.js"
 import { ErrorCodes } from "../../_kernel/ErrorCodes.js"
+import type { IDBEthereumRepository } from "../Repositories/IDBEthereumRepository.js"
+import type { WagmiEthereumRepository } from "../Repositories/WagmiEthereumRepository.js"
 
 export class WriteContractsEthereumService implements Service<WriteContractEthereumInput[], Transaction> {
-  static create({ config }: { config: Config }) {
+  static create({
+    repositories,
+  }: {
+    repositories: {
+      WagmiEthereumRepository: WagmiEthereumRepository
+      ZeroDevEthereumRepository: ZeroDevEthereumRepository
+      IDBEthereumRepository: IDBEthereumRepository
+    }
+  }) {
     return new WriteContractsEthereumService(
-      GetWalletStateEthereumService.create({ config }),
-      ZeroDevEthereumRepository.create(config),
-      SetTransactionEthereumService.create({ config }),
+      GetWalletStateEthereumService.create({ repositories }),
+      repositories.ZeroDevEthereumRepository,
+      SetTransactionEthereumService.create({ repositories }),
     )
   }
 
