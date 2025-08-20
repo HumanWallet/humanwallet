@@ -6,12 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint src --fix",
+    "typecheck": "tsc --noEmit --project tsconfig.app.json",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.85.5",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "viem": "^2.34.0",
+    "wagmi": "^2.16.4"
   },
   "devDependencies": {
     "@types/react": "^19.1.10",
