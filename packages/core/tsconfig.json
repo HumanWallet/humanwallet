@@ -4,7 +4,8 @@
     "outDir": "dist",
     "noEmit": false,
     "composite": false,
-    "allowImportingTsExtensions": false
+    "allowImportingTsExtensions": false,
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
