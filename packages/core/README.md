@@ -24,7 +24,7 @@ npm run test:coverage
 The test suite provides comprehensive coverage for all functions:
 
 - **deleteWebAuthenticationKey**: Tests successful deletion and error handling
-- **setWebAuthenticationKey**: Tests successful storage and error handling  
+- **setWebAuthenticationKey**: Tests successful storage and error handling
 - **getWebAuthenticationKey**: Tests successful retrieval, undefined cases, and error handling
 - **generateWebAuthenticationKey**: Tests successful generation, error handling, different modes, and config variations
 
@@ -36,6 +36,7 @@ The test suite provides comprehensive coverage for all functions:
 ### Test Structure
 
 Tests are organized using the AAA pattern (Arrange, Act, Assert) and include:
+
 - Happy path scenarios
 - Error handling scenarios
 - Edge cases

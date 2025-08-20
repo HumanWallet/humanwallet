@@ -8,12 +8,12 @@ import {
 import { getEntryPoint, KERNEL_V3_1 } from "@zerodev/sdk/constants"
 import type { Config, KernelClient, PublicClient, SessionKeyAccount, WebAuthenticationKey } from "types"
 
-const ENTRY_POINT_VERSION = "0.7"
+const PASSKEY_VALIDATOR_ENTRY_POINT_VERSION = "0.7"
 
 const getPasskeyValidator = async (webAuthnKey: WebAuthenticationKey, publicClient: PublicClient) => {
   return await toPasskeyValidator(publicClient, {
     webAuthnKey,
-    entryPoint: getEntryPoint(ENTRY_POINT_VERSION),
+    entryPoint: getEntryPoint(PASSKEY_VALIDATOR_ENTRY_POINT_VERSION),
     kernelVersion: KERNEL_V3_1,
     validatorContractVersion: PasskeyValidatorContractVersion.V0_0_2,
   })
@@ -32,7 +32,7 @@ export const createAccountAndClient = async (
 ): Promise<{ sessionKeyAccount: SessionKeyAccount; kernelClient: KernelClient }> => {
   const validator = await getPasskeyValidator(webAuthnKey, config.publicClient)
   const sessionKeyAccount = await createKernelAccount(config.publicClient, {
-    entryPoint: getEntryPoint(ENTRY_POINT_VERSION),
+    entryPoint: getEntryPoint(PASSKEY_VALIDATOR_ENTRY_POINT_VERSION),
     plugins: { sudo: validator },
     kernelVersion: KERNEL_V3_1,
   })

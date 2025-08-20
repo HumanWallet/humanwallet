@@ -38,6 +38,10 @@ export default tseslint.config([
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+        project: ["./packages/*/tsconfig.json", "./apps/*/tsconfig*.json"],
+      },
     },
     rules: {
       "prettier/prettier": "warn",
