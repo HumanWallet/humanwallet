@@ -18,7 +18,10 @@ vi.mock("@zerodev/webauthn-key", () => ({
 }))
 
 // Mock specific viem functions to prevent real network calls
-vi.mock("viem", () => {
+vi.mock("viem", async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actual = await importOriginal<typeof import("viem")>()
+
   // Create a mock transport that doesn't make real network calls
   const mockTransport = () => ({
     request: vi.fn().mockResolvedValue("0x0000000000000000000000000000000000000000000000000000000000000001"),
@@ -27,6 +30,7 @@ vi.mock("viem", () => {
   })
 
   return {
+    ...actual,
     createPublicClient: vi.fn().mockReturnValue({
       request: vi.fn().mockResolvedValue("0x0000000000000000000000000000000000000000000000000000000000000001"),
       type: "public",
@@ -34,6 +38,13 @@ vi.mock("viem", () => {
     http: vi.fn().mockReturnValue(mockTransport()),
   }
 })
+
+function fakeSignature(): `0x${string}` {
+  const r = "a".repeat(64) // 32 bytes
+  const s = "b".repeat(64) // 32 bytes
+  const v = "1b" // 27 in hex
+  return `0x${r}${s}${v}` as `0x${string}`
+}
 
 // Mock ZeroDev SDK functions to return mock objects
 vi.mock("@zerodev/sdk", () => ({
@@ -43,7 +54,9 @@ vi.mock("@zerodev/sdk", () => ({
     type: "kernel",
   }),
   createKernelAccountClient: vi.fn().mockReturnValue({
-    account: "0x1234567890123456789012345678901234567890",
+    account: {
+      signTypedData: vi.fn().mockResolvedValue(fakeSignature()),
+    },
     chain: "sepolia",
     type: "kernel",
     sendUserOperation: vi.fn().mockResolvedValue("0xhash"),
