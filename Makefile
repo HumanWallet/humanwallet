@@ -32,7 +32,7 @@ install-core: ## Install dependencies for core package only
 
 install-demo: ## Install dependencies for demo app only
 	@echo "Installing demo app dependencies..."
-	npm install --workspace=apps/humanwallet-domain-architecture-example
+	npm install --workspace=apps/domain-architecture
 
 # Build commands
 build: ## Build all packages
@@ -53,7 +53,7 @@ build-core: ## Build core package only
 
 build-demo: ## Build demo app only
 	@echo "Building demo app..."
-	npm run build --workspace=apps/humanwallet-domain-architecture-example
+	npm run build --workspace=apps/domain-architecture
 
 
 
@@ -76,7 +76,7 @@ dev-core: ## Start development mode for core (watch mode)
 
 dev-demo: ## Start development mode for demo app
 	@echo "Starting demo app..."
-	npm run dev --workspace=apps/humanwallet-domain-architecture-example
+	npm run dev --workspace=apps/domain-architecture
 
 # Test commands
 test: ## Run tests for all packages
@@ -97,7 +97,7 @@ test-core: ## Run tests for core package only
 
 test-demo: ## Run tests for demo app
 	@echo "Running demo app tests..."
-	npm run test --workspace=apps/humanwallet-domain-architecture-example --if-present
+	npm run test --workspace=apps/domain-architecture --if-present
 
 # Linting and formatting
 lint: ## Run linting for all packages
@@ -170,7 +170,7 @@ clean-core: ## Clean core build artifacts
 
 clean-demo: ## Clean demo app build artifacts
 	@echo "Cleaning demo app..."
-	rm -rf apps/humanwallet-domain-architecture-example/dist
+	rm -rf apps/domain-architecture/dist
 
 # Package management
 deps: ## Show dependency tree for all packages
