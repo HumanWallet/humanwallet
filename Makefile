@@ -34,6 +34,10 @@ install-demo: ## Install dependencies for demo app only
 	@echo "Installing demo app dependencies..."
 	npm install --workspace=apps/domain-architecture
 
+install-react-wagmi: ## Install dependencies for react-wagmi app only
+	@echo "Installing react-wagmi app dependencies..."
+	npm install --workspace=apps/react-wagmi
+
 # Build commands
 build: ## Build all packages
 	@echo "Building all packages..."
@@ -54,6 +58,10 @@ build-core: ## Build core package only
 build-demo: ## Build demo app only
 	@echo "Building demo app..."
 	npm run build --workspace=apps/domain-architecture
+
+build-react-wagmi: ## Build react-wagmi app only
+	@echo "Building react-wagmi app..."
+	npm run build --workspace=apps/react-wagmi
 
 
 
@@ -78,6 +86,10 @@ dev-demo: ## Start development mode for demo app
 	@echo "Starting demo app..."
 	npm run dev --workspace=apps/domain-architecture
 
+dev-react-wagmi: ## Start development mode for react-wagmi app
+	@echo "Starting react-wagmi app..."
+	npm run dev --workspace=apps/react-wagmi
+
 # Test commands
 test: ## Run tests for all packages
 	@echo "Running tests..."
@@ -98,6 +110,10 @@ test-core: ## Run tests for core package only
 test-demo: ## Run tests for demo app
 	@echo "Running demo app tests..."
 	npm run test --workspace=apps/domain-architecture --if-present
+
+test-react-wagmi: ## Run tests for react-wagmi app
+	@echo "Running react-wagmi app tests..."
+	npm run test --workspace=apps/react-wagmi --if-present
 
 # Linting and formatting
 lint: ## Run linting for all packages
@@ -171,6 +187,10 @@ clean-core: ## Clean core build artifacts
 clean-demo: ## Clean demo app build artifacts
 	@echo "Cleaning demo app..."
 	rm -rf apps/domain-architecture/dist
+
+clean-react-wagmi: ## Clean react-wagmi app build artifacts
+	@echo "Cleaning react-wagmi app..."
+	rm -rf apps/react-wagmi/dist
 
 # Package management
 deps: ## Show dependency tree for all packages
