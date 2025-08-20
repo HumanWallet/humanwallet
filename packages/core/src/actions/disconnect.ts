@@ -1,4 +1,4 @@
-import { deleteWebAuthenticationKey } from "../lib/webAuthenticationKey"
+import { deleteWebAuthenticationKey } from "../lib/deleteWebAuthenticationKey"
 
 export const disconnect = async (): Promise<boolean> => {
   return await deleteWebAuthenticationKey()

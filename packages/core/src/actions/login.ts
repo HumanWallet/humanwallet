@@ -1,7 +1,8 @@
 import type { Config, KernelClient, SessionKeyAccount } from "types"
 import { WEB_AUTHENTICATION_MODE_KEY } from "types"
-import { generateWebAuthenticationKey, setWebAuthenticationKey } from "../lib/webAuthenticationKey"
 import { createAccountAndClient } from "../lib/createAccountAndClient"
+import { generateWebAuthenticationKey } from "../lib/generateWebAuthenticationKey"
+import { setWebAuthenticationKey } from "../lib/setWebAuthenticationKey"
 
 export const login = async (
   username: string,

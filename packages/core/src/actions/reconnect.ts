@@ -1,6 +1,7 @@
 import type { Config, KernelClient, SessionKeyAccount } from "types"
-import { getWebAuthenticationKey, setWebAuthenticationKey } from "../lib/webAuthenticationKey"
 import { createAccountAndClient } from "../lib/createAccountAndClient"
+import { getWebAuthenticationKey } from "../lib/getWebAuthenticationKey"
+import { setWebAuthenticationKey } from "../lib/setWebAuthenticationKey"
 
 export const reconnect = async (
   config: Config,
