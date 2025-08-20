@@ -34,6 +34,10 @@ vi.mock("viem", async (importOriginal) => {
     createPublicClient: vi.fn().mockReturnValue({
       request: vi.fn().mockResolvedValue("0x0000000000000000000000000000000000000000000000000000000000000001"),
       type: "public",
+      waitForTransactionReceipt: vi.fn().mockResolvedValue({
+        hash: "0x123",
+        status: "success",
+      }),
     }),
     http: vi.fn().mockReturnValue(mockTransport()),
   }
@@ -56,7 +60,17 @@ vi.mock("@zerodev/sdk", () => ({
   createKernelAccountClient: vi.fn().mockReturnValue({
     account: {
       signTypedData: vi.fn().mockResolvedValue(fakeSignature()),
+      encodeCalls: vi.fn().mockResolvedValue("0x0000000000000000000000000000000000000000000000000000000000000001"),
     },
+    waitForUserOperationReceipt: vi.fn().mockResolvedValue({
+      hash: "0x123",
+      status: "success",
+      blockNumber: 1,
+      blockHash: "0x123",
+      transactionHash: "0x123",
+      transactionIndex: 0,
+      from: "0x1234567890123456789012345678901234567890",
+    }),
     chain: "sepolia",
     type: "kernel",
     sendUserOperation: vi.fn().mockResolvedValue("0xhash"),
