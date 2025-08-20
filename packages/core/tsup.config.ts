@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup"
 
 export default defineConfig({
-  entry: ["src/**/*.ts"],
+  entry: ["src/**/*.ts", "!src/**/*.test.ts", "!src/**/*.spec.ts", "!src/**/__tests__/**", "!vitest-setup.ts"],
   format: ["cjs", "esm"], // Soporte para CommonJS y ESModules
   dts: true, // Genera archivos .d.ts
   sourcemap: true, // Mapea errores al código original
