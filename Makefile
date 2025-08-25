@@ -30,6 +30,10 @@ install-core: ## Install dependencies for core package only
 	@echo "Installing core dependencies..."
 	npm install --workspace=packages/core
 
+install-react: ## Install dependencies for react package only
+	@echo "Installing react dependencies..."
+	npm install --workspace=packages/react
+
 install-demo: ## Install dependencies for demo app only
 	@echo "Installing demo app dependencies..."
 	npm install --workspace=apps/domain-architecture
@@ -52,6 +56,10 @@ build-types: ## Build types package only
 build-core: ## Build core package only
 	@echo "Building core..."
 	npm run build --workspace=packages/core
+
+build-react: ## Build react package only
+	@echo "Building react..."
+	npm run build --workspace=packages/react
 
 build-demo: ## Build demo app only
 	@echo "Building demo app..."
@@ -78,6 +86,10 @@ dev-core: ## Start development mode for core (watch mode)
 	@echo "Starting core in watch mode..."
 	npm run watch-build --workspace=packages/core
 
+dev-react: ## Start development mode for react (watch mode)
+	@echo "Starting react in watch mode..."
+	npm run watch-build --workspace=packages/react
+
 dev-demo: ## Start development mode for demo app
 	@echo "Starting demo app..."
 	npm run dev --workspace=apps/domain-architecture
@@ -101,6 +113,10 @@ test-core: ## Run tests for core package only
 	@echo "Running core tests..."
 	npm run test --workspace=packages/core --if-present
 
+test-react: ## Run tests for react package only
+	@echo "Running react tests..."
+	npm run test --workspace=packages/react --if-present
+
 test-demo: ## Run tests for demo app
 	@echo "Running demo app tests..."
 	npm run test --workspace=apps/domain-architecture --if-present
@@ -123,6 +139,10 @@ lint-types: ## Run linting for types package only
 lint-core: ## Run linting for core package only
 	@echo "Running core linting..."
 	npm run lint --workspace=packages/core --if-present
+
+lint-react: ## Run linting for react package only
+	@echo "Running react linting..."
+	npm run lint --workspace=packages/react --if-present
 
 format: ## Format code for all packages
 	@echo "Formatting code..."
@@ -150,6 +170,10 @@ typecheck-core: ## Run TypeScript type checking for core only
 	@echo "Running core type checking..."
 	cd packages/core && npx tsc --noEmit
 
+typecheck-react: ## Run TypeScript type checking for react only
+	@echo "Running react type checking..."
+	cd packages/react && npx tsc --noEmit
+
 # Cleanup commands
 clean: ## Clean all build artifacts and node_modules
 	@echo "Cleaning all packages..."
@@ -175,6 +199,10 @@ clean-types: ## Clean types build artifacts
 clean-core: ## Clean core build artifacts
 	@echo "Cleaning core..."
 	rm -rf packages/core/dist
+
+clean-react: ## Clean react build artifacts
+	@echo "Cleaning react..."
+	rm -rf packages/react/dist
 
 clean-demo: ## Clean demo app build artifacts
 	@echo "Cleaning demo app..."
@@ -217,6 +245,13 @@ version-core: ## Update core version (use VERSION=x.x.x)
 	fi
 	cd packages/core && npm version $(VERSION)
 
+version-react: ## Update react version (use VERSION=x.x.x)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Usage: make version-react VERSION=x.x.x"; \
+		exit 1; \
+	fi
+	cd packages/react && npm version $(VERSION)
+
 publish-sdk: ## Publish SDK to registry
 	@echo "Publishing SDK..."
 	cd packages/sdk && npm publish
@@ -228,6 +263,10 @@ publish-types: ## Publish types to registry
 publish-core: ## Publish core to registry
 	@echo "Publishing core..."
 	cd packages/core && npm publish
+
+publish-react: ## Publish react to registry
+	@echo "Publishing react..."
+	cd packages/react && npm publish
 
 
 
