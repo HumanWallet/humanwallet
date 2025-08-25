@@ -1,0 +1,32 @@
+{
+  "title": "HumanWallet Demo",
+  "welcome": "Welcome to a DEMO using HumanWallet on a DEX",
+  "howToUse": "How do you want to use HumanWallet?",
+  "tabs": {
+    "steps": "Using only biometrics",
+    "bundle": "Improving the processes of the dApp"
+  },
+  "steps": {
+    "mint": {
+      "header": "Mint 100 FETH to be able to deposit them in Staking",
+      "button": "MINT"
+    },
+    "approve": {
+      "header": "Authorize token allowance",
+      "button": "AUTHORIZE TOKEN"
+    },
+    "stake": {
+      "header": "Deposit tokens",
+      "button": "DEPOSIT"
+    },
+    "bundle": {
+      "header": "Deposit the token and... that's it! With HumanWallet, you can chain multiple actions to drastically enhance the user experience.",
+      "button": "MINT AND DEPOSIT"
+    }
+  },
+  "success": {
+    "message": "Transaction completed successfully",
+    "viewExplorer": "View in Explorer",
+    "startOver": "Start over"
+  }
+}

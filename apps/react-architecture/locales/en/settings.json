@@ -1,0 +1,12 @@
+{
+  "title": "Settings",
+  "languages": {
+    "en": "English",
+    "es": "Spanish"
+  },
+  "mode": {
+    "title": "Mode",
+    "light": "Light",
+    "dark": "Dark"
+  }
+}
