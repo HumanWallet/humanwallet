@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ClientRepository } from "sdk"
+import { ClientRepository } from "@humanwallet/sdk"
 import { type Address } from "viem"
 import type { Config } from "../../_config"
 import type {

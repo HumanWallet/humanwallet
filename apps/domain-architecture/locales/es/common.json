@@ -55,7 +55,7 @@
     "title": "Transacciones",
     "errorMessage": "No se ha podido completar la transacción. Revisa la dirección o el saldo de tokens disponibles.",
     "seeTransaction": "Ver transacción",
-    "types": {
+    "@humanwallet/types": {
       "MINT": "Mintear",
       "APPROVE": "Aprobar",
       "STAKE": "Stake",

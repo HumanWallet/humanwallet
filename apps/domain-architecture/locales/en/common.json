@@ -56,7 +56,7 @@
     "title": "Transactions",
     "errorMessage": "The transaction could not be completed. Check the address or the balance of available tokens.",
     "seeTransaction": "See transaction",
-    "types": {
+    "@humanwallet/types": {
       "MINT": "Mint",
       "APPROVE": "Approve",
       "STAKE": "Stake",
