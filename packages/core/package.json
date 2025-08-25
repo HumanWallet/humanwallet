@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "@humanwallet/core",
   "version": "0.0.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -17,7 +17,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "keywords": [
-    "sdk",
+    "@humanwallet/sdk",
     "typescript",
     "web3",
     "viem",
@@ -28,7 +28,7 @@
   ],
   "type": "module",
   "dependencies": {
-    "types": "file:../types"
+    "@humanwallet/types": "file:../types"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.8",

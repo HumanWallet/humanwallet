@@ -1,5 +1,5 @@
 {
-  "name": "types",
+  "name": "@humanwallet/types",
   "version": "0.0.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
-    "sdk",
+    "@humanwallet/sdk",
     "typescript",
     "web3",
     "viem",
