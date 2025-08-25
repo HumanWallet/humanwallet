@@ -1,4 +1,4 @@
-import type { Config } from "types"
+import type { Config } from "@humanwallet/types"
 import { writeContract } from "./writeContract"
 import { createConfig } from "./createConfig"
 import { sepolia } from "viem/chains"

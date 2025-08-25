@@ -1,5 +1,5 @@
 import { describe, it } from "vitest"
-import type { Config, WebAuthenticationKey } from "types"
+import type { Config, WebAuthenticationKey } from "@humanwallet/types"
 import { createAccountAndClient } from "./createAccountAndClient"
 import { sepolia } from "viem/chains"
 import { createPublicClient, http } from "viem"

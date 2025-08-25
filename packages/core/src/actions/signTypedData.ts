@@ -1,4 +1,4 @@
-import type { Config, Signature, SignTypedDataParameters } from "types"
+import type { Config, Signature, SignTypedDataParameters } from "@humanwallet/types"
 import { parseSignature } from "viem"
 
 export const signTypedData = async (config: Config, args: SignTypedDataParameters): Promise<Signature> => {

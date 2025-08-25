@@ -1,5 +1,5 @@
 import { toWebAuthnKey } from "@zerodev/webauthn-key"
-import type { Config, WebAuthenticationKey, WebAuthenticationModeKey } from "types"
+import type { Config, WebAuthenticationKey, WebAuthenticationModeKey } from "@humanwallet/types"
 
 export function generateWebAuthenticationKey(
   username: string,

@@ -1,4 +1,4 @@
-import type { Config, KernelClient, SessionKeyAccount } from "types"
+import type { Config, KernelClient, SessionKeyAccount } from "@humanwallet/types"
 import { createAccountAndClient } from "../lib/createAccountAndClient"
 import { getWebAuthenticationKey } from "../lib/getWebAuthenticationKey"
 import { setWebAuthenticationKey } from "../lib/setWebAuthenticationKey"

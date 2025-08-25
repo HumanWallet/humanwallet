@@ -1,5 +1,5 @@
-import type { Config, KernelClient, SessionKeyAccount } from "types"
-import { WEB_AUTHENTICATION_MODE_KEY } from "types"
+import type { Config, KernelClient, SessionKeyAccount } from "@humanwallet/types"
+import { WEB_AUTHENTICATION_MODE_KEY } from "@humanwallet/types"
 import { createAccountAndClient } from "../lib/createAccountAndClient"
 import { generateWebAuthenticationKey } from "../lib/generateWebAuthenticationKey"
 import { setWebAuthenticationKey } from "../lib/setWebAuthenticationKey"

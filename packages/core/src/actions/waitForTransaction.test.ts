@@ -2,7 +2,7 @@ import { describe, it } from "vitest"
 import { waitForTransaction } from "./waitForTransaction"
 import { createConfig } from "./createConfig"
 import { sepolia } from "viem/chains"
-import type { Config } from "types"
+import type { Config } from "@humanwallet/types"
 
 const config: Config = createConfig({
   passkeyUrl: "http://localhost:8545",

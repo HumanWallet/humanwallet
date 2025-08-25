@@ -1,5 +1,5 @@
 import { describe, it } from "vitest"
-import type { WebAuthenticationKey } from "types"
+import type { WebAuthenticationKey } from "@humanwallet/types"
 import { setWebAuthenticationKey } from "./setWebAuthenticationKey"
 import { getWebAuthenticationKey } from "./getWebAuthenticationKey"
 

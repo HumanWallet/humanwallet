@@ -1,7 +1,7 @@
 import { describe, it } from "vitest"
 import { createConfig } from "./createConfig"
 import { sepolia } from "viem/chains"
-import type { Config } from "types"
+import type { Config } from "@humanwallet/types"
 import { waitForUserOperation } from "./waitForUserOperation"
 import { register } from "./register"
 

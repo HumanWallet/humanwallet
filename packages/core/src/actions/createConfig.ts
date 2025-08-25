@@ -1,4 +1,4 @@
-import type { Chain, Config } from "types"
+import type { Chain, Config } from "@humanwallet/types"
 import { createPublicClient, http } from "viem"
 
 type CreateConfigParams = {

@@ -2,7 +2,7 @@ import { sepolia } from "viem/chains"
 import { createConfig } from "./createConfig"
 import { signTypedData } from "./signTypedData"
 import { register } from "./register"
-import type { Config } from "types"
+import type { Config } from "@humanwallet/types"
 import { serializeSignature } from "viem"
 
 const config: Config = createConfig({

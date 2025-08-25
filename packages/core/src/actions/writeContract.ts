@@ -1,4 +1,4 @@
-import type { Config, WriteContractParameters } from "types"
+import type { Config, WriteContractParameters } from "@humanwallet/types"
 import { encodeFunctionData } from "viem"
 
 export const writeContract = async (config: Config, args: WriteContractParameters) => {

@@ -11,7 +11,7 @@ import {
   waitForUserOperation as waitForUserOperationAction,
   signTypedData as signTypedDataAction,
   hasAccount as hasAccountAction,
-} from "core"
+} from "@humanwallet/core"
 import type {
   Config,
   UserOperationHash,
@@ -21,7 +21,7 @@ import type {
   ReadContractParameters,
   SignTypedDataParameters,
   WriteContractParameters,
-} from "types"
+} from "@humanwallet/types"
 
 export class ClientRepository {
   private config: Config

@@ -3,7 +3,7 @@ import { generateWebAuthenticationKey } from "./generateWebAuthenticationKey"
 import { http } from "viem"
 import { sepolia } from "viem/chains"
 import { createPublicClient } from "viem"
-import { WEB_AUTHENTICATION_MODE_KEY } from "types"
+import { WEB_AUTHENTICATION_MODE_KEY } from "@humanwallet/types"
 
 describe("Given a generateWebAuthenticationKey function", () => {
   describe("When it is called", () => {

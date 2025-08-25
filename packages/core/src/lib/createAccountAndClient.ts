@@ -6,7 +6,7 @@ import {
   getUserOperationGasPrice,
 } from "@zerodev/sdk"
 import { getEntryPoint, KERNEL_V3_1 } from "@zerodev/sdk/constants"
-import type { Config, KernelClient, PublicClient, SessionKeyAccount, WebAuthenticationKey } from "types"
+import type { Config, KernelClient, PublicClient, SessionKeyAccount, WebAuthenticationKey } from "@humanwallet/types"
 
 const PASSKEY_VALIDATOR_ENTRY_POINT_VERSION = "0.7"
 
