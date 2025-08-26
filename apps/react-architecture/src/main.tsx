@@ -6,6 +6,8 @@ import "./i18n.config"
 import { Component as ErrorPage } from "./pages/Error"
 import { Component as LayoutPage } from "./pages/Layout"
 import { Component as RootPage } from "./pages/Root"
+import { WagmiProvider } from "wagmi"
+import { config } from "./wagmi/config"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,7 +26,9 @@ const router = createBrowserRouter(
 const App = () => {
   return (
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <WagmiProvider config={config}>
+        <RouterProvider router={router} />
+      </WagmiProvider>
     </React.StrictMode>
   )
 }
