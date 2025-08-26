@@ -11,9 +11,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@humanwallet/core": "file:../../packages/core",
-    "@humanwallet/react": "file:../../packages/react",
-    "@humanwallet/types": "file:../../packages/types",
     "@tutellus/tutellus-components": "^36",
     "@tutellus/tutellus-theme": "^4",
     "@wagmi/core": "^2.19.0",

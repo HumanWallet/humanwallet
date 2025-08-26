@@ -1,0 +1,11 @@
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-xs);
+  padding: 0 var(--size-m) var(--size-m);
+}
+
+.modalContent a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}

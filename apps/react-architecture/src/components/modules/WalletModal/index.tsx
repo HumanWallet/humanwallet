@@ -2,9 +2,9 @@ import cx from "classnames"
 import { useTranslation } from "react-i18next"
 import { Modal, AddressBox, Button } from "@tutellus/tutellus-components"
 import { Link } from "react-router"
-import { useAuth, useAccount } from "@humanwallet/react"
-import { useTransactions } from "../../../context"
+import { useEthereum, useTransactions } from "../../../context"
 import { Transaction } from "../../../domain/ethereum/Models/Transaction"
+import { WalletState } from "../../../domain/ethereum/Models/WalletState"
 import { getStatusIcon, getTypeIcon } from "./utils"
 import styles from "./index.module.css"
 import { sepolia } from "viem/chains"
@@ -15,18 +15,16 @@ interface WalletModalProps {
 
 export const WalletModal = ({ onClose }: WalletModalProps) => {
   const { t } = useTranslation("common")
-  const { disconnect } = useAuth()
-  const { address } = useAccount()
+  const { wallet, disconnectWallet } = useEthereum()
   const { transactions, cleanTransactions } = useTransactions()
 
-  // TODO: We need to determine wallet connector icon from the account type
-  const iconWallet = "https://humanwallet.io/favicon.ico" // Placeholder for now
+  const iconWallet = wallet.connector?.icon
   const hasTransactions = transactions.items.length > 0
 
   return (
     <Modal
       onClose={onClose}
-      title={t("myHumanWallet")} // Always HumanWallet now
+      title={wallet.type === WalletState.TYPES.ABSTRACTED ? t("myHumanWallet") : t("yourAccount")}
     >
       <div className={styles.container}>
         <div className={styles.tutBox}>
@@ -37,8 +35,8 @@ export const WalletModal = ({ onClose }: WalletModalProps) => {
             <div className={styles.chainInfo}>
               <p>{sepolia.name}</p>
             </div>
-            <AddressBox account={address || ""} url={false} />
-            <Link target="_blank" to={`https://sepolia.etherscan.io/address/${address}`}>
+            <AddressBox account={wallet.account || ""} url={false} />
+            <Link target="_blank" to={wallet.explorerUrl}>
               {t("viewInExplorer")}
             </Link>
           </div>
@@ -82,7 +80,7 @@ export const WalletModal = ({ onClose }: WalletModalProps) => {
           </Button>
           <Button
             onClick={() => {
-              disconnect()
+              disconnectWallet()
               onClose()
             }}
             isFull

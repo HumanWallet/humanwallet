@@ -1,7 +1,7 @@
 import cx from "classnames"
 import { useEffect, useState } from "react"
 import { Button, buttonTypes, buttonSizes, SettingsIcon, Spinner, buttonColors } from "@tutellus/tutellus-components"
-import { useAuth, useAccount } from "@humanwallet/react"
+import { useEthereum } from "../../../context"
 import type { Transaction } from "../../../domain/ethereum/Models/Transaction"
 import { truncateAddress } from "../../../js/string"
 import { HUMAN_WALLET_BRAND_LOGO_URL } from "../../../js/const/logos"
@@ -13,8 +13,7 @@ interface TopbarProps {
 }
 
 export const Topbar = ({ onShowWalletModal, pendingTransactions }: TopbarProps) => {
-  const { isConnected } = useAuth()
-  const { address } = useAccount()
+  const { wallet, isWalletConnected } = useEthereum()
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -28,8 +27,8 @@ export const Topbar = ({ onShowWalletModal, pendingTransactions }: TopbarProps) 
   }, [])
 
   const hasPendingTransactions = pendingTransactions.length > 0
-  const walletFormatted = address ? truncateAddress(address) : ""
-  const iconWallet = "https://humanwallet.io/favicon.ico" // HumanWallet icon
+  const walletFormatted = wallet.account ? truncateAddress(wallet.account) : ""
+  const iconWallet = wallet.connector?.icon
 
   return (
     <div className={cx(styles.topbar, { [styles.scrolled]: isScrolled })}>
@@ -39,7 +38,7 @@ export const Topbar = ({ onShowWalletModal, pendingTransactions }: TopbarProps) 
           <img className={styles.logoMobile} src={HUMAN_WALLET_BRAND_LOGO_URL} alt="logo" />
         </div>
         <div className={styles.rightContent}>
-          {isConnected && (
+          {isWalletConnected && (
             <Button
               onClick={onShowWalletModal}
               type={buttonTypes.OUTLINE}

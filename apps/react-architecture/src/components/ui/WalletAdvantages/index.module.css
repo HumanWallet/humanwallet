@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin-bottom: var(--size-m);
+  margin-top: var(--size-l);
+}
+
+.iconSmall svg {
+  height: var(--font-size-xl);
+}
+
+.textIcon {
+  display: flex;
+  align-items: center;
+  gap: var(--size-s);
+  margin-bottom: var(--size-s);
+}
+
+.textIcon strong {
+  font-weight: var(--font-weight-bold);
+}
+
+.textIcon p {
+  margin-bottom: 0;
+}
+
+.success {
+  color: var(--color-success);
+  display: flex;
+  gap: var(--size-xs);
+  align-items: center;
+  margin-bottom: var(--size-m);
+  margin-top: var(--size-l);
+}
+
+.fail {
+  color: var(--color-error);
+  display: flex;
+  gap: var(--size-xs);
+  align-items: center;
+  margin-bottom: var(--size-m);
+  margin-top: var(--size-l);
+}
+
+.fail svg {
+  transform: scaleY(-1);
+}

@@ -1,16 +1,17 @@
 import { Outlet, useNavigate } from "react-router"
-import { useAuth } from "@humanwallet/react"
+import { useEthereum } from "../../context"
 import { useEffect } from "react"
+import { WalletState } from "../../domain/ethereum/Models/WalletState"
 // import styles from "./index.module.css"
 
 export function Component() {
-  const { isConnected, isConnecting } = useAuth()
+  const { wallet } = useEthereum()
   const navidate = useNavigate()
 
   useEffect(() => {
-    if (!isConnected && !isConnecting) navidate("/connect")
-    if (isConnected) navidate("/demo")
-  }, [isConnected, isConnecting, navidate])
+    if (wallet.status === WalletState.STATUS.DISCONNECTED) navidate("/connect")
+    if (wallet.status === WalletState.STATUS.CONNECTED) navidate("/demo")
+  }, [wallet.status])
 
   return <Outlet />
 }

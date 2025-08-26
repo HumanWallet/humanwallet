@@ -1,0 +1,92 @@
+.connectAbstracted {
+  flex-direction: column;
+  align-items: start;
+}
+
+.connectHeader {
+  border-bottom: 1px solid var(--color-gray);
+  padding-bottom: var(--size-s);
+  width: 100%;
+}
+
+.return {
+  font-size: var(--font-size-m);
+  cursor: pointer;
+  display: flex;
+  gap: var(--size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.return:hover {
+  opacity: 0.8;
+}
+
+.return svg {
+  width: var(--font-size-m);
+}
+
+.buttonsFlex {
+  display: flex;
+  flex-direction: column;
+}
+
+.intro {
+  margin-bottom: var(--size-m);
+  display: flex;
+  align-items: center;
+  gap: var(--size-xs);
+}
+
+.input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: var(--border-width-m) solid var(--color-gray);
+  border-radius: var(--border-radius-m);
+  box-sizing: border-box;
+  color: var(--color-text-highlighted);
+  display: block;
+  font-family: var(--font-family-brand);
+  font-size: var(--font-size-m);
+  height: var(--size-2xl);
+  line-height: var(--line-height-medium);
+  padding: var(--size-s) var(--size-m);
+  width: 100%;
+  margin-bottom: var(--size-m);
+}
+
+.input:focus {
+  border: var(--border-width-m) solid var(--color-primary);
+  outline: none !important;
+}
+
+.checkboxContainer {
+  display: flex;
+  gap: var(--size-xs);
+  font-size: var(--font-size-xs);
+  align-items: flex-start;
+  margin-bottom: var(--size-m);
+  color: var(--color-text);
+}
+
+.labelTerms {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2xs);
+}
+
+.message {
+  max-height: 0;
+  color: var(--color-warning);
+  transition: all 0.24s ease-in-out;
+  opacity: 0;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+
+.show {
+  padding-bottom: var(--size-s);
+  opacity: 1;
+  max-height: var(--size-3xl);
+}

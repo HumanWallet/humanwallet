@@ -1,10 +1,11 @@
 import type { ReactNode } from "react"
-import { createContext, useState, useEffect, useContext, useCallback } from "react"
-import { useAuth } from "@humanwallet/react"
+import { createContext, useState, useEffect, useContext } from "react"
+import { WalletState } from "../domain/ethereum/Models/WalletState"
 import type { DomainEventDetail } from "../domain/_kernel/Events"
 import { DomainEvents } from "../domain/_kernel/Events"
 import { TransactionList } from "../domain/ethereum/Models/TransactionList"
 import type { TransactionType } from "../domain/ethereum/Models/Transaction"
+import { useEthereum } from "./EthereumContext"
 import { ErrorCodes } from "../domain/_kernel/ErrorCodes"
 
 interface TransactionsContextInterface {
@@ -28,7 +29,7 @@ interface TransactionProviderProps {
 }
 
 export const TransactionsContext = ({ children }: TransactionProviderProps) => {
-  const { isConnected } = useAuth()
+  const { wallet } = useEthereum()
   const [transactions, setTransactions] = useState<TransactionList>(initialState.transactions)
   const [submittedTransactionType, setSubmittedTransactionType] = useState<TransactionType | null>(null)
   const [isSignatureSubmitting, setIsSignatureSubmitting] = useState(false)
@@ -52,15 +53,15 @@ export const TransactionsContext = ({ children }: TransactionProviderProps) => {
     }
   }
 
-  const updateTransactions = useCallback(() => {
-    window.domain.GetTransactionsEthereumUseCase.execute()
-      .then(setTransactions)
-      .catch(() => setTransactions(TransactionList.empty()))
-  }, [])
-
   const handleSetTransaction = () => {
     updateTransactions()
     setSubmittedTransactionType(null)
+  }
+
+  const updateTransactions = () => {
+    window.domain.GetTransactionsEthereumUseCase.execute()
+      .then(setTransactions)
+      .catch(() => setTransactions(TransactionList.empty()))
   }
 
   const cleanTransactions = () => {
@@ -69,9 +70,9 @@ export const TransactionsContext = ({ children }: TransactionProviderProps) => {
 
   // Transactions initial load
   useEffect(() => {
-    if (!isConnected) return
+    if (wallet.status !== WalletState.STATUS.CONNECTED) return
     updateTransactions()
-  }, [isConnected, updateTransactions])
+  }, [wallet])
 
   // Wait pending transactions
   useEffect(() => {

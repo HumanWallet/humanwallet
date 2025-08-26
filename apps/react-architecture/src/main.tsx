@@ -1,11 +1,9 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from "react-router"
-import { HumanWalletProvider } from "@humanwallet/react"
 import "./index.css"
 import "./i18n.config"
-import { DomainContext, LayoutContext, TransactionsContext } from "./context"
-import { createHumanWalletConfig } from "./config/humanwallet"
+import { DomainContext, EthereumContext, LayoutContext, TransactionsContext } from "./context"
 import { Component as ErrorPage } from "./pages/Error"
 import { Component as LayoutPage } from "./pages/Layout"
 import { Component as RootPage } from "./pages/Root"
@@ -25,18 +23,16 @@ const router = createBrowserRouter(
 )
 
 const App = () => {
-  const config = createHumanWalletConfig()
-
   return (
     <React.StrictMode>
       <DomainContext>
-        <HumanWalletProvider config={config}>
+        <EthereumContext>
           <LayoutContext>
             <TransactionsContext>
               <RouterProvider router={router} />
             </TransactionsContext>
           </LayoutContext>
-        </HumanWalletProvider>
+        </EthereumContext>
       </DomainContext>
     </React.StrictMode>
   )
