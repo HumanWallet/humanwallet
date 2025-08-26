@@ -2,7 +2,7 @@ import { createConnector } from "@wagmi/core"
 import type { CreateConnectorFn } from "@wagmi/core"
 import { toWebAuthnKey, toPasskeyValidator, PasskeyValidatorContractVersion } from "@zerodev/passkey-validator"
 import { getEntryPoint, KERNEL_V3_1 } from "@zerodev/sdk/constants"
-import type { TransactionRequest, EIP1193Parameters, WalletRpcSchema } from "viem"
+import type { TransactionRequest, EIP1193Parameters, WalletRpcSchema, Call } from "viem"
 import { UserRejectedRequestError, createPublicClient, http } from "viem"
 import {
   createKernelAccount,
@@ -193,6 +193,7 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
 
         return {
           request: async (args: EIP1193Parameters<WalletRpcSchema>) => {
+            console.log("request", args)
             const { method, params } = args
             switch (method) {
               case "eth_sendTransaction": {
@@ -221,6 +222,20 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
                 const receipt = await kernelClient.waitForUserOperationReceipt({ hash: userOpHash })
 
                 return receipt.receipt.transactionHash
+              }
+              case "wallet_sendCalls": {
+                if (!kernelClient || !kernelClient?.account)
+                  throw new Error("Kernel client not initialized. Connect first.")
+                const calls = args.params?.[0]?.calls as Call[]
+                if (!calls) throw new Error("wallet_sendCalls missing calls parameter")
+
+                const callData = await kernelClient.account.encodeCalls(calls)
+                const userOpHash = await kernelClient.sendUserOperation({ callData })
+                const receipt = await kernelClient.waitForUserOperationReceipt({ hash: userOpHash })
+                return receipt.receipt.transactionHash
+              }
+              default: {
+                throw new Error(`Method ${method} not supported`)
               }
             }
           },
