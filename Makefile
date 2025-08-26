@@ -30,6 +30,10 @@ install-core: ## Install dependencies for core package only
 	@echo "Installing core dependencies..."
 	npm install --workspace=packages/core
 
+install-connector: ## Install dependencies for connector package only
+	@echo "Installing connector dependencies..."
+	npm install --workspace=packages/connector
+
 install-demo: ## Install dependencies for demo app only
 	@echo "Installing demo app dependencies..."
 	npm install --workspace=apps/domain-architecture
@@ -56,6 +60,10 @@ build-types: ## Build types package only
 build-core: ## Build core package only
 	@echo "Building core..."
 	npm run build --workspace=packages/core
+
+build-connector: ## Build connector package only
+	@echo "Building connector..."
+	npm run build --workspace=packages/connector
 
 build-demo: ## Build demo app only
 	@echo "Building demo app..."
@@ -86,6 +94,10 @@ dev-core: ## Start development mode for core (watch mode)
 	@echo "Starting core in watch mode..."
 	npm run watch-build --workspace=packages/core
 
+dev-connector: ## Start development mode for connector (watch mode)
+	@echo "Starting connector in watch mode..."
+	npm run watch-build --workspace=packages/connector
+
 dev-demo: ## Start development mode for demo app
 	@echo "Starting demo app..."
 	npm run dev --workspace=apps/domain-architecture
@@ -112,6 +124,10 @@ test-types: ## Run tests for types package only
 test-core: ## Run tests for core package only
 	@echo "Running core tests..."
 	npm run test --workspace=packages/core --if-present
+
+test-connector: ## Run tests for connector package only
+	@echo "Running connector tests..."
+	npm run test --workspace=packages/connector --if-present
 
 test-demo: ## Run tests for demo app
 	@echo "Running demo app tests..."
@@ -140,6 +156,10 @@ lint-core: ## Run linting for core package only
 	@echo "Running core linting..."
 	npm run lint --workspace=packages/core --if-present
 
+lint-connector: ## Run linting for connector package only
+	@echo "Running connector linting..."
+	npm run lint --workspace=packages/connector --if-present
+
 format: ## Format code for all packages
 	@echo "Formatting code..."
 	npx prettier --write "packages/**/*.{ts,tsx,js,jsx,json,md}"
@@ -166,6 +186,10 @@ typecheck-core: ## Run TypeScript type checking for core only
 	@echo "Running core type checking..."
 	cd packages/core && npx tsc --noEmit
 
+typecheck-connector: ## Run TypeScript type checking for connector only
+	@echo "Running connector type checking..."
+	cd packages/connector && npx tsc --noEmit
+
 # Cleanup commands
 clean: ## Clean all build artifacts and node_modules
 	@echo "Cleaning all packages..."
@@ -191,6 +215,10 @@ clean-types: ## Clean types build artifacts
 clean-core: ## Clean core build artifacts
 	@echo "Cleaning core..."
 	rm -rf packages/core/dist
+
+clean-connector: ## Clean connector build artifacts
+	@echo "Cleaning connector..."
+	rm -rf packages/connector/dist
 
 clean-demo: ## Clean demo app build artifacts
 	@echo "Cleaning demo app..."
@@ -237,6 +265,13 @@ version-core: ## Update core version (use VERSION=x.x.x)
 	fi
 	cd packages/core && npm version $(VERSION)
 
+version-connector: ## Update connector version (use VERSION=x.x.x)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Usage: make version-connector VERSION=x.x.x"; \
+		exit 1; \
+	fi
+	cd packages/connector && npm version $(VERSION)
+
 publish-sdk: ## Publish SDK to registry
 	@echo "Publishing SDK..."
 	cd packages/sdk && npm publish
@@ -248,6 +283,10 @@ publish-types: ## Publish types to registry
 publish-core: ## Publish core to registry
 	@echo "Publishing core..."
 	cd packages/core && npm publish
+
+publish-connector: ## Publish connector to registry
+	@echo "Publishing connector..."
+	cd packages/connector && npm publish
 
 # Utility commands
 workspace-info: ## Show workspace information
