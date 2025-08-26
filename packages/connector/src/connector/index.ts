@@ -193,7 +193,6 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
 
         return {
           request: async (args: EIP1193Parameters<WalletRpcSchema>) => {
-            console.log("request", args)
             const { method, params } = args
             switch (method) {
               case "eth_sendTransaction": {
