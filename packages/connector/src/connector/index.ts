@@ -20,7 +20,7 @@ export interface HumanWalletOptions {
   passkeyName?: string
 }
 
-export function HumanWalletConnector(options: HumanWalletOptions): CreateConnectorFn {
+export function humanWalletConnector(options: HumanWalletOptions): CreateConnectorFn {
   const { projectId, appName = "HumanWallet", passkeyName } = options
 
   const displayName = passkeyName || `${appName} - Passkey`
@@ -37,7 +37,7 @@ export function HumanWalletConnector(options: HumanWalletOptions): CreateConnect
       const chain = config.chains.find((c) => c.id === chainId) || config.chains[0]
       const bundlerTransport = http(`https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}`)
       const paymasterUrl = `https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}/paymaster`
-
+      c
       const paymasterClient = createZeroDevPaymasterClient({
         chain,
         transport: http(paymasterUrl),
@@ -136,6 +136,7 @@ export function HumanWalletConnector(options: HumanWalletOptions): CreateConnect
       },
 
       async connect({ chainId } = {}) {
+        console.log("connect", chainId)
         if (kernelClient && kernelAccount) {
           const chain = config.chains.find((c) => c.id === chainId) || config.chains[0]
           return {
