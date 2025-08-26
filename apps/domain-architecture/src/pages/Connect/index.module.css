@@ -329,30 +329,7 @@
   animation: fadeIn 0.5s ease-out;
 }
 
-div.selectLang {
-  position: fixed;
-  top: var(--size-m);
-  right: var(--size-m);
-  z-index: 20;
-  display: flex;
-  flex-direction: row;
-  gap: var(--size-s);
-  align-items: center;
-  background-color: var(--color-background);
-  padding: var(--size-xs);
-  border: var(--border-width-s) solid var(--color-surface-3);
-  border-radius: var(--border-radius-m);
-}
-
-.labelLang {
-  width: var(--size-l);
-  height: var(--size-l);
-  margin-left: var(--size-xs);
-}
-
-.contentSelect {
-  flex: 1 1 0%;
-}
+/* Language selector styles moved to LanguageSelector component */
 
 .connectBrowser,
 .connectAbstracted,
@@ -361,17 +338,7 @@ div.selectLang {
   align-items: start;
 }
 
-.modalContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-xs);
-  padding: 0 var(--size-m) var(--size-m);
-}
-
-.modalContent a {
-  color: var(--color-primary);
-  text-decoration: underline;
-}
+/* Modal styles moved to LearnMoreModal component */
 
 .checkboxContainer {
   display: flex;
