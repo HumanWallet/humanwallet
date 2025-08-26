@@ -37,7 +37,7 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
       const chain = config.chains.find((c) => c.id === chainId) || config.chains[0]
       const bundlerTransport = http(`https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}`)
       const paymasterUrl = `https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}/paymaster`
-      c
+
       const paymasterClient = createZeroDevPaymasterClient({
         chain,
         transport: http(paymasterUrl),
