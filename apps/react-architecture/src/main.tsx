@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client"
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from "react-router"
 import "./index.css"
 import "./i18n.config"
-import { DomainContext, EthereumContext, LayoutContext, TransactionsContext } from "./context"
 import { Component as ErrorPage } from "./pages/Error"
 import { Component as LayoutPage } from "./pages/Layout"
 import { Component as RootPage } from "./pages/Root"
@@ -25,15 +24,7 @@ const router = createBrowserRouter(
 const App = () => {
   return (
     <React.StrictMode>
-      <DomainContext>
-        <EthereumContext>
-          <LayoutContext>
-            <TransactionsContext>
-              <RouterProvider router={router} />
-            </TransactionsContext>
-          </LayoutContext>
-        </EthereumContext>
-      </DomainContext>
+      <RouterProvider router={router} />
     </React.StrictMode>
   )
 }
