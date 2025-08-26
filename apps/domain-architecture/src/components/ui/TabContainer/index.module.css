@@ -1,0 +1,11 @@
+.container {
+  width: 100%;
+}
+
+.tabs {
+  margin-bottom: var(--size-l);
+}
+
+.content {
+  width: 100%;
+}

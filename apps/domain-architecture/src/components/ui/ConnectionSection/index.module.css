@@ -1,0 +1,131 @@
+.connectInitial,
+.connectBrowser,
+.connectAbstracted {
+  flex-direction: column;
+  align-items: start;
+}
+
+.connectInitialRight {
+  font-size: var(--font-size-m);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-m);
+}
+
+.logo {
+  margin-bottom: var(--size-2xl);
+  height: var(--size-3xl);
+}
+
+.hwLogo {
+  max-width: 220px;
+}
+
+.checkIcon {
+  width: var(--font-size-xl);
+  margin-right: var(--size-xs);
+}
+
+.rewards {
+  display: flex;
+  align-items: start;
+  margin-bottom: var(--size-m);
+}
+
+.rewards p {
+  margin-bottom: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-l);
+}
+
+.rewards span > span {
+  color: var(--color-primary);
+}
+
+.buttonsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-s);
+  width: 100%;
+  align-items: center;
+}
+
+.createUser {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2xs);
+  border: 1px solid var(--color-gray);
+  padding: var(--size-m) var(--size-l) var(--size-m) var(--size-5xl);
+  border-radius: var(--border-radius-m);
+  position: relative;
+  text-align: right;
+}
+
+.introHW {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.intro {
+  margin-bottom: var(--size-m);
+  display: flex;
+  align-items: center;
+  gap: var(--size-xs);
+}
+
+.intro.noMb {
+  margin-bottom: 0;
+}
+
+.seeMore {
+  margin: var(--size-m) 0 var(--size-m) var(--size-xl);
+}
+
+.iconMobile {
+  width: 105px;
+  height: auto;
+  position: absolute;
+  bottom: -14px;
+  left: -6px;
+}
+
+@media (min-width: 650px) and (max-width: 960px) {
+  .iconMobile {
+    width: 84px;
+    left: 12px;
+    bottom: -4px;
+  }
+}
+
+@media (max-width: 960px) {
+  .logo {
+    margin-bottom: var(--size-m);
+    height: var(--size-2xl);
+  }
+  .rewards p {
+    font-size: var(--font-size-m);
+  }
+  .rewards {
+    margin-bottom: var(--size-s);
+  }
+  .buttonsGrid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .createUser {
+    padding: var(--size-m);
+    text-align: center;
+  }
+  .iconMobile {
+    width: 124px;
+    height: auto;
+    position: absolute;
+    bottom: -11px;
+    left: -26px;
+    display: none;
+  }
+}
