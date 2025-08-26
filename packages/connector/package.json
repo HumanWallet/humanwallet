@@ -27,7 +27,13 @@
     "human wallet"
   ],
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "@wagmi/core": "^2.20.1",
+    "@zerodev/passkey-validator": "^5.5.5",
+    "@zerodev/sdk": "^5.4.41",
+    "idb-keyval": "^6.2.2",
+    "viem": "^2.35.1"
+  },
   "devDependencies": {
     "@humanwallet/types": "file:../types"
   }
