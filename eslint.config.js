@@ -17,6 +17,8 @@ export default tseslint.config([
     ignores: [
       "eslint.config.js",
       "**/tsup.config.ts",
+      "**/vitest-setup.ts",
+      "**/vitest.config.ts",
       "node_modules",
       "dist",
       "build",
