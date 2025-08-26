@@ -23,7 +23,13 @@ export const StakingSteps = () => {
   const { address } = useAccount()
   const [successTx, setSuccessTx] = useState<string | null>(null)
 
-  // Read contract hooks for balance and allowance
+  // Read contract hooks for decimals, balance and allowance
+  const { data: decimalsData } = useReadContract({
+    address: CONTRACT_ADDRESSES.TOKEN,
+    abi: TOKEN_ABI,
+    functionName: "decimals",
+  })
+
   const { data: balanceData, refetch: refetchBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.TOKEN,
     abi: TOKEN_ABI,
@@ -68,9 +74,12 @@ export const StakingSteps = () => {
     hash: stakeTxHash,
   })
 
+  // Get decimals or default to 18 if not loaded yet
+  const decimals = decimalsData ? Number(decimalsData) : 18
+
   // Convert bigint balances to numbers
-  const balance = balanceData ? Number(formatUnits(balanceData as bigint, 18)) : 0
-  const allowance = allowanceData ? Number(formatUnits(allowanceData as bigint, 18)) : 0
+  const balance = balanceData ? Number(formatUnits(balanceData as bigint, decimals)) : 0
+  const allowance = allowanceData ? Number(formatUnits(allowanceData as bigint, decimals)) : 0
 
   // Handle successful transactions
   useEffect(() => {
@@ -102,26 +111,35 @@ export const StakingSteps = () => {
         address: CONTRACT_ADDRESSES.TOKEN,
         abi: TOKEN_ABI,
         functionName: "mint",
-        args: [address, parseUnits(MINT_AMOUNT.toString(), 18)],
+        args: [address, parseUnits(MINT_AMOUNT.toString(), decimals)],
       })
     }
   }
 
   const handleApprove = () => {
-    approveToken({
-      address: CONTRACT_ADDRESSES.TOKEN,
-      abi: TOKEN_ABI,
-      functionName: "approve",
-      args: [CONTRACT_ADDRESSES.STAKING, parseUnits(MINT_AMOUNT.toString(), 18)],
-    })
+    console.log("handleApprove")
+    approveToken(
+      {
+        address: CONTRACT_ADDRESSES.TOKEN,
+        abi: TOKEN_ABI,
+        functionName: "approve",
+        args: [CONTRACT_ADDRESSES.STAKING, parseUnits(MINT_AMOUNT.toString(), decimals)],
+      },
+      {
+        onError: (error) => {
+          console.error("Error approving token", error)
+        },
+      },
+    )
   }
 
   const handleStake = () => {
+    console.log("handleStake")
     stakeToken({
       address: CONTRACT_ADDRESSES.STAKING,
       abi: STAKING_ABI,
       functionName: "deposit",
-      args: [parseUnits(MINT_AMOUNT.toString(), 18)],
+      args: [parseUnits(MINT_AMOUNT.toString(), decimals)],
     })
   }
 

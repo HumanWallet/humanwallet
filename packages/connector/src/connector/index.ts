@@ -36,7 +36,7 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
     async function createKernelAccountAndClient(webAuthnKey: Awaited<WebAuthenticationKey>, chainId?: number) {
       const chain = config.chains.find((c) => c.id === chainId) || config.chains[0]
       const bundlerTransport = http(`https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}`)
-      const paymasterUrl = `https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}/paymaster`
+      const paymasterUrl = `https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}`
 
       const paymasterClient = createZeroDevPaymasterClient({
         chain,
@@ -136,7 +136,6 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
       },
 
       async connect({ chainId } = {}) {
-        console.log("connect", chainId)
         if (kernelClient && kernelAccount) {
           const chain = config.chains.find((c) => c.id === chainId) || config.chains[0]
           return {
@@ -199,7 +198,7 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
               case "eth_sendTransaction": {
                 if (!kernelClient?.account || !kernelAccount)
                   throw new Error("Kernel client not initialized. Connect first.")
-                console.log("eth_sendTransaction", params)
+
                 if (!params || !Array.isArray(params)) {
                   throw new Error("eth_sendTransaction missing transaction parameter")
                 }
