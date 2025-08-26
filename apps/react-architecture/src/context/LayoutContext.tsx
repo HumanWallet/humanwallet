@@ -43,6 +43,7 @@ export const LayoutContext = ({ children }: LayoutProviderProps) => {
 
   // Apply theme to root element
   useEffect(() => {
+    console.log("themeMode", themeMode)
     const rootElement = document.getElementById("root")
     if (rootElement) {
       rootElement.classList.remove(ThemeMode.LIGHT, ThemeMode.DARK)

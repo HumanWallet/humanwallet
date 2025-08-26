@@ -20,15 +20,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <header className={styles.layoutHeader}>
           <Topbar onShowWalletModal={() => setShowWalletModal(true)} />
         </header>
-
         <main className={styles.layoutMain}>{children}</main>
-
         <footer className={styles.layoutFooter}>
           <Footer />
         </footer>
-
         {showSettings && <SettingsModal onClose={() => setShowSettings(!showSettings)} />}
-
         {showWalletModal && <WalletModal onClose={() => setShowWalletModal(false)} />}
       </div>
     </>
