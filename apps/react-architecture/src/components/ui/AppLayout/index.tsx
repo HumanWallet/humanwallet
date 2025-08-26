@@ -18,7 +18,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     <>
       <div className={styles.layoutContainer}>
         <header className={styles.layoutHeader}>
-          <Topbar pendingTransactions={[]} onShowWalletModal={() => setShowWalletModal(true)} />
+          <Topbar onShowWalletModal={() => setShowWalletModal(true)} />
         </header>
 
         <main className={styles.layoutMain}>{children}</main>

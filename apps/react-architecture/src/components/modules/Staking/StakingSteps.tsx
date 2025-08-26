@@ -1,9 +1,8 @@
 import { useTranslation } from "react-i18next"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { GiftIcon, UnlockedIcon, AddFilledIcon, Button, Card } from "@tutellus/tutellus-components"
 import { formatUnits, parseUnits } from "viem"
-import { sepolia } from "viem/chains"
-import { useAccount, useReadContract, useWriteContract, useWaitForTransaction } from "@humanwallet/react"
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
 import { Stepper, type StepItem } from "../Stepper"
 import { StakingSuccess } from "./StakingSuccess"
 import { MINT_AMOUNT } from "./config"
@@ -40,113 +39,96 @@ export const StakingSteps = () => {
   })
 
   // Write contract hooks for transactions
-  const {
-    write: mintToken,
-    isLoading: isPendingMint,
-    data: mintTxHash,
-    reset: resetMint,
-  } = useWriteContract({
-    address: CONTRACT_ADDRESSES.TOKEN,
-    abi: TOKEN_ABI,
-    functionName: "mint",
-    args: address ? [address, parseUnits(MINT_AMOUNT.toString(), 18)] : undefined,
-    chain: sepolia,
-    account: (address as `0x${string}`) || null,
-  })
+  const { writeContract: mintToken, isPending: isPendingMint, data: mintTxHash, reset: resetMint } = useWriteContract()
 
   const {
-    write: approveToken,
-    isLoading: isPendingApprove,
+    writeContract: approveToken,
+    isPending: isPendingApprove,
     data: approveTxHash,
     reset: resetApprove,
-  } = useWriteContract({
-    address: CONTRACT_ADDRESSES.TOKEN,
-    abi: TOKEN_ABI,
-    functionName: "approve",
-    args: [CONTRACT_ADDRESSES.STAKING, parseUnits(MINT_AMOUNT.toString(), 18)],
-    chain: sepolia,
-    account: (address as `0x${string}`) || null,
-  })
+  } = useWriteContract()
 
   const {
-    write: stakeToken,
-    isLoading: isPendingStake,
+    writeContract: stakeToken,
+    isPending: isPendingStake,
     data: stakeTxHash,
     reset: resetStake,
-  } = useWriteContract({
-    address: CONTRACT_ADDRESSES.STAKING,
-    abi: STAKING_ABI,
-    functionName: "deposit",
-    args: [parseUnits(MINT_AMOUNT.toString(), 18)],
-    chain: sepolia,
-    account: (address as `0x${string}`) || null,
+  } = useWriteContract()
+
+  // Wait for transaction receipts
+  const { data: mintReceipt } = useWaitForTransactionReceipt({
+    hash: mintTxHash,
   })
 
-  // Wait for transaction hooks
-  const { waitForTransaction: waitForMint } = useWaitForTransaction()
-  const { waitForTransaction: waitForApprove } = useWaitForTransaction()
-  const { waitForTransaction: waitForStake } = useWaitForTransaction()
+  const { data: approveReceipt } = useWaitForTransactionReceipt({
+    hash: approveTxHash,
+  })
+
+  const { data: stakeReceipt } = useWaitForTransactionReceipt({
+    hash: stakeTxHash,
+  })
 
   // Convert bigint balances to numbers
   const balance = balanceData ? Number(formatUnits(balanceData as bigint, 18)) : 0
   const allowance = allowanceData ? Number(formatUnits(allowanceData as bigint, 18)) : 0
 
   // Handle successful transactions
-  const handleMintSuccess = useCallback(async () => {
-    if (mintTxHash) {
-      try {
-        await waitForMint(mintTxHash as `0x${string}`)
-        await refetchBalance()
-        resetMint()
-      } catch (error) {
-        console.error("Mint transaction failed:", error)
-      }
-    }
-  }, [mintTxHash, waitForMint, refetchBalance, resetMint])
-
-  const handleApproveSuccess = useCallback(async () => {
-    if (approveTxHash) {
-      try {
-        await waitForApprove(approveTxHash as `0x${string}`)
-        await refetchAllowance()
-        resetApprove()
-      } catch (error) {
-        console.error("Approve transaction failed:", error)
-      }
-    }
-  }, [approveTxHash, waitForApprove, refetchAllowance, resetApprove])
-
-  const handleStakeSuccess = useCallback(async () => {
-    if (stakeTxHash) {
-      try {
-        await waitForStake(stakeTxHash as `0x${string}`)
-        setSuccessTx(stakeTxHash)
-        await refetchBalance()
-        await refetchAllowance()
-        resetStake()
-      } catch (error) {
-        console.error("Stake transaction failed:", error)
-      }
-    }
-  }, [stakeTxHash, waitForStake, refetchBalance, refetchAllowance, resetStake])
-
-  // Effect to handle transaction confirmations
   useEffect(() => {
-    if (mintTxHash) handleMintSuccess()
-  }, [mintTxHash, handleMintSuccess])
+    if (mintReceipt) {
+      refetchBalance()
+      resetMint()
+    }
+  }, [mintReceipt, refetchBalance, resetMint])
 
   useEffect(() => {
-    if (approveTxHash) handleApproveSuccess()
-  }, [approveTxHash, handleApproveSuccess])
+    if (approveReceipt) {
+      refetchAllowance()
+      resetApprove()
+    }
+  }, [approveReceipt, refetchAllowance, resetApprove])
 
   useEffect(() => {
-    if (stakeTxHash) handleStakeSuccess()
-  }, [stakeTxHash, handleStakeSuccess])
+    if (stakeReceipt) {
+      setSuccessTx(stakeTxHash!)
+      refetchBalance()
+      refetchAllowance()
+      resetStake()
+    }
+  }, [stakeReceipt, stakeTxHash, refetchBalance, refetchAllowance, resetStake])
+
+  const handleMint = () => {
+    if (address) {
+      mintToken({
+        address: CONTRACT_ADDRESSES.TOKEN,
+        abi: TOKEN_ABI,
+        functionName: "mint",
+        args: [address, parseUnits(MINT_AMOUNT.toString(), 18)],
+      })
+    }
+  }
+
+  const handleApprove = () => {
+    approveToken({
+      address: CONTRACT_ADDRESSES.TOKEN,
+      abi: TOKEN_ABI,
+      functionName: "approve",
+      args: [CONTRACT_ADDRESSES.STAKING, parseUnits(MINT_AMOUNT.toString(), 18)],
+    })
+  }
+
+  const handleStake = () => {
+    stakeToken({
+      address: CONTRACT_ADDRESSES.STAKING,
+      abi: STAKING_ABI,
+      functionName: "deposit",
+      args: [parseUnits(MINT_AMOUNT.toString(), 18)],
+    })
+  }
 
   const mintSection = () => (
     <div className={styles.stepContent}>
       <TokenAmount amount={MINT_AMOUNT} />
-      <Button onClick={mintToken} isLoading={isPendingMint} isFull color="accent">
+      <Button onClick={handleMint} isLoading={isPendingMint} isFull color="accent">
         {t("steps.mint.button")}
       </Button>
     </div>
@@ -155,7 +137,7 @@ export const StakingSteps = () => {
   const approveSection = () => (
     <div className={styles.stepContent}>
       <TokenAmount amount={MINT_AMOUNT} />
-      <Button onClick={approveToken} isLoading={isPendingApprove} isFull color="accent">
+      <Button onClick={handleApprove} isLoading={isPendingApprove} isFull color="accent">
         {t("steps.approve.button")}
       </Button>
     </div>
@@ -164,7 +146,7 @@ export const StakingSteps = () => {
   const stakeSection = () => (
     <div className={styles.stepContent}>
       <TokenAmount amount={MINT_AMOUNT} />
-      <Button onClick={stakeToken} isLoading={isPendingStake} isFull color="accent">
+      <Button onClick={handleStake} isLoading={isPendingStake} isFull color="accent">
         {t("steps.stake.button")}
       </Button>
     </div>
