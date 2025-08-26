@@ -3,7 +3,7 @@ import { MoonIcon, SunIcon, Modal, Select } from "@tutellus/tutellus-components"
 import { ESFlagIcon, ENFlagIcon } from "../../Icons"
 import styles from "./index.module.css"
 import { LANGUAGES } from "../../../js/const"
-import { useLayout, ThemeMode } from "../../../context"
+import { ThemeMode, useLayout } from "../../../context/LayoutContext"
 
 const FLAG_ICONS = {
   [LANGUAGES.ES]: <ESFlagIcon />,

@@ -8,6 +8,8 @@ import { Component as LayoutPage } from "./pages/Layout"
 import { Component as RootPage } from "./pages/Root"
 import { WagmiProvider } from "wagmi"
 import { config } from "./wagmi/config"
+import { LayoutContext } from "./context/LayoutContext"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,11 +25,17 @@ const router = createBrowserRouter(
   ),
 )
 
+const queryClient = new QueryClient()
+
 const App = () => {
   return (
     <React.StrictMode>
       <WagmiProvider config={config}>
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <LayoutContext>
+            <RouterProvider router={router} />
+          </LayoutContext>
+        </QueryClientProvider>
       </WagmiProvider>
     </React.StrictMode>
   )

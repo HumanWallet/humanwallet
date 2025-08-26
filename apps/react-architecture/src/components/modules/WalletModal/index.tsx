@@ -1,13 +1,9 @@
-import cx from "classnames"
 import { useTranslation } from "react-i18next"
 import { Modal, AddressBox, Button } from "@tutellus/tutellus-components"
 import { Link } from "react-router"
-import { useEthereum, useTransactions } from "../../../context"
-import { Transaction } from "../../../domain/ethereum/Models/Transaction"
-import { WalletState } from "../../../domain/ethereum/Models/WalletState"
-import { getStatusIcon, getTypeIcon } from "./utils"
 import styles from "./index.module.css"
 import { sepolia } from "viem/chains"
+import { useAccount, useChainId, useChains, useDisconnect } from "wagmi"
 
 interface WalletModalProps {
   onClose: () => void
@@ -15,17 +11,17 @@ interface WalletModalProps {
 
 export const WalletModal = ({ onClose }: WalletModalProps) => {
   const { t } = useTranslation("common")
-  const { wallet, disconnectWallet } = useEthereum()
-  const { transactions, cleanTransactions } = useTransactions()
+  const { address } = useAccount()
+  const { disconnect } = useDisconnect()
+  const chainId = useChainId()
+  const chains = useChains()
+  const currentChain = chains.find((chain) => chain.id === chainId)!
 
-  const iconWallet = wallet.connector?.icon
-  const hasTransactions = transactions.items.length > 0
+  const iconWallet = "wallet.connector?.icon"
+  const hasTransactions = false
 
   return (
-    <Modal
-      onClose={onClose}
-      title={wallet.type === WalletState.TYPES.ABSTRACTED ? t("myHumanWallet") : t("yourAccount")}
-    >
+    <Modal onClose={onClose} title={t("myHumanWallet")}>
       <div className={styles.container}>
         <div className={styles.tutBox}>
           <div className={styles.imageWallet}>
@@ -35,8 +31,8 @@ export const WalletModal = ({ onClose }: WalletModalProps) => {
             <div className={styles.chainInfo}>
               <p>{sepolia.name}</p>
             </div>
-            <AddressBox account={wallet.account || ""} url={false} />
-            <Link target="_blank" to={wallet.explorerUrl}>
+            <AddressBox account={address || ""} url={false} />
+            <Link target="_blank" to={currentChain.blockExplorers?.default.url || ""}>
               {t("viewInExplorer")}
             </Link>
           </div>
@@ -49,7 +45,7 @@ export const WalletModal = ({ onClose }: WalletModalProps) => {
             <p className={styles.noTransactions}>{t("noTransactions")}</p>
           ) : (
             <div className={styles.transactionsList}>
-              {transactions.items
+              {/*{transactions.items
                 .sort((a, b) => b.date!.getTime() - a.date!.getTime())
                 .map((transaction) => (
                   <div
@@ -70,17 +66,17 @@ export const WalletModal = ({ onClose }: WalletModalProps) => {
                     </div>
                     <span className={styles.state}>{getStatusIcon(transaction.status)}</span>
                   </div>
-                ))}
+                ))}*/}
             </div>
           )}
         </div>
         <div className={styles.footer}>
-          <Button type="outline" onClick={cleanTransactions} isDisabled={!hasTransactions} isFull>
+          {/*<Button type="outline" onClick={cleanTransactions} isDisabled={!hasTransactions} isFull>
             {t("clean")}
-          </Button>
+          </Button>*/}
           <Button
             onClick={() => {
-              disconnectWallet()
+              disconnect()
               onClose()
             }}
             isFull

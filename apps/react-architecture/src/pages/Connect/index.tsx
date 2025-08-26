@@ -1,8 +1,6 @@
 import cx from "classnames"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useEthereum } from "../../context"
-import { WalletState } from "../../domain/ethereum/Models/WalletState"
 import {
   LanguageSelector,
   LoadingScreen,
@@ -13,6 +11,7 @@ import {
   ConnectionForm,
 } from "../../components/ui"
 import styles from "./index.module.css"
+import { useAccount, useConnect } from "wagmi"
 
 enum ConnectSection {
   Initial = "initial",
@@ -21,13 +20,17 @@ enum ConnectSection {
 }
 
 export function Component() {
-  const { wallet, login, register } = useEthereum()
+  const { isConnected, isConnecting } = useAccount()
+
+  const { connect, connectors } = useConnect()
+  const passkeysWalletConnector = connectors.find((connector) => connector.id === "wallet-passkey")!
+
   const { i18n, t } = useTranslation("login")
 
   const [activeSection, setActiveSection] = useState<ConnectSection>(ConnectSection.Initial)
 
-  const isDisconnected = wallet.status === WalletState.STATUS.DISCONNECTED
-  const isLoading = wallet.status === WalletState.STATUS.CONNECTING
+  const isDisconnected = !isConnected
+  const isLoading = isConnecting
 
   const handleReturnToHome = (): void => {
     setActiveSection(ConnectSection.Initial)
@@ -40,18 +43,18 @@ export function Component() {
   }
 
   const handleConnectAbstracted = (): void => {
-    login({ username: "" })
+    connect({ connector: passkeysWalletConnector })
   }
 
   const handleLearnMore = (): void => {
     handleWalletClick(ConnectSection.AbstractedWallet)
   }
 
-  const handleRegister = (username: string): void => {
-    register({ username })
+  const handleRegister = (): void => {
+    connect({ connector: passkeysWalletConnector })
   }
 
-  if (isLoading || wallet.status === WalletState.STATUS.CONNECTED) {
+  if (isLoading || isConnected) {
     return <LoadingScreen message={t("connect")} />
   }
 

@@ -1,25 +1,21 @@
 import { useTranslation } from "react-i18next"
-import { redirect } from "react-router"
-import { WalletState } from "../../domain/ethereum/Models/WalletState"
 import { StakingSteps, StakingBundle } from "../../components/modules/Staking"
 import { TabContainer, PageContainer } from "../../components/ui"
+import { useAccount } from "wagmi"
+import { Navigate } from "react-router"
 
 enum DemoTabs {
   Steps = "steps",
   Bundle = "bundle",
 }
 
-export const loader = async () => {
-  const walletState = await window.domain.GetWalletStateEthereumUseCase.execute()
+export function Component() {
+  const { isDisconnected } = useAccount()
 
-  if (walletState.status !== WalletState.STATUS.CONNECTED) {
-    return redirect("/connect")
+  if (isDisconnected) {
+    return <Navigate to="/connect" />
   }
 
-  return null
-}
-
-export function Component() {
   const { t } = useTranslation("demo")
 
   const tabs = [

@@ -1,19 +1,19 @@
 import cx from "classnames"
 import { useEffect, useState } from "react"
 import { Button, buttonTypes, buttonSizes, SettingsIcon, Spinner, buttonColors } from "@tutellus/tutellus-components"
-import { useEthereum } from "../../../context"
-import type { Transaction } from "../../../domain/ethereum/Models/Transaction"
 import { truncateAddress } from "../../../js/string"
 import { HUMAN_WALLET_BRAND_LOGO_URL } from "../../../js/const/logos"
 import styles from "./index.module.css"
+import { useAccount } from "wagmi"
 
 interface TopbarProps {
   onShowWalletModal: () => void
-  pendingTransactions: Transaction[]
 }
 
-export const Topbar = ({ onShowWalletModal, pendingTransactions }: TopbarProps) => {
-  const { wallet, isWalletConnected } = useEthereum()
+export const Topbar = ({ onShowWalletModal }: TopbarProps) => {
+  const pendingTransactions = []
+  const { address, isConnected } = useAccount()
+
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -27,8 +27,8 @@ export const Topbar = ({ onShowWalletModal, pendingTransactions }: TopbarProps) 
   }, [])
 
   const hasPendingTransactions = pendingTransactions.length > 0
-  const walletFormatted = wallet.account ? truncateAddress(wallet.account) : ""
-  const iconWallet = wallet.connector?.icon
+  const walletFormatted = address ? truncateAddress(address) : ""
+  const iconWallet = "WALLET ICON"
 
   return (
     <div className={cx(styles.topbar, { [styles.scrolled]: isScrolled })}>
@@ -38,7 +38,7 @@ export const Topbar = ({ onShowWalletModal, pendingTransactions }: TopbarProps) 
           <img className={styles.logoMobile} src={HUMAN_WALLET_BRAND_LOGO_URL} alt="logo" />
         </div>
         <div className={styles.rightContent}>
-          {isWalletConnected && (
+          {isConnected && (
             <Button
               onClick={onShowWalletModal}
               type={buttonTypes.OUTLINE}
