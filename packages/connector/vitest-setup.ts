@@ -1,7 +1,7 @@
-import { vi } from 'vitest'
+import { vi } from "vitest"
 
 // Mock WebAuthn API
-Object.defineProperty(global, 'navigator', {
+Object.defineProperty(global, "navigator", {
   value: {
     credentials: {
       create: vi.fn(),
@@ -12,7 +12,7 @@ Object.defineProperty(global, 'navigator', {
 })
 
 // Mock IndexedDB
-Object.defineProperty(global, 'indexedDB', {
+Object.defineProperty(global, "indexedDB", {
   value: {
     open: vi.fn(),
     deleteDatabase: vi.fn(),
@@ -21,7 +21,7 @@ Object.defineProperty(global, 'indexedDB', {
 })
 
 // Mock crypto for WebAuthn
-Object.defineProperty(global, 'crypto', {
+Object.defineProperty(global, "crypto", {
   value: {
     getRandomValues: vi.fn((arr) => {
       for (let i = 0; i < arr.length; i++) {
@@ -29,7 +29,7 @@ Object.defineProperty(global, 'crypto', {
       }
       return arr
     }),
-    randomUUID: vi.fn(() => 'mock-uuid'),
+    randomUUID: vi.fn(() => "mock-uuid"),
     subtle: {
       digest: vi.fn(),
       encrypt: vi.fn(),
