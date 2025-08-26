@@ -23,7 +23,7 @@ export function Component() {
   const { isConnected, isConnecting } = useAccount()
 
   const { connect, connectors } = useConnect()
-  const passkeysWalletConnector = connectors.find((connector) => connector.id === "wallet-passkey")!
+  const passkeysWalletConnector = connectors.find((connector) => connector.id === "human-wallet")!
 
   const { i18n, t } = useTranslation("login")
 
