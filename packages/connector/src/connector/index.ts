@@ -42,8 +42,6 @@ export interface HumanWalletOptions {
     /** Enable SDK-level logging */
     sdk?: boolean
   }
-  /** Enable headless mode to suppress default modals (reserved for future implementation) */
-  headless?: boolean
   /** Custom passkey server URL (overrides default ZeroDev passkey service) */
   passkeyServerUrl?: string
   /** Custom bundler RPC URL pattern (default: "https://rpc.zerodev.app/api/v3") */
@@ -89,16 +87,11 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
     passkeyName,
     dappMetadata,
     logging,
-    headless = false,
     passkeyServerUrl: customPasskeyServerUrl,
     bundlerRpcPattern = "https://rpc.zerodev.app/api/v3",
   } = options
 
   const displayName = passkeyName || dappMetadata?.name || `${appName} - Passkey`
-
-  // Note: headless option reserved for future implementation
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _headless = headless
 
   // Logging utility
   const log = (level: "info" | "warn" | "error", message: string, data?: unknown) => {
