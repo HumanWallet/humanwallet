@@ -3,7 +3,12 @@ import { toWebAuthnKey, toPasskeyValidator, PasskeyValidatorContractVersion } fr
 import { getEntryPoint, KERNEL_V3_1 } from "@zerodev/sdk/constants"
 import type { TransactionRequest, EIP1193Parameters, WalletRpcSchema } from "viem"
 import { UserRejectedRequestError, createPublicClient, http } from "viem"
-import { createKernelAccount, createKernelAccountClient, getUserOperationGasPrice } from "@zerodev/sdk"
+import {
+  createKernelAccount,
+  createKernelAccountClient,
+  createZeroDevPaymasterClient,
+  getUserOperationGasPrice,
+} from "@zerodev/sdk"
 import { get, set, del } from "idb-keyval"
 import type { KernelClient, SessionKeyAccount, WebAuthenticationKey } from "../types/connector"
 import { WEB_AUTHENTICATION_MODE_KEY } from "../types/connector"
@@ -15,7 +20,7 @@ export interface PasskeysConnectorOptions {
 }
 
 export function passkeysWalletConnector(options: PasskeysConnectorOptions) {
-  const { projectId, appName = "Passkeys App", passkeyName } = options
+  const { projectId, appName = "HumanWallet", passkeyName } = options
 
   const displayName = passkeyName || `${appName} - Passkey`
 
@@ -30,6 +35,12 @@ export function passkeysWalletConnector(options: PasskeysConnectorOptions) {
     async function createKernelAccountAndClient(webAuthnKey: Awaited<WebAuthenticationKey>, chainId?: number) {
       const chain = config.chains.find((c) => c.id === chainId) || config.chains[0]
       const bundlerTransport = http(`https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}`)
+      const paymasterUrl = `https://rpc.zerodev.app/api/v3/${projectId}/chain/${chain.id}/paymaster`
+
+      const paymasterClient = createZeroDevPaymasterClient({
+        chain,
+        transport: http(paymasterUrl),
+      })
 
       const publicClient = createPublicClient({
         chain,
@@ -59,6 +70,9 @@ export function passkeysWalletConnector(options: PasskeysConnectorOptions) {
         bundlerTransport,
         userOperation: {
           estimateFeesPerGas: ({ bundlerClient }) => getUserOperationGasPrice(bundlerClient),
+        },
+        paymaster: {
+          getPaymasterData: (userOperation) => paymasterClient.sponsorUserOperation({ userOperation }),
         },
       })
 
@@ -103,9 +117,9 @@ export function passkeysWalletConnector(options: PasskeysConnectorOptions) {
     }
 
     return {
-      id: "wallet-passkey",
+      id: "human-wallet",
       name: "Passkey",
-      type: "wallet-passkey" as const,
+      type: "human-wallet" as const,
 
       async setup() {
         try {
