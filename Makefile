@@ -36,11 +36,11 @@ install-connector: ## Install dependencies for connector package only
 
 install-demo: ## Install dependencies for demo app only
 	@echo "Installing demo app dependencies..."
-	npm install --workspace=examples/domain-architecture
+	npm install --workspace=apps/domain-architecture
 
 install-react-demo: ## Install dependencies for react-architecture app only
 	@echo "Installing react-architecture app dependencies..."
-	npm install --workspace=examples/react-architecture
+	npm install --workspace=apps/react-architecture
 
 
 
@@ -67,11 +67,11 @@ build-connector: ## Build connector package only
 
 build-demo: ## Build demo app only
 	@echo "Building demo app..."
-	npm run build --workspace=examples/domain-architecture
+	npm run build --workspace=apps/domain-architecture
 
 build-react-demo: ## Build react-architecture app only
 	@echo "Building react-architecture app..."
-	npm run build --workspace=examples/react-architecture
+	npm run build --workspace=apps/react-architecture
 
 
 
@@ -100,11 +100,11 @@ dev-connector: ## Start development mode for connector (watch mode)
 
 dev-demo: ## Start development mode for demo app
 	@echo "Starting demo app..."
-	npm run dev --workspace=examples/domain-architecture
+	npm run dev --workspace=apps/domain-architecture
 
 dev-react-demo: ## Start development mode for react-architecture app
 	@echo "Starting react-architecture app..."
-	npm run dev --workspace=examples/react-architecture
+	npm run dev --workspace=apps/react-architecture
 
 
 
@@ -131,11 +131,11 @@ test-connector: ## Run tests for connector package only
 
 test-demo: ## Run tests for demo app
 	@echo "Running demo app tests..."
-	npm run test --workspace=examples/domain-architecture --if-present
+	npm run test --workspace=apps/domain-architecture --if-present
 
 test-react-demo: ## Run tests for react-architecture app
 	@echo "Running react-architecture app tests..."
-	npm run test --workspace=examples/react-architecture --if-present
+	npm run test --workspace=apps/react-architecture --if-present
 
 
 
@@ -163,12 +163,12 @@ lint-connector: ## Run linting for connector package only
 format: ## Format code for all packages
 	@echo "Formatting code..."
 	npx prettier --write "packages/**/*.{ts,tsx,js,jsx,json,md}"
-	npx prettier --write "examples/**/*.{ts,tsx,js,jsx,json,md}"
+	npx prettier --write "apps/**/*.{ts,tsx,js,jsx,json,md}"
 
 format-check: ## Check code formatting for all packages
 	@echo "Checking code formatting..."
 	npx prettier --check "packages/**/*.{ts,tsx,js,jsx,json,md}"
-	npx prettier --check "examples/**/*.{ts,tsx,js,jsx,json,md}"
+	npx prettier --check "apps/**/*.{ts,tsx,js,jsx,json,md}"
 
 typecheck: ## Run TypeScript type checking for all packages
 	@echo "Running type checking..."
@@ -196,7 +196,7 @@ clean: ## Clean all build artifacts and node_modules
 	npm run clean --workspaces --if-present
 	rm -rf node_modules
 	rm -rf packages/*/node_modules
-	rm -rf examples/*/node_modules
+	rm -rf apps/*/node_modules
 
 
 clean-dist: ## Clean only build artifacts (dist folders)
@@ -222,11 +222,11 @@ clean-connector: ## Clean connector build artifacts
 
 clean-demo: ## Clean demo app build artifacts
 	@echo "Cleaning demo app..."
-	rm -rf examples/domain-architecture/dist
+	rm -rf apps/domain-architecture/dist
 
 clean-react-demo: ## Clean react-architecture app build artifacts
 	@echo "Cleaning react-architecture app..."
-	rm -rf examples/react-architecture/dist
+	rm -rf apps/react-architecture/dist
 
 
 
