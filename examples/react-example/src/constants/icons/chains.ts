@@ -1,7 +1,7 @@
 import { mainnet, polygon, sepolia } from "wagmi/chains"
-import Ethereum from "../../../public/icons/chains/ethereum.svg"
-import Polygon from "../../../public/icons/chains/polygon.svg"
-import Sepolia from "../../../public/icons/chains/sepolia.svg"
+import Ethereum from "../../assets/icons/chains/ethereum.svg"
+import Polygon from "../../assets/icons/chains/polygon.svg"
+import Sepolia from "../../assets/icons/chains/sepolia.svg"
 
 export const CHAIN_ICONS = {
   [mainnet.id]: Ethereum,

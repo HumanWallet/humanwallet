@@ -172,10 +172,16 @@ lint-connector: ## Run linting for connector package only
 	@echo "Running connector linting..."
 	npm run lint --workspace=packages/connector --if-present
 
+lint-react-example: ## Run linting for react-example only
+	@echo "Running react-example linting..."
+	npm run lint --workspace=examples/react-example --if-present
+
 format: ## Format code for all packages
 	@echo "Formatting code..."
 	npx prettier --write "packages/**/*.{ts,tsx,js,jsx,json,md}"
 	npx prettier --write "apps/**/*.{ts,tsx,js,jsx,json,md}"
+	npx prettier --write "examples/**/*.{ts,tsx,js,jsx,json,md}"
+
 
 format-check: ## Check code formatting for all packages
 	@echo "Checking code formatting..."

@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Adamina&family=Azeret+Mono:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -36,9 +37,11 @@
   --sidebar-accent-foreground: oklch(0.2554 0.015 285.293);
   --sidebar-border: oklch(0.8705 0.0027 286.3431);
   --sidebar-ring: oklch(0.507 0.1565 1.501);
-  --font-sans: Inter;
-  --font-serif: Adamina, ui-serif, serif;
-  --font-mono: Azeret Mono, ui-monospace, monospace;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.5rem;
   --shadow-2xs: 0px 2px 10px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0px 2px 10px 0px hsl(0 0% 0% / 0.05);
