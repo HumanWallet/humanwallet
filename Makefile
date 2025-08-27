@@ -42,6 +42,10 @@ install-react-demo: ## Install dependencies for react-architecture app only
 	@echo "Installing react-architecture app dependencies..."
 	npm install --workspace=apps/react-architecture
 
+install-react-example: ## Install dependencies for react-example only
+	@echo "Installing react-example dependencies..."
+	npm install --workspace=examples/react-example
+
 
 
 # Build commands
@@ -72,6 +76,10 @@ build-demo: ## Build demo app only
 build-react-demo: ## Build react-architecture app only
 	@echo "Building react-architecture app..."
 	npm run build --workspace=apps/react-architecture
+
+build-react-example: ## Build react-example only
+	@echo "Building react-example..."
+	npm run build --workspace=examples/react-example
 
 
 
@@ -105,6 +113,10 @@ dev-demo: ## Start development mode for demo app
 dev-react-demo: ## Start development mode for react-architecture app
 	@echo "Starting react-architecture app..."
 	npm run dev --workspace=apps/react-architecture
+
+dev-react-example: ## Start development mode for react-example
+	@echo "Starting react-example..."
+	npm run dev --workspace=examples/react-example
 
 
 
@@ -227,6 +239,10 @@ clean-demo: ## Clean demo app build artifacts
 clean-react-demo: ## Clean react-architecture app build artifacts
 	@echo "Cleaning react-architecture app..."
 	rm -rf apps/react-architecture/dist
+
+clean-react-example: ## Clean react-example build artifacts
+	@echo "Cleaning react-example..."
+	rm -rf examples/react-example/dist
 
 
 
