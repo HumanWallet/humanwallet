@@ -7,6 +7,9 @@
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "watch-build": "tsup --watch",
@@ -35,7 +38,7 @@
     "viem": "^2.35.1"
   },
   "devDependencies": {
-    "@humanwallet/types": "file:../types",
+    "@humanwallet/types": "*",
     "@vitest/coverage-v8": "^2.1.8",
     "jsdom": "^26.0.0",
     "vitest": "^2.1.8"
