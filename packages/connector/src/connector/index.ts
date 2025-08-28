@@ -263,10 +263,13 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
      * @throws Error if registration fails or no name provided
      */
     async function registerNewPasskeyWithPrompt() {
-      const walletName = globalThis.prompt?.("Enter a name for your new wallet:")
+      const walletName = (globalThis as { prompt?: (message: string) => string | null }).prompt?.(
+        "Enter a name for your new wallet:",
+      )
 
+      // Check if prompt is available (SSR-safe) or user cancelled
       if (!walletName || walletName.trim() === "") {
-        log("warn", "User cancelled wallet creation or provided empty name")
+        log("warn", "Cannot prompt for wallet name - not available in SSR or user cancelled")
         throw new UserRejectedRequestError(new Error("Wallet name is required"))
       }
 
@@ -282,7 +285,7 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
       type: "humanWallet" as const,
       icon:
         dappMetadata?.iconUrl ||
-        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iIzAwNzJGRiIgZD0iTTE2IDMyYzguODM3IDAgMTYtNy4xNjMgMTYtMTZTMjQuODM3IDAgMTYgMFMwIDcuMTYzIDAgMTZzNy4xNjMgMTYgMTYgMTZ6Ii8+PC9zdmc+",
+        "https://cdn.prod.website-files.com/64bfe0b7cf5ceb8900f47cfc/680b8e17b39c506ec5a8098f_hw-logo.svg",
 
       /**
        * Initializes the connector and attempts auto-connection if stored credentials exist.

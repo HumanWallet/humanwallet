@@ -134,6 +134,7 @@ export default function Connect() {
             <div className="grid gap-3">
               {connectors.map((connector) => {
                 if (connector.name === "HumanWallet") {
+                  console.log("connector", connector)
                   return (
                     <div key={connector.uid} className="space-y-2">
                       <Button
@@ -144,7 +145,7 @@ export default function Connect() {
                       >
                         <div className="flex items-center gap-3 w-full">
                           <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Wallet className="size-4" />
+                            <img src={connector.icon} alt={connector.name} className="size-5" />
                           </div>
                           <div className="flex-1">
                             <div className="font-medium">Connect with {connector.name}</div>
@@ -182,7 +183,11 @@ export default function Connect() {
                   >
                     <div className="flex items-center gap-3 w-full">
                       <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Wallet className="size-4" />
+                        {connector.icon ? (
+                          <img src={connector.icon} alt={connector.name} className="size-5" />
+                        ) : (
+                          <Wallet className="size-5" />
+                        )}
                       </div>
                       <div className="flex-1">
                         <div className="font-medium">{connector.name}</div>

@@ -1,8 +1,6 @@
 import { createConfig, http } from "wagmi"
-import { metaMask } from "wagmi/connectors"
 import { sepolia } from "wagmi/chains"
 import { humanWalletConnector } from "@humanwallet/connector"
-import { createStorage } from "wagmi"
 
 // Replace with your actual ZeroDev project ID
 const ZERODEV_PROJECT_ID = import.meta.env.VITE_ZERODEV_PROJECT_ID
@@ -14,20 +12,11 @@ export const config = createConfig({
       projectId: ZERODEV_PROJECT_ID,
       appName: "Wagmi Passkeys App",
       passkeyName: "My Wallet", // Default name (users can customize this)
-      logging: {
-        developerMode: true,
-      },
     }),
-    metaMask(),
   ],
   transports: {
     [sepolia.id]: http(),
   },
-  // Enable session persistence with localStorage
-  storage: createStorage({
-    storage: localStorage,
-    key: "zerodev-wagmi",
-  }),
 })
 
 declare module "wagmi" {
