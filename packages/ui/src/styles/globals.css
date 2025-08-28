@@ -9,7 +9,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-
 :root {
   --background: oklch(0.9647 0.0027 286.35);
   --foreground: oklch(0.2554 0.015 285.293);
@@ -94,9 +93,11 @@
   --sidebar-accent-foreground: oklch(0.0975 0.0526 271.0903);
   --sidebar-border: oklch(0.2126 0.0702 278.6125);
   --sidebar-ring: oklch(0.6269 0.2072 2.6037);
-  --font-sans: Inter;
-  --font-serif: Adamina, ui-serif, serif;
-  --font-mono: Azeret Mono, ui-monospace, monospace;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.5rem;
   --shadow-2xs: 0px 2px 10px 0px hsl(0 0% 0% / 0.1);
   --shadow-xs: 0px 2px 10px 0px hsl(0 0% 0% / 0.1);
