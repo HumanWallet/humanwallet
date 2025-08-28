@@ -5,15 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Wallet, CheckCircle, AlertCircle, LogOut, Copy, ExternalLink, UserPlus, LogIn } from "lucide-react"
-import { useState } from "react"
+import { Wallet, CheckCircle, AlertCircle, LogOut, Copy, ExternalLink, UserPlus } from "lucide-react"
 
 export default function Connect() {
   const { address, isConnected, chain } = useAccount()
   const { connectors, connect, isPending, error } = useConnect()
   const { disconnect } = useDisconnect()
-  const [walletName, setWalletName] = useState("")
-  const [showWalletNameInput, setShowWalletNameInput] = useState(false)
 
   const truncateAddress = (addr: string): string => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
@@ -27,29 +24,17 @@ export default function Connect() {
     }
   }
 
-  const handleCreateWallet = (): void => {
-    setShowWalletNameInput(true)
-  }
-
-  const handleConfirmCreateWallet = (connector: Connector): void => {
-    if (walletName.trim()) {
-      // Using type assertion as the connector interface doesn't include username but our custom connector supports it
-      ;(connect as (args: { connector: Connector; username?: string }) => void)({
-        connector,
-        username: walletName.trim(),
-      })
-      setShowWalletNameInput(false)
-      setWalletName("")
-    }
-  }
-
-  const handleLogin = (connector: Connector): void => {
+  const handleConnectHumanWallet = (connector: Connector): void => {
+    // Simple connect - the connector will handle login vs registration automatically
     connect({ connector })
   }
 
-  const handleCancelCreateWallet = (): void => {
-    setShowWalletNameInput(false)
-    setWalletName("")
+  const handleCreateNewWallet = (connector: Connector): void => {
+    // Force create new wallet with native prompt
+    ;(connect as (args: { connector: Connector; forceCreate?: boolean }) => void)({
+      connector,
+      forceCreate: true,
+    })
   }
 
   if (isConnected && address) {
@@ -150,86 +135,39 @@ export default function Connect() {
               {connectors.map((connector) => {
                 if (connector.name === "HumanWallet") {
                   return (
-                    <div key={connector.uid} className="space-y-3">
-                      {showWalletNameInput ? (
-                        <div className="border rounded-lg p-4 space-y-3">
-                          <div className="flex items-center gap-3">
-                            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center">
-                              <Wallet className="size-4" />
+                    <div key={connector.uid} className="space-y-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleConnectHumanWallet(connector)}
+                        disabled={isPending}
+                        className="justify-start h-auto p-4 text-left w-full"
+                      >
+                        <div className="flex items-center gap-3 w-full">
+                          <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Wallet className="size-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium">Connect with {connector.name}</div>
+                            <div className="text-sm text-muted-foreground">
+                              Login with existing passkey or create new wallet
                             </div>
-                            <div className="flex-1">
-                              <div className="font-medium">{connector.name}</div>
-                              <div className="text-sm text-muted-foreground">Create a new wallet with passkey</div>
-                            </div>
                           </div>
-                          <div className="space-y-2">
-                            <label htmlFor="walletName" className="text-sm font-medium">
-                              Wallet Name
-                            </label>
-                            <input
-                              id="walletName"
-                              type="text"
-                              placeholder="Enter your wallet name"
-                              value={walletName}
-                              onChange={(e) => setWalletName(e.target.value)}
-                              className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                              autoFocus
-                            />
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              onClick={() => handleConfirmCreateWallet(connector)}
-                              disabled={!walletName.trim() || isPending}
-                              className="flex-1"
-                            >
-                              <UserPlus className="size-4" />
-                              Create Wallet
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={handleCancelCreateWallet} disabled={isPending}>
-                              Cancel
-                            </Button>
-                          </div>
+                          {isPending && (
+                            <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                          )}
                         </div>
-                      ) : (
-                        <div className="grid gap-2">
-                          <Button
-                            variant="outline"
-                            onClick={() => handleLogin(connector)}
-                            disabled={isPending}
-                            className="justify-start h-auto p-4 text-left"
-                          >
-                            <div className="flex items-center gap-3 w-full">
-                              <div className="size-8 rounded-full bg-green-500/10 flex items-center justify-center">
-                                <LogIn className="size-4 text-green-600" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="font-medium">Login to {connector.name}</div>
-                                <div className="text-sm text-muted-foreground">Use your existing passkey to login</div>
-                              </div>
-                              {isPending && (
-                                <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                              )}
-                            </div>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            onClick={() => handleCreateWallet()}
-                            disabled={isPending}
-                            className="justify-start h-auto p-4 text-left"
-                          >
-                            <div className="flex items-center gap-3 w-full">
-                              <div className="size-8 rounded-full bg-blue-500/10 flex items-center justify-center">
-                                <UserPlus className="size-4 text-blue-600" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="font-medium">Create New {connector.name}</div>
-                                <div className="text-sm text-muted-foreground">Create a new wallet with passkey</div>
-                              </div>
-                            </div>
-                          </Button>
-                        </div>
-                      )}
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCreateNewWallet(connector)}
+                        disabled={isPending}
+                        className="w-full text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        <UserPlus className="size-3 mr-1" />
+                        Or create a new wallet
+                      </Button>
                     </div>
                   )
                 }
