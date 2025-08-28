@@ -229,7 +229,12 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
             throw new UserRejectedRequestError(registerError)
           }
           log("error", "Failed to create or authenticate passkey", registerError)
-          throw new Error("Failed to create or authenticate passkey")
+          // Provide more detailed error information
+          const errorMessage =
+            registerError instanceof Error
+              ? `Failed to create passkey: ${registerError.message}`
+              : "Failed to create or authenticate passkey"
+          throw new Error(errorMessage)
         }
       }
     }
@@ -283,6 +288,13 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
         log("info", "Attempting to connect", { chainId })
 
         try {
+          // Validate project ID
+          if (!projectId || projectId === "test-project-id") {
+            throw new Error(
+              "ZeroDev project ID is required. Please set VITE_ZERODEV_PROJECT_ID in your environment variables.",
+            )
+          }
+
           if (kernelClient && kernelAccount) {
             log("info", "Already connected, returning existing connection")
             const chain = config.chains.find((c) => c.id === chainId) || config.chains[0]
@@ -297,7 +309,10 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
             webAuthnKey = await get(webAuthnStorageKey)
             if (!webAuthnKey) throw new Error("No stored WebAuthn key found")
           } catch {
-            webAuthnKey = await createPasskeyOwner("username")
+            // Generate a unique username for this session
+            const username = `user-${Date.now()}`
+            log("info", "Creating new passkey for user", { username })
+            webAuthnKey = await createPasskeyOwner(username)
             await set(webAuthnStorageKey, webAuthnKey)
           }
 
