@@ -289,7 +289,7 @@ export const StakingSteps = () => {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <CardTitle>Step-by-Step Staking</CardTitle>
         <CardDescription>Complete each step individually to mint, approve, and stake your tokens</CardDescription>
