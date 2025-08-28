@@ -7,7 +7,7 @@ interface StakingSuccessProps {
 }
 
 export const StakingSuccess = ({ successTx, onReset }: StakingSuccessProps) => {
-  const explorerUrl = `https://etherscan.io/tx/${successTx}`
+  const explorerUrl = `https://sepolia.etherscan.io/tx/${successTx}`
   const truncatedTx = `${successTx.slice(0, 8)}...${successTx.slice(-6)}`
 
   return (
