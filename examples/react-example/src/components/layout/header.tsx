@@ -246,7 +246,7 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="gap-2">
-                    <div className="size-2 bg-green-500 rounded-full" />
+                    <div className="size-2 bg-success rounded-full" />
                     <span className="hidden sm:inline">{truncatedAddress}</span>
                     <span className="sm:hidden">
                       <User className="size-4" />
@@ -262,7 +262,7 @@ export function Header() {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem onClick={() => copyToClipboard(address)} className="cursor-pointer">
-                    {isCopied ? <Check className="size-4 mr-2 text-green-600" /> : <Copy className="size-4 mr-2" />}
+                    {isCopied ? <Check className="size-4 mr-2 text-success" /> : <Copy className="size-4 mr-2" />}
                     <div className="flex-1">
                       <div className="text-sm">{isCopied ? "Address copied!" : "Copy address"}</div>
                       <div className="text-xs text-muted-foreground font-mono">{truncatedAddress}</div>

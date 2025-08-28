@@ -32,7 +32,7 @@ export default function StakingDemo() {
             step-by-step transactions for clarity and control.
           </p>
           {!isConnected && (
-            <Badge variant="outline" className="text-orange-600 border-orange-200">
+            <Badge variant="outline" className="text-warning border-warning/20">
               Connect your wallet to start the demo
             </Badge>
           )}
@@ -60,19 +60,19 @@ export default function StakingDemo() {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-green-500" />
+                  <div className="size-2 rounded-full bg-success" />
                   <span>More gas efficient</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-green-500" />
+                  <div className="size-2 rounded-full bg-success" />
                   <span>Atomic execution (all or nothing)</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-green-500" />
+                  <div className="size-2 rounded-full bg-success" />
                   <span>Better user experience</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-yellow-500" />
+                  <div className="size-2 rounded-full bg-warning" />
                   <span>Requires wallet support for EIP-5792</span>
                 </div>
               </div>
@@ -87,8 +87,8 @@ export default function StakingDemo() {
           >
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="size-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                  <ListChecks className="size-5 text-blue-600 dark:text-blue-400" />
+                <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ListChecks className="size-5 text-primary" />
                 </div>
                 <div>
                   <CardTitle className="text-lg">Step-by-Step Approach</CardTitle>
@@ -99,19 +99,19 @@ export default function StakingDemo() {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-green-500" />
+                  <div className="size-2 rounded-full bg-success" />
                   <span>Universal wallet compatibility</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-green-500" />
+                  <div className="size-2 rounded-full bg-success" />
                   <span>Clear progress indication</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-green-500" />
+                  <div className="size-2 rounded-full bg-success" />
                   <span>User can pause at any step</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="size-2 rounded-full bg-orange-500" />
+                  <div className="size-2 rounded-full bg-warning" />
                   <span>Higher gas costs</span>
                 </div>
               </div>

@@ -13,10 +13,10 @@ export const StakingSuccess = ({ successTx, onReset }: StakingSuccessProps) => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center pb-4">
-        <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
-          <CheckCircle className="size-6 text-green-600 dark:text-green-400" />
+        <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-success/10">
+          <CheckCircle className="size-6 text-success" />
         </div>
-        <CardTitle className="text-green-700 dark:text-green-400 text-lg">Staking Successful!</CardTitle>
+        <CardTitle className="text-success text-lg">Staking Successful!</CardTitle>
         <CardDescription className="text-sm">Your tokens have been successfully staked.</CardDescription>
       </CardHeader>
 

@@ -134,7 +134,7 @@ export default function MultiChain() {
                     <div className="text-sm text-muted-foreground">Chain ID: {chain.id}</div>
                   </div>
                 </div>
-                <Badge variant="default" className="bg-green-100 text-green-800">
+                <Badge variant="default" className="bg-success/10 text-success">
                   <CheckCircle2 className="size-3 mr-1" />
                   Connected
                 </Badge>
@@ -172,7 +172,7 @@ export default function MultiChain() {
                     </div>
                     <Badge
                       variant={isCurrentChain ? "default" : "secondary"}
-                      className={isCurrentChain ? "bg-green-100 text-green-800" : ""}
+                      className={isCurrentChain ? "bg-success/10 text-success" : ""}
                     >
                       {isCurrentChain ? "Current" : "Available"}
                     </Badge>
@@ -254,15 +254,15 @@ export default function MultiChain() {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="size-2 bg-blue-500 rounded-full"></div>
+                  <div className="size-2 bg-primary rounded-full"></div>
                   <span>Ethereum → Polygon</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="size-2 bg-green-500 rounded-full"></div>
+                  <div className="size-2 bg-success rounded-full"></div>
                   <span>Polygon → BSC</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="size-2 bg-purple-500 rounded-full"></div>
+                  <div className="size-2 bg-accent rounded-full"></div>
                   <span>Arbitrum → Optimism</span>
                 </div>
                 <Button variant="outline" className="w-full mt-4" disabled>
