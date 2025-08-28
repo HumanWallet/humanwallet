@@ -16,6 +16,7 @@ import {
 import { useTruncateAddress } from "@/hooks/use-truncate-address"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { Link } from "react-router"
+import { ModeToggle } from "../mode-toggle"
 import {
   Badge,
   DropdownMenu,
@@ -141,6 +142,14 @@ export function Header() {
                     </Tooltip>
                   </TooltipProvider>
                 )}
+
+                {/* Theme Toggle - Mobile */}
+                <div className="space-y-2">
+                  <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Theme</div>
+                  <div className="px-3 py-2">
+                    <ModeToggle />
+                  </div>
+                </div>
               </div>
             </div>
           </SheetContent>
@@ -223,6 +232,9 @@ export function Header() {
 
         {/* Connection Status */}
         <div className="flex items-center gap-4">
+          {/* Theme Toggle */}
+          <ModeToggle />
+
           {isConnected && address ? (
             <>
               {/* Network Badge */}
