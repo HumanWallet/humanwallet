@@ -1,6 +1,6 @@
 import { useAccount } from "wagmi"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@humanwallet/ui"
-import { Wallet, TrendingUp } from "lucide-react"
+import { Wallet, TrendingUp, Network } from "lucide-react"
 import { Link } from "react-router"
 
 export default function Home() {
@@ -76,6 +76,21 @@ export default function Home() {
             <CardContent>
               <Button size="sm" className="w-full" asChild>
                 <Link to="/staking-demo">Try Demo</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Network className="size-5" />
+                Multi-Chain Support
+              </CardTitle>
+              <CardDescription>Switch between networks and manage cross-chain assets</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button size="sm" className="w-full" asChild>
+                <Link to="/multi-chain">Explore Networks</Link>
               </Button>
             </CardContent>
           </Card>

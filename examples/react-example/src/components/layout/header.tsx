@@ -1,5 +1,18 @@
 import { useAccount, useDisconnect, useSwitchAccount } from "wagmi"
-import { ChevronDown, Copy, Check, ExternalLink, LogOut, User, Wallet, Home, TrendingUp, Zap, Menu } from "lucide-react"
+import {
+  ChevronDown,
+  Copy,
+  Check,
+  ExternalLink,
+  LogOut,
+  User,
+  Wallet,
+  Home,
+  TrendingUp,
+  Zap,
+  Menu,
+  Network,
+} from "lucide-react"
 import { useTruncateAddress } from "@/hooks/use-truncate-address"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { Link } from "react-router"
@@ -87,6 +100,18 @@ export function Header() {
                     <div className="text-xs text-muted-foreground">Try passwordless authentication with passkeys</div>
                   </div>
                 </Link>
+                <Link
+                  to="/multi-chain"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Network className="size-4" />
+                  <div>
+                    <div className="font-medium">Multi-Chain</div>
+                    <div className="text-xs text-muted-foreground">
+                      Switch between networks and manage cross-chain assets
+                    </div>
+                  </div>
+                </Link>
               </div>
             </div>
           </SheetContent>
@@ -142,6 +167,21 @@ export function Header() {
                         </div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                           Try passwordless authentication with passkeys
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+
+                    <NavigationMenuLink asChild>
+                      <Link
+                        to="/multi-chain"
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Network className="size-4" />
+                          <div className="text-sm font-medium leading-none">Multi-Chain</div>
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Switch between networks and manage cross-chain assets
                         </p>
                       </Link>
                     </NavigationMenuLink>

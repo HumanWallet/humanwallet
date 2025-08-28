@@ -1,12 +1,12 @@
 import { createConfig, http } from "wagmi"
-import { sepolia } from "wagmi/chains"
+import { mainnet, sepolia, polygon } from "wagmi/chains"
 import { humanWalletConnector } from "@humanwallet/connector"
 
 // Replace with your actual ZeroDev project ID
 const ZERODEV_PROJECT_ID = import.meta.env.VITE_ZERODEV_PROJECT_ID
 
 export const config = createConfig({
-  chains: [sepolia], // Sepolia as default, Polygon Amoy as alternative
+  chains: [sepolia, mainnet, polygon], // Sepolia as default, Polygon Amoy as alternative
   connectors: [
     humanWalletConnector({
       projectId: ZERODEV_PROJECT_ID,
@@ -16,6 +16,8 @@ export const config = createConfig({
   ],
   transports: {
     [sepolia.id]: http(),
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
   },
 })
 
