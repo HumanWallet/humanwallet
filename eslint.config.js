@@ -44,7 +44,7 @@ export default tseslint.config([
       globals: { ...globals.browser, ...globals.node },
       parserOptions: {
         tsconfigRootDir: import.meta.dirname,
-        project: ["./packages/*/tsconfig.json", "./apps/*/tsconfig*.json", "./examples/*/tsconfig*.json"],
+        project: ["./packages/*/tsconfig*.json", "./apps/*/tsconfig*.json", "./examples/*/tsconfig*.json"],
       },
     },
     rules: {
