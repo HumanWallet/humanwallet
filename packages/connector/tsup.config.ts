@@ -8,4 +8,10 @@ export default defineConfig({
   clean: true, // Limpia dist antes de build
   minify: true, // Minifica el output
   target: "es2020", // Compatibilidad
+  platform: "neutral", // Support both browser and node
+  define: {
+    global: "globalThis",
+  },
+  noExternal: ["buffer"], // Bundle buffer with the package
+  external: ["crypto"], // Keep crypto as external
 })
