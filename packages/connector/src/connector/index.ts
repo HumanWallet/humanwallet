@@ -183,17 +183,16 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
     }
 
     /**
-     * Creates or authenticates a passkey owner using WebAuthn.
-     * First attempts to login with existing passkey, then registers a new one if needed.
+     * Authenticates using an existing passkey without requiring a username.
+     * This allows users to login with any existing passkey, even if not stored in IndexedDB.
      *
-     * @param username - Username for passkey registration/authentication
      * @returns Promise resolving to WebAuthn key for account creation
      * @throws UserRejectedRequestError if user cancels the operation
-     * @throws Error if both login and registration fail
+     * @throws Error if authentication fails
      */
-    async function createPasskeyOwner(username: string) {
+    async function loginWithExistingPasskey() {
       try {
-        log("info", "Attempting to authenticate with existing passkey", { username })
+        log("info", "Attempting to authenticate with existing passkey")
 
         const webAuthnKey = await toWebAuthnKey({
           passkeyName: displayName,
@@ -202,40 +201,56 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
           passkeyServerHeaders: {},
         })
 
-        const existingName = await get(passkeyNameStorageKey)
-        if (!existingName) {
-          await set(passkeyNameStorageKey, displayName)
-        }
-
         log("info", "Successfully authenticated with existing passkey")
         return webAuthnKey
       } catch (error) {
-        log("warn", "Login failed, attempting to register new passkey", error)
-        try {
-          await set(passkeyNameStorageKey, username)
-
-          const newWebAuthnKey = await toWebAuthnKey({
-            passkeyName: username,
-            passkeyServerUrl,
-            mode: WEB_AUTHENTICATION_MODE_KEY.REGISTER,
-            passkeyServerHeaders: {},
-          })
-
-          log("info", "Successfully registered new passkey", { username })
-          return newWebAuthnKey
-        } catch (registerError) {
-          if (registerError instanceof Error && registerError.message.includes("cancelled")) {
-            log("warn", "User cancelled passkey creation")
-            throw new UserRejectedRequestError(registerError)
-          }
-          log("error", "Failed to create or authenticate passkey", registerError)
-          // Provide more detailed error information
-          const errorMessage =
-            registerError instanceof Error
-              ? `Failed to create passkey: ${registerError.message}`
-              : "Failed to create or authenticate passkey"
-          throw new Error(errorMessage)
+        if (error instanceof Error && error.message.includes("cancelled")) {
+          log("warn", "User cancelled passkey authentication")
+          throw new UserRejectedRequestError(error)
         }
+        log("error", "Failed to authenticate with existing passkey", error)
+        throw new Error(
+          "Failed to authenticate with existing passkey. Please ensure you have a passkey registered for this site.",
+        )
+      }
+    }
+
+    /**
+     * Registers a new passkey with the provided username.
+     * The username will be used as both the passkey name and stored for future reference.
+     *
+     * @param username - Username for the new passkey
+     * @returns Promise resolving to WebAuthn key for account creation
+     * @throws UserRejectedRequestError if user cancels the operation
+     * @throws Error if registration fails
+     */
+    async function registerNewPasskey(username: string) {
+      try {
+        log("info", "Registering new passkey", { username })
+
+        // Store the username for future reference
+        await set(passkeyNameStorageKey, username)
+
+        const webAuthnKey = await toWebAuthnKey({
+          passkeyName: username,
+          passkeyServerUrl,
+          mode: WEB_AUTHENTICATION_MODE_KEY.REGISTER,
+          passkeyServerHeaders: {},
+        })
+
+        log("info", "Successfully registered new passkey", { username })
+        return webAuthnKey
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("cancelled")) {
+          log("warn", "User cancelled passkey creation")
+          throw new UserRejectedRequestError(error)
+        }
+        log("error", "Failed to register new passkey", error)
+        // Clean up stored username if registration failed
+        await del(passkeyNameStorageKey)
+        const errorMessage =
+          error instanceof Error ? `Failed to create passkey: ${error.message}` : "Failed to create passkey"
+        throw new Error(errorMessage)
       }
     }
 
@@ -271,21 +286,21 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
 
       /**
        * Establishes connection to the HumanWallet using passkey authentication.
-       * Creates a new passkey if none exists, or authenticates with existing one.
        *
        * @param options - Connection options
        * @param options.chainId - Optional chain ID to connect to
+       * @param options.username - Optional username for creating a new passkey. If provided, registers a new passkey. If not provided, attempts to login with existing passkey.
        * @returns Promise resolving to connection result with accounts and chain ID
        * @throws Error if connection is already in progress
        * @throws UserRejectedRequestError if user cancels passkey creation/authentication
        */
-      async connect({ chainId } = {}) {
+      async connect({ chainId, username }: { chainId?: number; username?: string } = {}) {
         if (isConnecting) {
           throw new Error("Connection already in progress")
         }
 
         isConnecting = true
-        log("info", "Attempting to connect", { chainId })
+        log("info", "Attempting to connect", { chainId, mode: username ? "register" : "login" })
 
         try {
           // Validate project ID
@@ -305,16 +320,31 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
           }
 
           let webAuthnKey
-          try {
-            webAuthnKey = await get(webAuthnStorageKey)
-            if (!webAuthnKey) throw new Error("No stored WebAuthn key found")
-          } catch {
-            // Generate a unique username for this session
-            const username = `user-${Date.now()}`
-            log("info", "Creating new passkey for user", { username })
-            webAuthnKey = await createPasskeyOwner(username)
-            await set(webAuthnStorageKey, webAuthnKey)
+
+          if (username && username.trim() !== "") {
+            // Username provided - register new passkey with this username
+            const trimmedUsername = username.trim()
+            log("info", "Registering new passkey for user", { username: trimmedUsername })
+            webAuthnKey = await registerNewPasskey(trimmedUsername)
+          } else {
+            // No username provided - try to login with existing passkey
+            // First try to use stored credentials, if not available try to authenticate
+            try {
+              webAuthnKey = await get(webAuthnStorageKey)
+              if (webAuthnKey) {
+                log("info", "Using existing stored credentials")
+              } else {
+                log("info", "No stored credentials, attempting passkey authentication")
+                webAuthnKey = await loginWithExistingPasskey()
+              }
+            } catch {
+              log("info", "Stored credentials failed, attempting passkey authentication")
+              webAuthnKey = await loginWithExistingPasskey()
+            }
           }
+
+          // Store the webAuthnKey for future use
+          await set(webAuthnStorageKey, webAuthnKey)
 
           const result = await createKernelAccountAndClient(webAuthnKey, chainId)
           config.emitter.emit("connect", result)
