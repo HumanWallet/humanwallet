@@ -26,7 +26,9 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@humanwallet/ui": ["../../packages/ui/src/index.ts"],
+      "@humanwallet/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": ["src"]

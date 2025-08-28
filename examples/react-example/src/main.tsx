@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client"
 import { BrowserRouter } from "react-router"
 import { WagmiProviders } from "./wagmi/provider"
 import App from "./App"
-import "./index.css"
+import "../../../packages/ui/src/styles/globals.css"
 
 const root = document.getElementById("root")
 
