@@ -1,6 +1,6 @@
 import { useAccount } from "wagmi"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@humanwallet/ui"
-import { Wallet } from "lucide-react"
+import { Wallet, TrendingUp } from "lucide-react"
 import { Link } from "react-router"
 
 export default function Home() {
@@ -67,12 +67,15 @@ export default function Home() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Batch Transactions</CardTitle>
-              <CardDescription>Execute multiple transactions in a single operation</CardDescription>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <TrendingUp className="size-5" />
+                Staking Demo
+              </CardTitle>
+              <CardDescription>Try both bundle and step-by-step staking approaches</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" size="sm" disabled className="w-full">
-                Coming Soon
+              <Button size="sm" className="w-full" asChild>
+                <Link to="/staking-demo">Try Demo</Link>
               </Button>
             </CardContent>
           </Card>

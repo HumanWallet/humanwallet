@@ -12,11 +12,22 @@ export function Header() {
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo/Brand */}
-        <div className="flex items-center gap-2">
-          <img src="/HumanWallet.svg" alt="HumanWallet" className="size-6" />
-          <h1 className="text-xl font-bold">HumanWallet</h1>
-          <span className="bg-secondary text-secondary-foreground px-2 py-1 rounded text-xs">Demo</span>
+        {/* Logo/Brand and Navigation */}
+        <div className="flex items-center gap-6">
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/HumanWallet.svg" alt="HumanWallet" className="size-6" />
+            <h1 className="text-xl font-bold">HumanWallet</h1>
+            <span className="bg-secondary text-secondary-foreground px-2 py-1 rounded text-xs">Demo</span>
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-4">
+            <Button variant="ghost" asChild>
+              <Link to="/">Home</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to="/staking-demo">Staking Demo</Link>
+            </Button>
+          </nav>
         </div>
 
         {/* Connect/Wallet Section */}
