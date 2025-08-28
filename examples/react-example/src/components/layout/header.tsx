@@ -1,5 +1,5 @@
 import { useAccount, useDisconnect, useSwitchAccount } from "wagmi"
-import { ChevronDown, Copy, Check, ExternalLink, LogOut, User, Wallet } from "lucide-react"
+import { ChevronDown, Copy, Check, ExternalLink, LogOut, User, Wallet, Home, TrendingUp, Zap } from "lucide-react"
 import { useTruncateAddress } from "@/hooks/use-truncate-address"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { Link } from "react-router"
@@ -11,6 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
   Button,
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+  navigationMenuTriggerStyle,
 } from "@humanwallet/ui"
 
 export function Header() {
@@ -31,12 +38,66 @@ export function Header() {
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo/Brand */}
-        <div className="flex items-center gap-2">
-          <img src="/HumanWallet.svg" alt="HumanWallet" className="size-6" />
-          <h1 className="text-xl font-bold">HumanWallet</h1>
-          <Badge variant="secondary" className="text-xs">
-            Demo
-          </Badge>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <img src="/HumanWallet.svg" alt="HumanWallet" className="size-6" />
+            <h1 className="text-xl font-bold">HumanWallet</h1>
+            <Badge variant="secondary" className="text-xs">
+              Demo
+            </Badge>
+          </div>
+
+          {/* Navigation Menu */}
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link to="/" className={navigationMenuTriggerStyle()}>
+                  <Home className="size-4 mr-2" />
+                  Home
+                </Link>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+                  <Zap className="size-4 mr-2" />
+                  Demo
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid gap-3 p-6 w-[400px]">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        to="/staking-demo"
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="size-4" />
+                          <div className="text-sm font-medium leading-none">Staking Demo</div>
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Experience both bundle and step-by-step staking workflows
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+
+                    <NavigationMenuLink asChild>
+                      <Link
+                        to="/connect"
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Wallet className="size-4" />
+                          <div className="text-sm font-medium leading-none">Connect Wallet</div>
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Try passwordless authentication with passkeys
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
 
         {/* Connection Status */}
