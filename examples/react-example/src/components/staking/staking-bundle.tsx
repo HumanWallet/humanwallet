@@ -11,6 +11,7 @@ import {
   CardTitle,
   Alert,
   AlertDescription,
+  AlertTitle,
 } from "@humanwallet/ui"
 import { StakingSuccess } from "../ui/staking-success"
 import { TokenAmount } from "../ui/token-amount"
@@ -131,7 +132,22 @@ export const StakingBundle = () => {
       <CardContent className="space-y-6">
         {error && (
           <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
+            <AlertTitle>Transaction Failed</AlertTitle>
+            <AlertDescription className="break-words">
+              {error.length > 200 ? (
+                <>
+                  {error.substring(0, 200)}...
+                  <details className="mt-2 cursor-pointer">
+                    <summary className="text-xs text-destructive/70 hover:text-destructive/90">
+                      Click to see full error details
+                    </summary>
+                    <div className="mt-2 p-2 bg-destructive/10 rounded text-xs font-mono break-all">{error}</div>
+                  </details>
+                </>
+              ) : (
+                error
+              )}
+            </AlertDescription>
           </Alert>
         )}
 
