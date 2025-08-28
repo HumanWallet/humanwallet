@@ -1,5 +1,5 @@
 import { useAccount, useDisconnect, useSwitchAccount } from "wagmi"
-import { ChevronDown, Copy, Check, ExternalLink, LogOut, User, Wallet, Home, TrendingUp, Zap } from "lucide-react"
+import { ChevronDown, Copy, Check, ExternalLink, LogOut, User, Wallet, Home, TrendingUp, Zap, Menu } from "lucide-react"
 import { useTruncateAddress } from "@/hooks/use-truncate-address"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { Link } from "react-router"
@@ -18,6 +18,11 @@ import {
   NavigationMenuContent,
   NavigationMenuLink,
   navigationMenuTriggerStyle,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from "@humanwallet/ui"
 
 export function Header() {
@@ -37,15 +42,62 @@ export function Header() {
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Mobile Navigation Menu - Top Left */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="sm" className="md:hidden">
+              <Menu className="size-5" />
+              <span className="sr-only">Open navigation menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+            <SheetHeader>
+              <SheetTitle>Navigation</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-4 mt-6">
+              <Link
+                to="/"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                <Home className="size-4" />
+                Home
+              </Link>
+
+              <div className="space-y-2">
+                <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Demo</div>
+                <Link
+                  to="/staking-demo"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  <TrendingUp className="size-4" />
+                  <div>
+                    <div className="font-medium">Staking Demo</div>
+                    <div className="text-xs text-muted-foreground">
+                      Experience both bundle and step-by-step staking workflows
+                    </div>
+                  </div>
+                </Link>
+                <Link
+                  to="/connect"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Wallet className="size-4" />
+                  <div>
+                    <div className="font-medium">Connect Wallet</div>
+                    <div className="text-xs text-muted-foreground">Try passwordless authentication with passkeys</div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+
         {/* Logo/Brand */}
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
+          <Link to="" className="flex items-center gap-2">
             <img src="/HumanWallet.svg" alt="HumanWallet" className="size-6" />
             <h1 className="text-xl font-bold">HumanWallet</h1>
-            <Badge variant="secondary" className="text-xs">
-              Demo
-            </Badge>
-          </div>
+          </Link>
 
           {/* Navigation Menu */}
           <NavigationMenu className="hidden md:flex">
