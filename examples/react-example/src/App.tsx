@@ -1,13 +1,16 @@
 import { Routes, Route } from "react-router"
+import { Header } from "./components/layout/header"
+import Home from "./pages/home"
 import Connect from "./pages/connect"
 
 function App() {
   return (
     <>
-      <header></header>
+      <Header />
       <main>
         <Routes>
-          <Route path="/" element={<Connect />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/connect" element={<Connect />} />
         </Routes>
       </main>
     </>
