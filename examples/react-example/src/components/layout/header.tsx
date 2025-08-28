@@ -36,6 +36,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@humanwallet/ui"
 
 export function Header() {
@@ -112,6 +116,31 @@ export function Header() {
                     </div>
                   </div>
                 </Link>
+
+                {/* Sepolia Faucet Link - Mobile */}
+                {chain?.name === "Sepolia" && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a
+                          href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                        >
+                          <Zap className="size-4" />
+                          <div>
+                            <div className="font-medium">Get Sepolia ETH</div>
+                            <div className="text-xs text-muted-foreground">Get test ETH from Google Cloud faucet</div>
+                          </div>
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Get free test ETH from Google Cloud&apos;s Sepolia faucet for development and testing</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
             </div>
           </SheetContent>
@@ -253,6 +282,33 @@ export function Header() {
                           Switch to {connector.name}
                         </DropdownMenuItem>
                       ))}
+                    </>
+                  )}
+
+                  {/* Sepolia Faucet Link */}
+                  {chain?.name === "Sepolia" && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <DropdownMenuItem asChild>
+                              <a
+                                href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="cursor-pointer"
+                              >
+                                <Zap className="size-4 mr-2" />
+                                Get Sepolia ETH
+                              </a>
+                            </DropdownMenuItem>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Get free test ETH from Google Cloud&apos;s Sepolia faucet for development and testing</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </>
                   )}
 
