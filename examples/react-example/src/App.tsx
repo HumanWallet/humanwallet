@@ -1,11 +1,15 @@
-import { Header } from "./components/header"
+import { Routes, Route } from "react-router"
+import Connect from "./pages/connect"
 
 function App() {
   return (
     <>
-      <header>
-        <Header />
-      </header>
+      <header></header>
+      <main>
+        <Routes>
+          <Route path="/" element={<Connect />} />
+        </Routes>
+      </main>
     </>
   )
 }
