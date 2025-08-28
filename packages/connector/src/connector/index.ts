@@ -254,6 +254,28 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
       }
     }
 
+    /**
+     * Prompts user for wallet name using native browser prompt and registers a new passkey.
+     * This function provides a seamless experience by using the browser's native prompt.
+     *
+     * @returns Promise resolving to WebAuthn key for account creation
+     * @throws UserRejectedRequestError if user cancels the operation
+     * @throws Error if registration fails or no name provided
+     */
+    async function registerNewPasskeyWithPrompt() {
+      const walletName = globalThis.prompt?.("Enter a name for your new wallet:")
+
+      if (!walletName || walletName.trim() === "") {
+        log("warn", "User cancelled wallet creation or provided empty name")
+        throw new UserRejectedRequestError(new Error("Wallet name is required"))
+      }
+
+      const trimmedName = walletName.trim()
+      log("info", "User provided wallet name via prompt", { walletName: trimmedName })
+
+      return await registerNewPasskey(trimmedName)
+    }
+
     return {
       id: "humanWallet",
       name: dappMetadata?.name || "HumanWallet",
@@ -286,21 +308,33 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
 
       /**
        * Establishes connection to the HumanWallet using passkey authentication.
+       * Intelligently chooses between login and registration based on available passkeys.
        *
        * @param options - Connection options
        * @param options.chainId - Optional chain ID to connect to
-       * @param options.username - Optional username for creating a new passkey. If provided, registers a new passkey. If not provided, attempts to login with existing passkey.
+       * @param options.username - Optional username for creating a new passkey. If provided, registers a new passkey.
+       * @param options.forceCreate - If true, forces creation of a new wallet with prompt for name
        * @returns Promise resolving to connection result with accounts and chain ID
        * @throws Error if connection is already in progress
        * @throws UserRejectedRequestError if user cancels passkey creation/authentication
        */
-      async connect({ chainId, username }: { chainId?: number; username?: string } = {}) {
+      async connect({
+        chainId,
+        username,
+        forceCreate,
+      }: {
+        chainId?: number
+        username?: string
+        forceCreate?: boolean
+      } = {}) {
         if (isConnecting) {
           throw new Error("Connection already in progress")
         }
 
         isConnecting = true
-        log("info", "Attempting to connect", { chainId, mode: username ? "register" : "login" })
+
+        const mode = forceCreate ? "force-create" : username ? "register" : "auto"
+        log("info", "Attempting to connect", { chainId, mode })
 
         try {
           // Validate project ID
@@ -321,25 +355,40 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
 
           let webAuthnKey
 
-          if (username && username.trim() !== "") {
+          if (forceCreate) {
+            // Force create new wallet with prompt
+            log("info", "Force creating new wallet with prompt")
+            webAuthnKey = await registerNewPasskeyWithPrompt()
+          } else if (username && username.trim() !== "") {
             // Username provided - register new passkey with this username
             const trimmedUsername = username.trim()
             log("info", "Registering new passkey for user", { username: trimmedUsername })
             webAuthnKey = await registerNewPasskey(trimmedUsername)
           } else {
-            // No username provided - try to login with existing passkey
-            // First try to use stored credentials, if not available try to authenticate
+            // Auto mode - try login first, fallback to registration with prompt
             try {
+              // First try stored credentials
               webAuthnKey = await get(webAuthnStorageKey)
               if (webAuthnKey) {
                 log("info", "Using existing stored credentials")
               } else {
+                // Try to authenticate with existing passkey
                 log("info", "No stored credentials, attempting passkey authentication")
                 webAuthnKey = await loginWithExistingPasskey()
               }
-            } catch {
-              log("info", "Stored credentials failed, attempting passkey authentication")
-              webAuthnKey = await loginWithExistingPasskey()
+            } catch (loginError) {
+              // If login fails, offer to create new wallet
+              log("info", "Login failed, prompting to create new wallet")
+              try {
+                webAuthnKey = await registerNewPasskeyWithPrompt()
+              } catch (createError) {
+                // If user cancels creation, throw the original login error
+                if (createError instanceof UserRejectedRequestError) {
+                  throw createError
+                }
+                // Otherwise throw the login error as it's more informative
+                throw loginError
+              }
             }
           }
 
