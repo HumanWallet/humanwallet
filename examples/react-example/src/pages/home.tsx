@@ -1,6 +1,5 @@
 import { useAccount } from "wagmi"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@humanwallet/ui"
 import { Wallet } from "lucide-react"
 import { Link } from "react-router"
 

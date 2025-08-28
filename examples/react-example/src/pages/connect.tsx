@@ -1,8 +1,6 @@
 import { useAccount, useConnect } from "wagmi"
 import type { Connector } from "wagmi"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@humanwallet/ui"
 import { Wallet, AlertCircle, UserPlus } from "lucide-react"
 import { useEffect } from "react"
 import { useNavigate } from "react-router"
@@ -43,22 +41,26 @@ export default function Connect() {
         </div>
 
         {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="size-4" />
-            <AlertTitle>Connection Error</AlertTitle>
-            <AlertDescription>{error.message}</AlertDescription>
-          </Alert>
+          <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="size-4 text-destructive" />
+              <h4 className="font-medium text-destructive">Connection Error</h4>
+            </div>
+            <p className="mt-2 text-sm text-destructive/80">{error.message}</p>
+          </div>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+          <div className="p-6 pb-2">
+            <h3 className="flex items-center gap-2 text-lg font-semibold leading-none tracking-tight">
               <Wallet className="size-5" />
               HumanWallet Connection
-            </CardTitle>
-            <CardDescription>Login with existing passkey or create a new HumanWallet</CardDescription>
-          </CardHeader>
-          <CardContent>
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Login with existing passkey or create a new HumanWallet
+            </p>
+          </div>
+          <div className="p-6 pt-0">
             <div className="grid gap-3">
               {connectors.map((connector) => {
                 if (connector.name === "HumanWallet") {
@@ -109,8 +111,8 @@ export default function Connect() {
                 <p className="text-sm">Please check your configuration.</p>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   )
