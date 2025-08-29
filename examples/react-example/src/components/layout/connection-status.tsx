@@ -1,6 +1,7 @@
 import type { Connector } from "wagmi"
 import { ModeToggle } from "../mode-toggle"
 import { WalletDropdown } from "./wallet-dropdown"
+import { Button } from "@humanwallet/ui"
 
 interface ConnectionStatusProps {
   readonly isAuthenticated: boolean
@@ -21,11 +22,7 @@ export function ConnectionStatus({
 }: ConnectionStatusProps) {
   return (
     <div className="flex items-center gap-4">
-      <div className="hidden sm:block">
-        <ModeToggle />
-      </div>
-
-      {isAuthenticated && userAddress && (
+      {isAuthenticated && userAddress ? (
         <WalletDropdown
           userAddress={userAddress}
           userChainName={userChainName}
@@ -33,7 +30,12 @@ export function ConnectionStatus({
           onSwitchAccount={onSwitchAccount}
           onLogout={onLogout}
         />
+      ) : (
+        <Button>Connect Wallet</Button>
       )}
+      <div className="hidden sm:block">
+        <ModeToggle />
+      </div>
     </div>
   )
 }
