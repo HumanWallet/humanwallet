@@ -1,3 +1,75 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+
+/* HumanWallet Custom Branding */
+:root {
+  --humanwallet-primary: #6366f1;
+  --humanwallet-secondary: #8b5cf6;
+  --humanwallet-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* Custom logo animation */
+.humanwallet-logo {
+  transition: transform 0.2s ease-in-out;
+}
+
+.humanwallet-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Custom gradient text for headers */
+.humanwallet-gradient-text {
+  background: var(--humanwallet-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Custom button styles */
+.humanwallet-btn-primary {
+  background: var(--humanwallet-gradient);
+  border: none;
+  color: white;
+  transition: all 0.2s ease-in-out;
+}
+
+.humanwallet-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+}
+
+/* Custom card hover effects */
+.humanwallet-card {
+  transition: all 0.2s ease-in-out;
+  border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.humanwallet-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* Custom focus states for accessibility */
+.humanwallet-focus:focus {
+  outline: 2px solid var(--humanwallet-primary);
+  outline-offset: 2px;
+}
+
+/* Code block enhancements */
+pre {
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.02), rgba(139, 92, 246, 0.02));
+}
+
+/* Navigation enhancements */
+[data-fd-nav] {
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* Table of contents styling */
+[data-fd-toc] a[data-active="true"] {
+  color: var(--humanwallet-primary);
+  border-left-color: var(--humanwallet-primary);
+}

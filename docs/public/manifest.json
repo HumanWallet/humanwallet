@@ -1,0 +1,20 @@
+{
+  "name": "HumanWallet Documentation",
+  "short_name": "HumanWallet Docs",
+  "description": "Modern Web3 wallet infrastructure with biometric authentication and account abstraction",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#6366f1",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["developer", "documentation", "web3", "blockchain"],
+  "lang": "en",
+  "dir": "ltr",
+  "orientation": "portrait-primary"
+}

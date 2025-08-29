@@ -12,14 +12,41 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" aria-label="Logo">
-            <circle cx={12} cy={12} r={12} fill="currentColor" />
+          <svg 
+            width="24" 
+            height="24" 
+            xmlns="http://www.w3.org/2000/svg" 
+            aria-label="HumanWallet Logo" 
+            viewBox="0 0 24 24"
+            className="humanwallet-logo"
+          >
+            <defs>
+              <linearGradient id="humanwalletGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#6366f1" />
+                <stop offset="100%" stopColor="#8b5cf6" />
+              </linearGradient>
+            </defs>
+            <circle cx={12} cy={12} r={10} fill="url(#humanwalletGradient)" />
+            <path 
+              d="M8 10a1.5 1.5 0 0 1 3 0v4a1.5 1.5 0 0 1-3 0v-4zM13 8a1.5 1.5 0 0 1 3 0v8a1.5 1.5 0 0 1-3 0V8z" 
+              fill="white" 
+            />
           </svg>
-          My App
+          <span className="font-semibold">HumanWallet</span>
         </>
       ),
     },
     // see https://fumadocs.dev/docs/ui/navigation/links
-    links: [],
+    links: [
+      {
+        text: "GitHub",
+        url: "https://github.com/HumanWallet/humanwallet",
+        external: true,
+      },
+      {
+        text: "Examples",
+        url: "/docs/examples",
+      },
+    ],
   }
 }
