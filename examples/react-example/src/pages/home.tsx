@@ -1,46 +1,8 @@
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@humanwallet/ui"
-import { Wallet, TrendingUp, Network } from "lucide-react"
+import { TrendingUp, Network } from "lucide-react"
 import { Link } from "react-router"
-import { useAuth } from "../context/auth-context"
 
 export default function Home() {
-  const { isAuthenticated } = useAuth()
-
-  if (!isAuthenticated) {
-    return (
-      <div className="container mx-auto max-w-2xl px-4 py-8">
-        <div className="space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Welcome to HumanWallet Demo</h1>
-            <p className="text-muted-foreground">
-              Experience secure, passwordless authentication with passkey technology
-            </p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Wallet className="size-5" />
-                Getting Started
-              </CardTitle>
-              <CardDescription>Connect your HumanWallet to explore the demo features</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center py-8 text-muted-foreground">
-                <Wallet className="size-12 mx-auto mb-4 opacity-50" />
-                <p className="mb-2">No wallet connected</p>
-                <p className="text-sm mb-4">Please connect your HumanWallet to continue</p>
-                <Button asChild>
-                  <Link to="/connect">Connect HumanWallet</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="space-y-8">
@@ -113,7 +75,7 @@ export default function Home() {
               <CardDescription>Secure, passwordless login using biometric authentication</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" size="sm" className="w-full" asChild>
+              <Button size="sm" className="w-full" asChild>
                 <Link to="/connect">Try Now</Link>
               </Button>
             </CardContent>
