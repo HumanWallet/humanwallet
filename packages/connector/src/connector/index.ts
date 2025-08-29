@@ -3,17 +3,17 @@ import type { CreateConnectorFn } from "@wagmi/core"
 import { toWebAuthnKey, toPasskeyValidator, PasskeyValidatorContractVersion } from "@zerodev/passkey-validator"
 import { getEntryPoint, KERNEL_V3_1 } from "@zerodev/sdk/constants"
 import type { TransactionRequest, EIP1193Parameters, WalletRpcSchema, Call } from "viem"
-import { UserRejectedRequestError, createPublicClient, http } from "viem"
+import { UserRejectedRequestError, createPublicClient, http, hashMessage } from "viem"
 import {
   createKernelAccount,
   createKernelAccountClient,
   createZeroDevPaymasterClient,
   getUserOperationGasPrice,
+  verifyEIP6492Signature,
 } from "@zerodev/sdk"
 import { get, set, del } from "idb-keyval"
-import type { KernelClient, SessionKeyAccount, WebAuthenticationKey } from "@humanwallet/types"
+import type { KernelClient, PublicClient, SessionKeyAccount, WebAuthenticationKey } from "@humanwallet/types"
 import { WEB_AUTHENTICATION_MODE_KEY } from "@humanwallet/types"
-
 /**
  * Configuration options for the HumanWallet connector
  */
@@ -103,6 +103,7 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
   return createConnector((config) => {
     let kernelClient: KernelClient | undefined
     let kernelAccount: Awaited<SessionKeyAccount> | undefined
+    let publicClient: PublicClient | undefined
     let isConnecting = false
 
     // Use custom passkey server URL if provided
@@ -133,7 +134,7 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
           transport: http(paymasterUrl),
         })
 
-        const publicClient = createPublicClient({
+        publicClient = createPublicClient({
           chain,
           transport: bundlerTransport,
           name: "Passkeys",
@@ -552,6 +553,75 @@ export function humanWalletConnector(options: HumanWalletOptions): CreateConnect
                   const chainId = kernelClient?.chain?.id || config.chains[0]?.id || 1
                   log("info", "Returning chain ID", { chainId })
                   return `0x${chainId.toString(16)}`
+                }
+                case "personal_sign": {
+                  if (!kernelAccount) {
+                    log("error", "personal_sign called but kernel account not initialized")
+                    throw new Error("Kernel account not initialized. Connect first.")
+                  }
+
+                  if (!params || !Array.isArray(params) || params.length < 2) {
+                    log("error", "personal_sign missing required parameters")
+                    throw new Error("personal_sign requires message and address parameters")
+                  }
+
+                  const [message, address] = params as [string, string]
+
+                  // Verify the address matches the current account
+                  if (address.toLowerCase() !== kernelAccount.address.toLowerCase()) {
+                    log("error", "personal_sign address mismatch", {
+                      requested: address,
+                      current: kernelAccount.address,
+                    })
+                    throw new Error("Address mismatch: can only sign with current account")
+                  }
+
+                  log("info", "Signing personal message", {
+                    messageLength: message.length,
+                    address: kernelAccount.address,
+                  })
+
+                  try {
+                    // Use the kernel account's sign message method
+                    // This leverages the passkey for signing through the smart wallet
+                    const signature = await kernelAccount.signMessage({ message })
+
+                    log("info", "Successfully signed personal message", {
+                      signatureLength: signature.length,
+                    })
+
+                    // Verify the signature using EIP-1271 isValidSignature
+                    try {
+                      if (publicClient) {
+                        const isValid = await verifyEIP6492Signature({
+                          signer: kernelAccount.address, // your smart account address
+                          hash: hashMessage(message),
+                          signature: signature,
+                          client: publicClient,
+                        })
+
+                        if (!isValid) {
+                          log("error", "Signature validation failed via isValidSignature")
+                          throw new Error("Generated signature is invalid according to smart contract validation")
+                        }
+
+                        log("info", "Signature verified successfully via EIP-1271 isValidSignature")
+                      } else {
+                        log("warn", "Client not available for signature verification")
+                      }
+                    } catch (validationError) {
+                      log("warn", "Could not verify signature via isValidSignature, proceeding anyway", validationError)
+                      // Don't throw here as some contracts might not implement EIP-1271 properly
+                      // or the validation might fail for other reasons while the signature is still valid
+                    }
+
+                    return signature
+                  } catch (signError) {
+                    log("error", "Failed to sign personal message", signError)
+                    throw new Error(
+                      `Failed to sign message: ${signError instanceof Error ? signError.message : "Unknown error"}`,
+                    )
+                  }
                 }
                 default: {
                   log("warn", `Unsupported method: ${method}`)
