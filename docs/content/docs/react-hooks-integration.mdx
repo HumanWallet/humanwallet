@@ -1,0 +1,967 @@
+---
+title: React Hooks Integration
+description: Complete step-by-step guide to integrate HumanWallet connector with React hooks and Wagmi
+---
+
+# React Hooks Integration
+
+This comprehensive guide walks you through integrating the HumanWallet connector into your React application using Wagmi hooks. We'll build a complete integration that enables biometric authentication and account abstraction for your users.
+
+## Prerequisites
+
+Before we begin, make sure you have:
+
+- **Node.js 18+** installed
+- A **ZeroDev Project ID** (get one at [dashboard.zerodev.app](https://dashboard.zerodev.app/))
+- Basic knowledge of **React** and **TypeScript**
+- Familiarity with **React Hooks** and **Wagmi**
+
+## Step 1: Create Your Project
+
+First, create a new React project with Vite:
+
+```bash
+npm create vite@latest my-humanwallet-app -- --template react-ts
+cd my-humanwallet-app
+npm install
+```
+
+## Step 2: Install Dependencies
+
+Install the required packages for HumanWallet integration:
+
+```bash
+# Core dependencies
+npm install @humanwallet/connector viem wagmi
+
+# React Query for caching
+npm install @tanstack/react-query
+
+# Optional: UI library for better components
+npm install @radix-ui/react-dialog @radix-ui/react-alert-dialog
+npm install lucide-react class-variance-authority clsx
+
+# Development dependencies
+npm install --save-dev vite-plugin-node-polyfills
+```
+
+## Step 3: Configure Vite
+
+Update your `vite.config.ts` to include node polyfills:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    nodePolyfills() // Required for Web3 libraries
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    }
+  }
+})
+```
+
+## Step 4: Environment Configuration
+
+Create a `.env.local` file in your project root:
+
+```bash
+# .env.local
+VITE_ZERODEV_PROJECT_ID=your_zerodev_project_id_here
+```
+
+<Cards>
+  <Card 
+    title="⚠️ Important" 
+    description="Replace `your_zerodev_project_id_here` with your actual ZeroDev Project ID from the ZeroDev Dashboard."
+  />
+</Cards>
+
+## Step 5: Create Wagmi Configuration
+
+Create `src/wagmi/config.ts`:
+
+```typescript
+// src/wagmi/config.ts
+import { createConfig, http } from 'wagmi'
+import { mainnet, sepolia, polygon } from 'wagmi/chains'
+import { humanWalletConnector } from '@humanwallet/connector'
+
+// Get project ID from environment variables
+const ZERODEV_PROJECT_ID = import.meta.env.VITE_ZERODEV_PROJECT_ID
+
+export const config = createConfig({
+  chains: [sepolia, mainnet, polygon],
+  connectors: [
+    humanWalletConnector({
+      projectId: ZERODEV_PROJECT_ID,
+      appName: "My HumanWallet App",
+      passkeyName: "My Wallet",
+      dappMetadata: {
+        name: "My DApp",
+        url: "https://mydapp.com",
+        iconUrl: "https://mydapp.com/icon.png",
+        description: "My awesome DApp"
+      },
+      logging: {
+        developerMode: true // Enable for development
+      }
+    }),
+  ],
+  transports: {
+    [sepolia.id]: http(),
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+  },
+})
+
+// TypeScript module augmentation for better type safety
+declare module 'wagmi' {
+  interface Register {
+    config: typeof config
+  }
+}
+```
+
+## Step 6: Create Wagmi Provider
+
+Create `src/wagmi/provider.tsx`:
+
+```tsx
+// src/wagmi/provider.tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+import { config } from './config'
+
+const queryClient = new QueryClient()
+
+export function WagmiProviders({ children }: { children: React.ReactNode }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </WagmiProvider>
+  )
+}
+```
+
+## Step 7: Update Main Entry Point
+
+Update `src/main.tsx`:
+
+```tsx
+// src/main.tsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { WagmiProviders } from './wagmi/provider'
+import App from './App'
+import './index.css'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <WagmiProviders>
+      <App />
+    </WagmiProviders>
+  </React.StrictMode>,
+)
+```
+
+## Step 8: Connection Component with Hooks
+
+Create `src/components/ConnectWallet.tsx`:
+
+```tsx
+// src/components/ConnectWallet.tsx
+import { useConnect, useAccount, useDisconnect } from 'wagmi'
+import { useState } from 'react'
+
+export function ConnectWallet() {
+  const { connectors, connect, isPending, error } = useConnect()
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const [isConnecting, setIsConnecting] = useState(false)
+
+  // Find the HumanWallet connector
+  const humanWallet = connectors.find(c => c.id === 'humanWallet')
+
+  const handleConnect = async () => {
+    if (!humanWallet) return
+    setIsConnecting(true)
+    try {
+      await connect({ connector: humanWallet })
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  const handleCreateNew = async () => {
+    if (!humanWallet) return
+    setIsConnecting(true)
+    try {
+      // Force create new wallet - this will prompt for a wallet name
+      await (connect as any)({ 
+        connector: humanWallet, 
+        forceCreate: true 
+      })
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  const handleConnectWithUsername = async (username: string) => {
+    if (!humanWallet) return
+    setIsConnecting(true)
+    try {
+      // Create wallet with specific username
+      await (connect as any)({ 
+        connector: humanWallet, 
+        username 
+      })
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  if (isConnected && address) {
+    return (
+      <div className="p-6 border rounded-lg bg-green-50 border-green-200">
+        <h3 className="text-lg font-semibold mb-2 text-green-800">✅ Connected</h3>
+        <p className="text-sm text-green-700 mb-4">
+          Address: <code className="bg-green-100 px-2 py-1 rounded text-xs">
+            {address.slice(0, 6)}...{address.slice(-4)}
+          </code>
+        </p>
+        <button
+          onClick={() => disconnect()}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+        >
+          Disconnect
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6 border rounded-lg">
+      <h3 className="text-lg font-semibold mb-4">🔐 Connect HumanWallet</h3>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+          <p className="text-red-700 text-sm font-medium">Connection Error</p>
+          <p className="text-red-600 text-sm">{error.message}</p>
+        </div>
+      )}
+
+      <div className="space-y-3">
+        <button
+          onClick={handleConnect}
+          disabled={isConnecting || isPending}
+          className="w-full px-4 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {isConnecting || isPending ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Connecting...
+            </span>
+          ) : (
+            'Connect with Existing Passkey'
+          )}
+        </button>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-gray-500">or</span>
+          </div>
+        </div>
+
+        <button
+          onClick={handleCreateNew}
+          disabled={isConnecting || isPending}
+          className="w-full px-4 py-3 border border-blue-500 text-blue-500 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {isConnecting || isPending ? 'Creating...' : 'Create New Wallet'}
+        </button>
+      </div>
+
+      <p className="text-xs text-gray-500 mt-4 text-center">
+        🔑 Powered by WebAuthn passkeys
+      </p>
+    </div>
+  )
+}
+```
+
+## Step 9: Message Signing with Hooks
+
+Create `src/components/SignMessage.tsx`:
+
+```tsx
+// src/components/SignMessage.tsx
+import { useState } from 'react'
+import { useSignMessage, useAccount } from 'wagmi'
+
+export function SignMessage() {
+  const { address } = useAccount()
+  const { signMessage, isPending, error } = useSignMessage()
+  const [message, setMessage] = useState('Hello, HumanWallet!')
+  const [signature, setSignature] = useState<string | null>(null)
+  const [isVerified, setIsVerified] = useState(false)
+
+  const handleSign = async () => {
+    if (!message.trim()) return
+
+    try {
+      const sig = await signMessage({ message })
+      setSignature(sig)
+      setIsVerified(true)
+    } catch (err) {
+      console.error('Failed to sign message:', err)
+      setIsVerified(false)
+    }
+  }
+
+  const handleReset = () => {
+    setSignature(null)
+    setIsVerified(false)
+  }
+
+  if (!address) {
+    return (
+      <div className="p-6 border rounded-lg opacity-50 bg-gray-50">
+        <h3 className="text-lg font-semibold mb-2 text-gray-600">✍️ Sign Message</h3>
+        <p className="text-sm text-gray-500">Connect your wallet first to sign messages</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6 border rounded-lg">
+      <h3 className="text-lg font-semibold mb-4">✍️ Sign Message with Passkey</h3>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+          <p className="text-red-700 text-sm font-medium">Signing Error</p>
+          <p className="text-red-600 text-sm">{error.message}</p>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-2 text-gray-700">
+            Message to sign:
+          </label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            rows={3}
+            placeholder="Enter your message..."
+            disabled={isPending}
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={handleSign}
+            disabled={isPending || !message.trim()}
+            className="flex-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Signing...
+              </span>
+            ) : (
+              '🔐 Sign with Passkey'
+            )}
+          </button>
+
+          {signature && (
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        {signature && (
+          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-green-600">✅</span>
+              <p className="text-sm font-medium text-green-700">
+                Message signed successfully!
+              </p>
+            </div>
+            <div className="bg-green-100 p-3 rounded border">
+              <p className="text-xs font-medium text-green-700 mb-1">Signature:</p>
+              <p className="text-xs text-green-600 font-mono break-all">
+                {signature}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
+## Step 10: Account Information Hook
+
+Create `src/components/AccountInfo.tsx`:
+
+```tsx
+// src/components/AccountInfo.tsx
+import { useAccount, useBalance, useChainId, useSwitchChain } from 'wagmi'
+import { mainnet, sepolia, polygon } from 'wagmi/chains'
+
+export function AccountInfo() {
+  const { address, isConnected } = useAccount()
+  const chainId = useChainId()
+  const { chains, switchChain } = useSwitchChain()
+  
+  // Get balance for the current chain
+  const { data: balance, isLoading: balanceLoading } = useBalance({
+    address,
+  })
+
+  if (!isConnected || !address) {
+    return null
+  }
+
+  const getCurrentChainName = () => {
+    switch (chainId) {
+      case mainnet.id: return 'Ethereum Mainnet'
+      case sepolia.id: return 'Sepolia Testnet'
+      case polygon.id: return 'Polygon'
+      default: return `Chain ${chainId}`
+    }
+  }
+
+  return (
+    <div className="p-6 border rounded-lg bg-blue-50 border-blue-200">
+      <h3 className="text-lg font-semibold mb-4 text-blue-800">📊 Account Information</h3>
+      
+      <div className="space-y-3">
+        <div>
+          <p className="text-sm font-medium text-blue-700 mb-1">Address:</p>
+          <code className="text-xs bg-blue-100 px-2 py-1 rounded text-blue-800 break-all">
+            {address}
+          </code>
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-blue-700 mb-1">Current Network:</p>
+          <p className="text-sm text-blue-600">{getCurrentChainName()}</p>
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-blue-700 mb-1">Balance:</p>
+          {balanceLoading ? (
+            <p className="text-sm text-blue-600">Loading...</p>
+          ) : balance ? (
+            <p className="text-sm text-blue-600">
+              {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
+            </p>
+          ) : (
+            <p className="text-sm text-blue-600">0 ETH</p>
+          )}
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-blue-700 mb-2">Switch Network:</p>
+          <div className="flex flex-wrap gap-2">
+            {chains.map((chain) => (
+              <button
+                key={chain.id}
+                onClick={() => switchChain({ chainId: chain.id })}
+                disabled={chain.id === chainId}
+                className={`px-3 py-1 text-xs rounded transition-colors ${
+                  chain.id === chainId
+                    ? 'bg-blue-500 text-white cursor-default'
+                    : 'bg-white text-blue-600 border border-blue-300 hover:bg-blue-100'
+                }`}
+              >
+                {chain.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+## Step 11: Transaction Sending Hook
+
+Create `src/components/SendTransaction.tsx`:
+
+```tsx
+// src/components/SendTransaction.tsx
+import { useState } from 'react'
+import { useSendTransaction, useAccount, useWaitForTransactionReceipt } from 'wagmi'
+import { parseEther, isAddress } from 'viem'
+
+export function SendTransaction() {
+  const { address } = useAccount()
+  const { sendTransaction, isPending, error } = useSendTransaction()
+  const [to, setTo] = useState('')
+  const [amount, setAmount] = useState('')
+  const [txHash, setTxHash] = useState<`0x${string}` | null>(null)
+
+  // Watch for transaction confirmation
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash: txHash,
+  })
+
+  const handleSend = async () => {
+    if (!to || !amount || !isAddress(to)) return
+
+    try {
+      const hash = await sendTransaction({
+        to: to as `0x${string}`,
+        value: parseEther(amount),
+      })
+      setTxHash(hash)
+    } catch (err) {
+      console.error('Failed to send transaction:', err)
+    }
+  }
+
+  const handleReset = () => {
+    setTo('')
+    setAmount('')
+    setTxHash(null)
+  }
+
+  if (!address) {
+    return (
+      <div className="p-6 border rounded-lg opacity-50 bg-gray-50">
+        <h3 className="text-lg font-semibold mb-2 text-gray-600">💸 Send Transaction</h3>
+        <p className="text-sm text-gray-500">Connect your wallet first to send transactions</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6 border rounded-lg">
+      <h3 className="text-lg font-semibold mb-4">💸 Send Transaction</h3>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+          <p className="text-red-700 text-sm font-medium">Transaction Error</p>
+          <p className="text-red-600 text-sm">{error.message}</p>
+        </div>
+      )}
+
+      {isSuccess && txHash && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded">
+          <p className="text-green-700 text-sm font-medium">✅ Transaction Confirmed!</p>
+          <p className="text-green-600 text-xs mt-1 break-all">
+            Hash: {txHash}
+          </p>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-2 text-gray-700">
+            To Address:
+          </label>
+          <input
+            type="text"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            placeholder="0x..."
+            disabled={isPending || isConfirming}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2 text-gray-700">
+            Amount (ETH):
+          </label>
+          <input
+            type="number"
+            step="0.001"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            placeholder="0.01"
+            disabled={isPending || isConfirming}
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={handleSend}
+            disabled={isPending || isConfirming || !to || !amount || !isAddress(to)}
+            className="flex-1 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Sending...
+              </span>
+            ) : isConfirming ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Confirming...
+              </span>
+            ) : (
+              '🚀 Send Transaction'
+            )}
+          </button>
+
+          {(txHash || error) && (
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+## Step 12: Complete App Assembly
+
+Update `src/App.tsx`:
+
+```tsx
+// src/App.tsx
+import { ConnectWallet } from './components/ConnectWallet'
+import { SignMessage } from './components/SignMessage'
+import { AccountInfo } from './components/AccountInfo'
+import { SendTransaction } from './components/SendTransaction'
+
+function App() {
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            🔐 HumanWallet React Hooks Demo
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Biometric authentication meets account abstraction
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            Complete integration with Wagmi React hooks
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-6">
+            <ConnectWallet />
+            <AccountInfo />
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            <SignMessage />
+            <SendTransaction />
+          </div>
+        </div>
+
+        <footer className="text-center mt-12 pt-8 border-t border-gray-200">
+          <p className="text-gray-500 text-sm">
+            Built with HumanWallet • Powered by ZeroDev & WebAuthn
+          </p>
+          <div className="flex justify-center gap-4 mt-2 text-xs text-gray-400">
+            <span>✨ Biometric Auth</span>
+            <span>🛡️ Account Abstraction</span>
+            <span>⚡ Gasless Transactions</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  )
+}
+
+export default App
+```
+
+## Step 13: Add Styling
+
+Update `src/index.css`:
+
+```css
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Loading animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+```
+
+## Step 14: Run Your Application
+
+Start your development server:
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:5173` and explore your complete HumanWallet integration!
+
+## React Hooks Overview
+
+### Core Wagmi Hooks Used
+
+1. **`useConnect`** - Handle wallet connection
+2. **`useAccount`** - Get account information
+3. **`useDisconnect`** - Handle wallet disconnection
+4. **`useSignMessage`** - Sign messages with passkey
+5. **`useBalance`** - Get account balance
+6. **`useChainId`** - Get current chain ID
+7. **`useSwitchChain`** - Switch between chains
+8. **`useSendTransaction`** - Send transactions
+9. **`useWaitForTransactionReceipt`** - Wait for transaction confirmation
+
+### Component Architecture
+
+```
+App.tsx
+├── ConnectWallet.tsx (useConnect, useAccount, useDisconnect)
+├── AccountInfo.tsx (useAccount, useBalance, useChainId, useSwitchChain)
+├── SignMessage.tsx (useSignMessage, useAccount)
+└── SendTransaction.tsx (useSendTransaction, useWaitForTransactionReceipt)
+```
+
+## Advanced Hook Patterns
+
+### Custom Hook for HumanWallet
+
+Create `src/hooks/useHumanWallet.ts`:
+
+```typescript
+// src/hooks/useHumanWallet.ts
+import { useConnect, useAccount, useDisconnect } from 'wagmi'
+import { useState } from 'react'
+
+export function useHumanWallet() {
+  const { connectors, connect, isPending, error } = useConnect()
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const [isConnecting, setIsConnecting] = useState(false)
+
+  const humanWallet = connectors.find(c => c.id === 'humanWallet')
+
+  const connectExisting = async () => {
+    if (!humanWallet) return
+    setIsConnecting(true)
+    try {
+      await connect({ connector: humanWallet })
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  const createNew = async (username?: string) => {
+    if (!humanWallet) return
+    setIsConnecting(true)
+    try {
+      await (connect as any)({ 
+        connector: humanWallet, 
+        ...(username ? { username } : { forceCreate: true })
+      })
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  return {
+    // State
+    address,
+    isConnected,
+    isConnecting: isConnecting || isPending,
+    error,
+    
+    // Actions
+    connectExisting,
+    createNew,
+    disconnect,
+    
+    // Connector info
+    isAvailable: !!humanWallet,
+  }
+}
+```
+
+### Usage with Custom Hook
+
+```tsx
+// In your component
+import { useHumanWallet } from '../hooks/useHumanWallet'
+
+export function SimpleConnect() {
+  const { 
+    address, 
+    isConnected, 
+    isConnecting, 
+    connectExisting, 
+    createNew, 
+    disconnect 
+  } = useHumanWallet()
+
+  if (isConnected) {
+    return (
+      <div>
+        <p>Connected: {address}</p>
+        <button onClick={() => disconnect()}>Disconnect</button>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <button 
+        onClick={connectExisting} 
+        disabled={isConnecting}
+      >
+        Connect Existing
+      </button>
+      <button 
+        onClick={() => createNew()} 
+        disabled={isConnecting}
+      >
+        Create New
+      </button>
+    </div>
+  )
+}
+```
+
+## Testing Your Integration
+
+### 1. Connection Flow
+- Test both "Connect Existing" and "Create New" flows
+- Verify biometric prompts appear correctly
+- Check error handling for cancelled operations
+
+### 2. Account Management
+- Verify account information displays correctly
+- Test network switching functionality
+- Check balance updates after switching chains
+
+### 3. Message Signing
+- Test signing with different message content
+- Verify signature format and display
+- Check error handling for failed signatures
+
+### 4. Transaction Sending
+- Test transaction creation and sending
+- Verify transaction confirmation waiting
+- Check error handling for failed transactions
+
+## Common Issues & Solutions
+
+### 1. "Connector not found"
+```typescript
+// Always check if connector exists
+const humanWallet = connectors.find(c => c.id === 'humanWallet')
+if (!humanWallet) {
+  console.error('HumanWallet connector not found')
+  return
+}
+```
+
+### 2. "Hook call order"
+```typescript
+// Ensure hooks are called in the same order every render
+const { address } = useAccount() // Always call
+const balance = useBalance({ 
+  address,
+  enabled: !!address // Only run when address exists
+})
+```
+
+### 3. "Type errors with connect function"
+```typescript
+// Use type assertion for custom connect parameters
+await (connect as any)({ 
+  connector: humanWallet, 
+  forceCreate: true 
+})
+```
+
+## Next Steps
+
+- **Explore Advanced Features**: Multi-chain transactions, batch operations
+- **Add Error Boundaries**: Comprehensive error handling
+- **Implement State Management**: Redux/Zustand for complex apps
+- **Add Testing**: Unit tests with Vitest and React Testing Library
+
+---
+
+🎉 **Congratulations!** You've built a complete React application with HumanWallet integration using modern React hooks and best practices.

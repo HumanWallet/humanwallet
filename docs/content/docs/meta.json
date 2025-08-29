@@ -3,6 +3,7 @@
   "pages": [
     "index",
     "quickstart",
+    "react-hooks-integration",
     "api",
     "examples", 
     "configuration"
