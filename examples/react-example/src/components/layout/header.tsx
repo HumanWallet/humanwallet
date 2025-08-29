@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import { useTruncateAddress } from "@/hooks/use-truncate-address"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
-import { Link, useNavigate } from "react-router"
+import { Link } from "react-router"
 import { ModeToggle } from "../mode-toggle"
 import { useAuth } from "../../context/auth-context"
 import {
@@ -47,7 +47,6 @@ import {
 export function Header() {
   const { isAuthenticated, user, logout } = useAuth()
   const { connectors, switchAccount } = useSwitchAccount()
-  const navigate = useNavigate()
   const truncatedAddress = useTruncateAddress(user?.address ?? "", { startLength: 6, endLength: 4 })
   const { copyToClipboard, isCopied } = useCopyToClipboard({
     timeout: 2000,
@@ -58,8 +57,8 @@ export function Header() {
     (connector) => connector.name !== "HumanWallet" || connectors.length > 1,
   )
   return (
-    <header className="sticky top-4 z-50 mx-4 mt-4 max-w-5xl justify-self-center w-full">
-      <div className="rounded-lg border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg">
+    <header className="sticky sm:top-4 z-50 sm:mx-4 sm:mt-4 max-w-5xl justify-self-center w-full ">
+      <div className="sm:rounded-lg sm:border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between max-w-5xl">
           {/* Mobile Navigation Menu - Top Left */}
           <Sheet>
@@ -233,10 +232,11 @@ export function Header() {
 
           {/* Connection Status */}
           <div className="flex items-center gap-4">
-            {/* Theme Toggle */}
-            <ModeToggle />
+            <div className="hidden sm:block">
+              <ModeToggle />
+            </div>
 
-            {isAuthenticated && user?.address ? (
+            {isAuthenticated && user?.address && (
               <>
                 {/* Network Badge */}
                 <Badge variant="outline" className="hidden sm:inline-flex">
@@ -337,8 +337,6 @@ export function Header() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
-            ) : (
-              <Button onClick={() => navigate("/connect")}>Connect Wallet</Button>
             )}
           </div>
         </div>
