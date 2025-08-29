@@ -44,6 +44,7 @@ export * from "./components/textarea"
 export * from "./components/toggle"
 export * from "./components/toggle-group"
 export * from "./components/tooltip"
+export * from "./components/typography"
 
 // Utilities
 export { cn } from "./lib/utils"
