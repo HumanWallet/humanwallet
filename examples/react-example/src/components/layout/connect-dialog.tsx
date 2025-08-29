@@ -11,6 +11,7 @@ import {
   Separator,
   Alert,
   AlertDescription,
+  Typography,
 } from "@humanwallet/ui"
 import { Wallet, AlertCircle, UserPlus, Key } from "lucide-react"
 import { useEffect } from "react"
@@ -64,8 +65,12 @@ export function ConnectDialog() {
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <div className="font-medium mb-1">Connection Error</div>
-                {error.message}
+                <Typography variant="small" className="font-medium mb-1">
+                  Connection Error
+                </Typography>
+                <Typography variant="muted" className="text-sm">
+                  {error.message}
+                </Typography>
               </AlertDescription>
             </Alert>
           )}
@@ -86,10 +91,12 @@ export function ConnectDialog() {
                           <img src={connector.icon} alt={connector.name} className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
                         <div className="sm:flex-1 text-left min-w-0">
-                          <div className="font-medium text-sm sm:text-base">Connect with HumanWallet</div>
-                          <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                          <Typography variant="small" className="font-medium text-sm sm:text-base">
+                            Connect with HumanWallet
+                          </Typography>
+                          <Typography variant="muted" className="text-xs sm:text-sm leading-relaxed">
                             Use your existing passkey
-                          </div>
+                          </Typography>
                         </div>
                         {isPending && (
                           <div className="w-3 h-3 sm:w-4 sm:h-4 animate-spin rounded-full border-2 border-primary border-t-transparent flex-shrink-0 mt-0.5" />
@@ -99,7 +106,9 @@ export function ConnectDialog() {
 
                     <div className="flex items-center gap-2 sm:gap-3">
                       <Separator className="flex-1" />
-                      <span className="text-xs text-muted-foreground">or</span>
+                      <Typography variant="muted" className="text-xs">
+                        or
+                      </Typography>
                       <Separator className="flex-1" />
                     </div>
 
@@ -125,17 +134,23 @@ export function ConnectDialog() {
                   <Wallet className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
                 </div>
                 <div className="space-y-2">
-                  <p className="font-medium text-sm sm:text-base">HumanWallet connector not available</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Please check your configuration.</p>
+                  <Typography variant="small" className="font-medium text-sm sm:text-base">
+                    HumanWallet connector not available
+                  </Typography>
+                  <Typography variant="muted" className="text-xs sm:text-sm">
+                    Please check your configuration.
+                  </Typography>
                 </div>
               </div>
             )}
           </div>
 
           <div className="text-center">
-            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-              <Key className="w-3 h-3" />
-              <span>Powered by WebAuthn passkeys</span>
+            <div className="flex items-center justify-center gap-2">
+              <Key className="w-3 h-3 text-muted-foreground" />
+              <Typography variant="muted" className="text-xs">
+                Powered by WebAuthn passkeys
+              </Typography>
             </div>
           </div>
         </div>
