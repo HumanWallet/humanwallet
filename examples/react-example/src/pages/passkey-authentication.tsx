@@ -64,38 +64,40 @@ export function PasskeyAuthenticationPage() {
 
   if (!isConnected) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="text-center py-12">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted mx-auto mb-6">
-            <Shield className="h-8 w-8 text-muted-foreground" />
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-4xl">
+        <div className="text-center py-8 sm:py-12">
+          <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-muted mx-auto mb-4 sm:mb-6">
+            <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
           </div>
-          <Typography variant="h2" className="mb-4">
+          <Typography variant="h2" className="mb-3 sm:mb-4 text-xl sm:text-3xl">
             Passkey Authentication Demo
           </Typography>
-          <Typography variant="lead" className="mb-6 text-center max-w-2xl mx-auto">
+          <Typography variant="lead" className="mb-4 sm:mb-6 text-center max-w-2xl mx-auto text-base sm:text-xl px-2">
             Connect your wallet to explore passkey-based message signing
           </Typography>
-          <Typography variant="muted">Please connect your HumanWallet to access this demonstration</Typography>
+          <Typography variant="muted" className="text-sm sm:text-base px-4">
+            Please connect your HumanWallet to access this demonstration
+          </Typography>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-6">
-          <Key className="h-8 w-8 text-primary" />
+    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-4xl">
+      <div className="text-center mb-6 sm:mb-8">
+        <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary/10 mx-auto mb-4 sm:mb-6">
+          <Key className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
         </div>
-        <Typography variant="h2" className="mb-4">
+        <Typography variant="h2" className="mb-3 sm:mb-4 text-xl sm:text-3xl">
           Passkey Authentication Demo
         </Typography>
-        <Typography variant="lead" className="text-center max-w-2xl mx-auto">
+        <Typography variant="lead" className="text-center max-w-2xl mx-auto text-base sm:text-xl px-2">
           Demonstrate secure message signing using your passkey authentication
         </Typography>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-4 sm:gap-6">
         {/* User Info Card */}
         <Card>
           <CardHeader>
@@ -105,17 +107,22 @@ export function PasskeyAuthenticationPage() {
               </div>
               <div>
                 <CardTitle className="text-lg">Connected Wallet</CardTitle>
-                <CardDescription>Ready for passkey authentication</CardDescription>
+                <CardDescription className="text-sm sm:text-base">Ready for passkey authentication</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <Typography variant="small" className="font-mono">
+            <div className="flex items-center justify-between p-2 sm:p-3 bg-muted rounded-lg">
+              <Typography variant="small" className="font-mono text-xs sm:text-sm truncate mr-2">
                 {address}
               </Typography>
-              <Button variant="ghost" size="sm" onClick={() => copyToClipboard(address || "")} className="h-8 w-8 p-0">
-                <Copy className="h-4 w-4" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => copyToClipboard(address || "")}
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 flex-shrink-0"
+              >
+                <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </div>
           </CardContent>
@@ -141,7 +148,7 @@ export function PasskeyAuthenticationPage() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Enter your message..."
-                  className="flex-1 min-h-[80px] px-3 py-2 text-sm bg-background border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  className="flex-1 min-h-[80px] sm:min-h-[100px] px-2 sm:px-3 py-2 text-xs sm:text-sm bg-background border border-input rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   disabled={isPending}
                 />
                 <Button
@@ -149,31 +156,35 @@ export function PasskeyAuthenticationPage() {
                   size="sm"
                   onClick={generateRandomMessage}
                   disabled={isPending}
-                  className="self-start"
+                  className="self-start p-2"
                 >
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
-              <Button onClick={handleSignMessage} disabled={isPending || !message.trim()} className="flex-1">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                onClick={handleSignMessage}
+                disabled={isPending || !message.trim()}
+                className="flex-1 h-10 sm:h-auto"
+              >
                 {isPending ? (
                   <>
-                    <div className="w-4 h-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent mr-2" />
-                    Authenticating...
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent mr-2" />
+                    <span className="text-sm sm:text-base">Authenticating...</span>
                   </>
                 ) : (
                   <>
-                    <Key className="w-4 h-4 mr-2" />
-                    Sign with Passkey
+                    <Key className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                    <span className="text-sm sm:text-base">Sign with Passkey</span>
                   </>
                 )}
               </Button>
               {signature && (
-                <Button variant="outline" onClick={handleReset}>
-                  Reset
+                <Button variant="outline" onClick={handleReset} className="h-10 sm:h-auto">
+                  <span className="text-sm sm:text-base">Reset</span>
                 </Button>
               )}
             </div>
