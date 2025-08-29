@@ -16,7 +16,6 @@ import {
   Separator,
   Alert,
   AlertDescription,
-  cn,
 } from "@humanwallet/ui"
 import { Wallet, AlertCircle, UserPlus, Shield, Key } from "lucide-react"
 import { useEffect } from "react"
@@ -27,7 +26,7 @@ interface ConnectDialogProps {
   readonly className?: string
 }
 
-export function ConnectDialog({ children, className }: ConnectDialogProps) {
+export function ConnectDialog({ children }: ConnectDialogProps) {
   const { isAuthenticated } = useAuth()
   const { connectors, connect, isPending, error } = useConnect()
 
@@ -55,20 +54,20 @@ export function ConnectDialog({ children, className }: ConnectDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className={cn("w-[calc(100vw-2rem)] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-[calc(100vh-2rem)] overflow-y-auto", className)}>
+      <DialogContent>
         <DialogHeader className="space-y-3 px-1">
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mx-auto">
             <Wallet className="h-6 w-6 text-primary" />
           </div>
           <DialogTitle className="text-center text-lg sm:text-xl font-semibold">
-            Connect with HumanWallet
+            Connect or create your wallet
           </DialogTitle>
           <DialogDescription className="text-center text-sm text-muted-foreground max-w-xs sm:max-w-sm mx-auto">
             Connect using your passkey for secure, passwordless authentication. No browser extensions required.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-6 px-1">
+        <div className="grid grid-cols-1 gap-6 px-1">
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -105,18 +104,18 @@ export function ConnectDialog({ children, className }: ConnectDialogProps) {
                           disabled={isPending}
                           className="w-full h-auto p-3 sm:p-4 justify-start"
                         >
-                          <div className="flex items-center gap-2 sm:gap-3 w-full min-w-0">
-                            <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex-shrink-0">
+                          <div className="flex items-start gap-2 sm:gap-3 w-full">
+                            <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex-shrink-0 mt-0.5">
                               <img src={connector.icon} alt={connector.name} className="w-4 h-4 sm:w-5 sm:h-5" />
                             </div>
                             <div className="flex-1 text-left min-w-0">
-                              <div className="font-medium text-sm sm:text-base truncate">Login with Passkey</div>
-                              <div className="text-xs sm:text-sm text-muted-foreground truncate">
-                                Use your existing passkey or authenticate to continue
+                              <div className="font-medium text-sm sm:text-base">Connect with HumanWallet</div>
+                              <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                                Use your existing passkey
                               </div>
                             </div>
                             {isPending && (
-                              <div className="w-3 h-3 sm:w-4 sm:h-4 animate-spin rounded-full border-2 border-primary border-t-transparent flex-shrink-0" />
+                              <div className="w-3 h-3 sm:w-4 sm:h-4 animate-spin rounded-full border-2 border-primary border-t-transparent flex-shrink-0 mt-0.5" />
                             )}
                           </div>
                         </Button>
