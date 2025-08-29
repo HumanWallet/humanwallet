@@ -3,6 +3,7 @@ import { Header } from "./components/layout"
 import Home from "./pages/home"
 import StakingDemo from "./pages/staking-demo"
 import MultiChain from "./pages/multi-chain"
+import { PasskeyAuthenticationPage } from "./pages/passkey-authentication"
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           {/* Protected routes */}
           <Route path="/staking-demo" element={<StakingDemo />} />
           <Route path="/multi-chain" element={<MultiChain />} />
+          <Route path="/passkey-authentication" element={<PasskeyAuthenticationPage />} />
         </Routes>
       </main>
     </div>

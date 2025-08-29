@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Wallet, Network, Zap } from "lucide-react"
+import { Home, TrendingUp, Wallet, Network, Zap, Key } from "lucide-react"
 import { Link } from "react-router"
 import {
   NavigationMenu,
@@ -60,6 +60,18 @@ export function MainNavigation() {
                   </div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                     Switch between networks and manage cross-chain assets
+                  </p>
+                </Link>
+              </NavigationMenuLink>
+
+              <NavigationMenuLink asChild>
+                <Link to="/passkey-authentication">
+                  <div className="flex items-center gap-2">
+                    <Key className="size-4" />
+                    <div className="text-sm font-medium leading-none">Passkey Auth</div>
+                  </div>
+                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                    Demonstrate secure message signing with passkeys
                   </p>
                 </Link>
               </NavigationMenuLink>

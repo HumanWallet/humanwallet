@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Network, Zap, Menu } from "lucide-react"
+import { Home, TrendingUp, Network, Zap, Menu, Key } from "lucide-react"
 import { Link } from "react-router"
 import {
   Button,
@@ -64,6 +64,16 @@ export function MobileNavigation({ userChainName }: MobileNavigationProps) {
                 <div className="text-xs text-muted-foreground">
                   Switch between networks and manage cross-chain assets
                 </div>
+              </div>
+            </Link>
+            <Link
+              to="/passkey-authentication"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
+              <Key className="size-4" />
+              <div>
+                <div className="font-medium">Passkey Auth</div>
+                <div className="text-xs text-muted-foreground">Demonstrate passkey message signing</div>
               </div>
             </Link>
 
