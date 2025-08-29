@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router"
-import { Header } from "./components/layout/header"
+import { Header } from "./components/layout"
 import { AuthProvider } from "./context/auth-context"
 import { ProtectedRoute } from "./components/auth/protected-route"
 import Home from "./pages/home"
