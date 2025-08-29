@@ -1,8 +1,12 @@
+import { ConnectDialog } from "@/components/layout"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@humanwallet/ui"
 import { TrendingUp, Network } from "lucide-react"
 import { Link } from "react-router"
+import { useAccount } from "wagmi"
 
 export default function Home() {
+  const { isDisconnected } = useAccount()
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="space-y-8">
@@ -36,9 +40,17 @@ export default function Home() {
               <CardDescription>Try both bundle and step-by-step staking approaches</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button size="sm" className="w-full" asChild>
-                <Link to="/staking-demo">Try Demo</Link>
-              </Button>
+              {isDisconnected ? (
+                <ConnectDialog>
+                  <Button size="sm" className="w-full">
+                    Try Demo
+                  </Button>
+                </ConnectDialog>
+              ) : (
+                <Button size="sm" className="w-full" asChild>
+                  <Link to="/staking-demo">Try Demo</Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
 
@@ -51,9 +63,17 @@ export default function Home() {
               <CardDescription>Switch between networks and manage cross-chain assets</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button size="sm" className="w-full" asChild>
-                <Link to="/multi-chain">Explore Networks</Link>
-              </Button>
+              {isDisconnected ? (
+                <ConnectDialog>
+                  <Button size="sm" className="w-full">
+                    Explore Networks
+                  </Button>
+                </ConnectDialog>
+              ) : (
+                <Button size="sm" className="w-full" asChild>
+                  <Link to="/multi-chain">Explore Networks</Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
 
@@ -75,9 +95,17 @@ export default function Home() {
               <CardDescription>Secure, passwordless login using biometric authentication</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button size="sm" className="w-full" asChild>
-                <Link to="/connect">Try Now</Link>
-              </Button>
+              {isDisconnected ? (
+                <ConnectDialog>
+                  <Button size="sm" className="w-full">
+                    Try Now
+                  </Button>
+                </ConnectDialog>
+              ) : (
+                <Button size="sm" className="w-full" asChild>
+                  <Link to="/connect">Try Now</Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
 

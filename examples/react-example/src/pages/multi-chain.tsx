@@ -22,7 +22,6 @@ import {
   Coins,
   Globe,
 } from "lucide-react"
-import { Link } from "react-router"
 import { formatUnits } from "viem"
 import type { config } from "@/wagmi/config"
 
@@ -33,7 +32,7 @@ declare module "wagmi" {
 }
 
 export default function MultiChain() {
-  const { address, isConnected, chain } = useAccount()
+  const { address, chain } = useAccount()
   const chainId = useChainId()
   const chains = useChains()
 
@@ -68,39 +67,6 @@ export default function MultiChain() {
       default:
         return "⚫"
     }
-  }
-
-  if (!isConnected) {
-    return (
-      <div className="container mx-auto max-w-2xl px-4 py-8">
-        <div className="space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Multi-Chain Support</h1>
-            <p className="text-muted-foreground">Experience seamless cross-chain interactions and network switching</p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Network className="size-5" />
-                Connect to Continue
-              </CardTitle>
-              <CardDescription>Connect your wallet to explore multi-chain features</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center py-8 text-muted-foreground">
-                <Network className="size-12 mx-auto mb-4 opacity-50" />
-                <p className="mb-2">No wallet connected</p>
-                <p className="text-sm mb-4">Please connect your wallet to continue</p>
-                <Button asChild>
-                  <Link to="/connect">Connect Wallet</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    )
   }
 
   return (

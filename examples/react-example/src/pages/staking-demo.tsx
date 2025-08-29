@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useAccount } from "wagmi"
 import { Package, ListChecks, ArrowRight } from "lucide-react"
 import {
   Card,
@@ -11,14 +10,12 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-  Badge,
   Separator,
 } from "@humanwallet/ui"
 import { StakingBundle } from "../components/staking/staking-bundle"
 import { StakingSteps } from "../components/staking/staking-steps"
 
 export default function StakingDemo() {
-  const { isConnected } = useAccount()
   const [activeTab, setActiveTab] = useState<"bundle" | "steps">("bundle")
 
   return (
@@ -31,11 +28,6 @@ export default function StakingDemo() {
             Experience two different approaches to Web3 interactions: bundled transactions for efficiency or
             step-by-step transactions for clarity and control.
           </p>
-          {!isConnected && (
-            <Badge variant="outline" className="text-warning border-warning/20">
-              Connect your wallet to start the demo
-            </Badge>
-          )}
         </div>
 
         {/* Approach Comparison */}
