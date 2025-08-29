@@ -16,7 +16,7 @@ import { Shield, Key, CheckCircle, AlertCircle, Copy, RefreshCw } from "lucide-r
 import { useCopyToClipboard } from "../hooks/use-copy-to-clipboard"
 
 export function PasskeyAuthenticationPage() {
-  const { address, isConnected } = useAccount()
+  const { address } = useAccount()
   const { signMessage, isPending, error } = useSignMessage()
   const { copyToClipboard, isCopied } = useCopyToClipboard()
 
@@ -60,27 +60,6 @@ export function PasskeyAuthenticationPage() {
     const timestamp = new Date().toISOString()
     const randomAction = actions[Math.floor(Math.random() * actions.length)]
     setMessage(`${randomAction} at ${timestamp}`)
-  }
-
-  if (!isConnected) {
-    return (
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-4xl">
-        <div className="text-center py-8 sm:py-12">
-          <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-muted mx-auto mb-4 sm:mb-6">
-            <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
-          </div>
-          <Typography variant="h2" className="mb-3 sm:mb-4 text-xl sm:text-3xl">
-            Passkey Authentication Demo
-          </Typography>
-          <Typography variant="lead" className="mb-4 sm:mb-6 text-center max-w-2xl mx-auto text-base sm:text-xl px-2">
-            Connect your wallet to explore passkey-based message signing
-          </Typography>
-          <Typography variant="muted" className="text-sm sm:text-base px-4">
-            Please connect your HumanWallet to access this demonstration
-          </Typography>
-        </div>
-      </div>
-    )
   }
 
   return (
