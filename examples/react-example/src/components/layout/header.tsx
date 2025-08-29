@@ -1,13 +1,13 @@
 import type { Connector } from "wagmi"
-import { useSwitchAccount } from "wagmi"
-import { useAuth } from "../../context/auth-context"
+import { useAccount, useDisconnect, useSwitchAccount } from "wagmi"
 import { MobileNavigation } from "./mobile-navigation"
 import { BrandLogo } from "./brand-logo"
 import { MainNavigation } from "./navigation-menu"
 import { ConnectionStatus } from "./connection-status"
 
 export function Header() {
-  const { isAuthenticated, user, logout } = useAuth()
+  const { address, chain, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
   const { connectors, switchAccount } = useSwitchAccount()
 
   // Filter out current connector to show only alternative options
@@ -24,7 +24,7 @@ export function Header() {
       <div className="sm:rounded-lg sm:border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg">
         <div className="container mx-auto sm:px-6 px-4 h-16 flex items-center justify-between max-w-5xl">
           {/* Mobile Navigation Menu - Top Left */}
-          <MobileNavigation userChainName={user?.chainName} />
+          <MobileNavigation userChainName={chain?.name} />
 
           {/* Logo/Brand and Navigation Menu */}
           <div className="flex items-center gap-6">
@@ -34,12 +34,12 @@ export function Header() {
 
           {/* Connection Status */}
           <ConnectionStatus
-            isAuthenticated={isAuthenticated}
-            userAddress={user?.address}
-            userChainName={user?.chainName}
+            isAuthenticated={isConnected}
+            userAddress={address}
+            userChainName={chain?.name}
             availableConnectors={availableConnectors}
             onSwitchAccount={handleSwitchAccount}
-            onLogout={logout}
+            onLogout={disconnect}
           />
         </div>
       </div>

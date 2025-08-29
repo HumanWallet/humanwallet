@@ -55,16 +55,6 @@ export function MobileNavigation({ userChainName }: MobileNavigationProps) {
               </div>
             </Link>
             <Link
-              to="/connect"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              <Wallet className="size-4" />
-              <div>
-                <div className="font-medium">Connect Wallet</div>
-                <div className="text-xs text-muted-foreground">Try passwordless authentication with passkeys</div>
-              </div>
-            </Link>
-            <Link
               to="/multi-chain"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
             >
