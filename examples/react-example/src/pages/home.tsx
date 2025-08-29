@@ -1,12 +1,12 @@
-import { useAccount } from "wagmi"
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@humanwallet/ui"
 import { Wallet, TrendingUp, Network } from "lucide-react"
 import { Link } from "react-router"
+import { useAuth } from "../context/auth-context"
 
 export default function Home() {
-  const { isConnected } = useAccount()
+  const { isAuthenticated } = useAuth()
 
-  if (!isConnected) {
+  if (!isAuthenticated) {
     return (
       <div className="container mx-auto max-w-2xl px-4 py-8">
         <div className="space-y-6">

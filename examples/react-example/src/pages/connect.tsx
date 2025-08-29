@@ -1,21 +1,22 @@
-import { useAccount, useConnect } from "wagmi"
+import { useConnect } from "wagmi"
 import type { Connector } from "wagmi"
 import { Button } from "@humanwallet/ui"
 import { Wallet, AlertCircle, UserPlus } from "lucide-react"
 import { useEffect } from "react"
 import { useNavigate } from "react-router"
+import { useAuth } from "../context/auth-context"
 
 export default function Connect() {
-  const { isConnected } = useAccount()
+  const { isAuthenticated } = useAuth()
   const { connectors, connect, isPending, error } = useConnect()
   const navigate = useNavigate()
 
   // Redirect to home after successful connection
   useEffect(() => {
-    if (isConnected) {
+    if (isAuthenticated) {
       navigate("/")
     }
-  }, [isConnected, navigate])
+  }, [isAuthenticated, navigate])
 
   const handleConnectHumanWallet = (connector: Connector): void => {
     // Simple connect - the connector will handle login vs registration automatically

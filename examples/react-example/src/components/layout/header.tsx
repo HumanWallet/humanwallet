@@ -1,4 +1,4 @@
-import { useAccount, useDisconnect, useSwitchAccount } from "wagmi"
+import { useSwitchAccount } from "wagmi"
 import {
   ChevronDown,
   Copy,
@@ -15,8 +15,9 @@ import {
 } from "lucide-react"
 import { useTruncateAddress } from "@/hooks/use-truncate-address"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { ModeToggle } from "../mode-toggle"
+import { useAuth } from "../../context/auth-context"
 import {
   Badge,
   DropdownMenu,
@@ -44,10 +45,10 @@ import {
 } from "@humanwallet/ui"
 
 export function Header() {
-  const { address, isConnected, chain } = useAccount()
-  const { disconnect } = useDisconnect()
+  const { isAuthenticated, user, logout } = useAuth()
   const { connectors, switchAccount } = useSwitchAccount()
-  const truncatedAddress = useTruncateAddress(address ?? "", { startLength: 6, endLength: 4 })
+  const navigate = useNavigate()
+  const truncatedAddress = useTruncateAddress(user?.address ?? "", { startLength: 6, endLength: 4 })
   const { copyToClipboard, isCopied } = useCopyToClipboard({
     timeout: 2000,
   })
@@ -119,7 +120,7 @@ export function Header() {
                 </Link>
 
                 {/* Sepolia Faucet Link - Mobile */}
-                {chain?.name === "Sepolia" && (
+                {user?.chainName === "Sepolia" && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -235,11 +236,11 @@ export function Header() {
           {/* Theme Toggle */}
           <ModeToggle />
 
-          {isConnected && address ? (
+          {isAuthenticated && user?.address ? (
             <>
               {/* Network Badge */}
               <Badge variant="outline" className="hidden sm:inline-flex">
-                {chain?.name || "Unknown"}
+                {user?.chainName || "Unknown"}
               </Badge>
 
               {/* Wallet Dropdown */}
@@ -257,11 +258,11 @@ export function Header() {
                 <DropdownMenuContent align="end" className="w-64">
                   <div className="px-3 py-2">
                     <p className="text-sm font-medium">Connected Wallet</p>
-                    <p className="text-xs text-muted-foreground">Network: {chain?.name || "Unknown"}</p>
+                    <p className="text-xs text-muted-foreground">Network: {user?.chainName || "Unknown"}</p>
                   </div>
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem onClick={() => copyToClipboard(address)} className="cursor-pointer">
+                  <DropdownMenuItem onClick={() => copyToClipboard(user?.address || "")} className="cursor-pointer">
                     {isCopied ? <Check className="size-4 mr-2 text-success" /> : <Copy className="size-4 mr-2" />}
                     <div className="flex-1">
                       <div className="text-sm">{isCopied ? "Address copied!" : "Copy address"}</div>
@@ -271,7 +272,7 @@ export function Header() {
 
                   <DropdownMenuItem asChild>
                     <a
-                      href={`${chain?.blockExplorers?.default?.url}/address/${address}`}
+                      href={`https://sepolia.etherscan.io/address/${user?.address}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="cursor-pointer"
@@ -298,7 +299,7 @@ export function Header() {
                   )}
 
                   {/* Sepolia Faucet Link */}
-                  {chain?.name === "Sepolia" && (
+                  {user?.chainName === "Sepolia" && (
                     <>
                       <DropdownMenuSeparator />
                       <TooltipProvider>
@@ -324,10 +325,7 @@ export function Header() {
                     </>
                   )}
 
-                  <DropdownMenuItem
-                    onClick={() => disconnect()}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive focus:text-destructive">
                     <LogOut className="size-4 mr-2" />
                     Disconnect
                   </DropdownMenuItem>
@@ -335,9 +333,7 @@ export function Header() {
               </DropdownMenu>
             </>
           ) : (
-            <Button asChild>
-              <Link to="/connect">Connect Wallet</Link>
-            </Button>
+            <Button onClick={() => navigate("/connect")}>Connect Wallet</Button>
           )}
         </div>
       </div>
