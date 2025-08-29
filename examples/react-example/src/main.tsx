@@ -4,7 +4,6 @@ import { WagmiProviders } from "./wagmi/provider"
 import { ThemeProvider } from "./components/theme-provider"
 import App from "./App"
 import "../../../packages/ui/src/styles/globals.css"
-import "./app.css"
 
 const root = document.getElementById("root")
 

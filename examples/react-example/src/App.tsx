@@ -10,7 +10,7 @@ import MultiChain from "./pages/multi-chain"
 function App() {
   return (
     <AuthProvider>
-      <div className="grid min-h-dvh [grid-template-rows:auto_1fr_auto]">
+      <div className="grid min-h-dvh [grid-template-rows:auto_1fr_auto] sm:overflow-y-scroll">
         <Header />
         <main>
           <Routes>
