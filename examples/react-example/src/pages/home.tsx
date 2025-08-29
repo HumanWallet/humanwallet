@@ -103,7 +103,7 @@ export default function Home() {
                 </ConnectDialog>
               ) : (
                 <Button size="sm" className="w-full" asChild>
-                  <Link to="/connect">Try Now</Link>
+                  <Link to="/passkey-authentication">Try Now</Link>
                 </Button>
               )}
             </CardContent>

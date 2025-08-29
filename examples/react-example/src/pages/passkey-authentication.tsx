@@ -14,9 +14,11 @@ import {
 } from "@humanwallet/ui"
 import { Shield, Key, CheckCircle, AlertCircle, Copy, RefreshCw } from "lucide-react"
 import { useCopyToClipboard } from "../hooks/use-copy-to-clipboard"
+import { useTruncateAddress } from "@/hooks/use-truncate-address"
 
 export function PasskeyAuthenticationPage() {
   const { address } = useAccount()
+  const truncatedAddress = useTruncateAddress(address!, { endLength: 20, startLength: 10 })
   const { signMessage, isPending, error } = useSignMessage()
   const { copyToClipboard, isCopied } = useCopyToClipboard()
 
@@ -97,7 +99,7 @@ export function PasskeyAuthenticationPage() {
           <CardContent>
             <div className="flex items-center justify-between p-2 sm:p-3 bg-muted rounded-lg">
               <Typography variant="small" className="font-mono text-xs sm:text-sm truncate mr-2">
-                {address}
+                {truncatedAddress}
               </Typography>
               <Button
                 variant="ghost"
