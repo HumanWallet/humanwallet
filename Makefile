@@ -46,6 +46,10 @@ install-react-example: ## Install dependencies for react-example only
 	@echo "Installing react-example dependencies..."
 	npm install --workspace=examples/react-example
 
+install-docs: ## Install dependencies for docs only
+	@echo "Installing docs dependencies..."
+	npm install --workspace=docs
+
 
 
 # Build commands
@@ -80,6 +84,10 @@ build-react-demo: ## Build react-architecture app only
 build-react-example: ## Build react-example only
 	@echo "Building react-example..."
 	npm run build --workspace=examples/react-example
+
+build-docs: ## Build docs only
+	@echo "Building docs..."
+	npm run build --workspace=docs
 
 
 
@@ -118,6 +126,14 @@ dev-react-example: ## Start development mode for react-example
 	@echo "Starting react-example..."
 	npm run dev --workspace=examples/react-example
 
+dev-docs: ## Start development mode for docs
+	@echo "Starting docs..."
+	npm run dev --workspace=docs
+
+start-docs: ## Start docs in production mode
+	@echo "Starting docs in production mode..."
+	npm run start --workspace=docs
+
 
 
 # Test commands
@@ -149,6 +165,10 @@ test-react-demo: ## Run tests for react-architecture app
 	@echo "Running react-architecture app tests..."
 	npm run test --workspace=apps/react-architecture --if-present
 
+test-docs: ## Run tests for docs
+	@echo "Running docs tests..."
+	npm run test --workspace=docs --if-present
+
 
 
 # Linting and formatting
@@ -176,17 +196,28 @@ lint-react-example: ## Run linting for react-example only
 	@echo "Running react-example linting..."
 	npm run lint --workspace=examples/react-example --if-present
 
+lint-docs: ## Run linting for docs only
+	@echo "Running docs linting..."
+	npm run lint --workspace=docs --if-present
+
+format-docs: ## Format docs code only
+	@echo "Running docs formatting..."
+	npm run format --workspace=docs
+
 format: ## Format code for all packages
 	@echo "Formatting code..."
 	npx prettier --write "packages/**/*.{ts,tsx,js,jsx,json,md}"
 	npx prettier --write "apps/**/*.{ts,tsx,js,jsx,json,md}"
 	npx prettier --write "examples/**/*.{ts,tsx,js,jsx,json,md}"
+	npx prettier --write "docs/**/*.{ts,tsx,js,jsx,json,md,mdx}"
 
 
 format-check: ## Check code formatting for all packages
 	@echo "Checking code formatting..."
 	npx prettier --check "packages/**/*.{ts,tsx,js,jsx,json,md}"
 	npx prettier --check "apps/**/*.{ts,tsx,js,jsx,json,md}"
+	npx prettier --check "examples/**/*.{ts,tsx,js,jsx,json,md}"
+	npx prettier --check "docs/**/*.{ts,tsx,js,jsx,json,md,mdx}"
 
 typecheck: ## Run TypeScript type checking for all packages
 	@echo "Running type checking..."
@@ -207,6 +238,10 @@ typecheck-core: ## Run TypeScript type checking for core only
 typecheck-connector: ## Run TypeScript type checking for connector only
 	@echo "Running connector type checking..."
 	cd packages/connector && npx tsc --noEmit
+
+typecheck-docs: ## Run TypeScript type checking for docs only
+	@echo "Running docs type checking..."
+	cd docs && npx tsc --noEmit
 
 # Cleanup commands
 clean: ## Clean all build artifacts and node_modules
@@ -249,6 +284,11 @@ clean-react-demo: ## Clean react-architecture app build artifacts
 clean-react-example: ## Clean react-example build artifacts
 	@echo "Cleaning react-example..."
 	rm -rf examples/react-example/dist
+
+clean-docs: ## Clean docs build artifacts
+	@echo "Cleaning docs..."
+	rm -rf docs/.next
+	rm -rf docs/dist
 
 
 
