@@ -40,4 +40,3 @@ export const ProtectedRoute = ({ children, fallback }: ProtectedRouteProps) => {
   // If connected, render the protected content
   return <>{children}</>
 }
-

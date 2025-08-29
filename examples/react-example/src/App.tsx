@@ -10,29 +10,31 @@ import MultiChain from "./pages/multi-chain"
 function App() {
   return (
     <AuthProvider>
-      <Header />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/connect" element={<Connect />} />
-          <Route
-            path="/staking-demo"
-            element={
-              <ProtectedRoute>
-                <StakingDemo />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/multi-chain"
-            element={
-              <ProtectedRoute>
-                <MultiChain />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </main>
+      <div className="grid min-h-dvh [grid-template-rows:auto_1fr_auto]">
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/connect" element={<Connect />} />
+            <Route
+              path="/staking-demo"
+              element={
+                <ProtectedRoute>
+                  <StakingDemo />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/multi-chain"
+              element={
+                <ProtectedRoute>
+                  <MultiChain />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
+      </div>
     </AuthProvider>
   )
 }
