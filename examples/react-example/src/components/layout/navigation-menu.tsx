@@ -1,12 +1,12 @@
-import { Home, TrendingUp, Wallet, Network, Zap } from "lucide-react"
+import { TrendingUp, Wallet, Network, CircleCheckIcon, CircleIcon } from "lucide-react"
 import { Link } from "react-router"
 import {
   NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-  NavigationMenuTrigger,
   NavigationMenuContent,
+  NavigationMenuItem,
   NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@humanwallet/ui"
 
@@ -16,14 +16,14 @@ export function MainNavigation() {
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link to="/" className={navigationMenuTriggerStyle()}>
-            <Home className="size-4 mr-2" />
+            <CircleIcon className="size-4 mr-2" />
             Home
           </Link>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
           <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
-            <Zap className="size-4 mr-2" />
+            <CircleCheckIcon className="size-4 mr-2" />
             Demo
           </NavigationMenuTrigger>
           <NavigationMenuContent>
