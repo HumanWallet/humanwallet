@@ -1,0 +1,531 @@
+---
+title: Quick Start Guide
+description: Complete step-by-step guide to integrate HumanWallet connector into your React application
+---
+
+# Quick Start Guide
+
+This guide will walk you through integrating the HumanWallet connector into your React application, step by step. We'll build a complete integration that enables biometric authentication and account abstraction for your users.
+
+## Prerequisites
+
+Before we begin, make sure you have:
+
+- **Node.js 18+** installed
+- A **ZeroDev Project ID** (get one at [dashboard.zerodev.app](https://dashboard.zerodev.app/))
+- Basic knowledge of **React** and **TypeScript**
+- Familiarity with **Wagmi** (optional but helpful)
+
+## Step 1: Create Your Project
+
+First, create a new React project with Vite:
+
+```bash
+npm create vite@latest my-humanwallet-app -- --template react-ts
+cd my-humanwallet-app
+npm install
+```
+
+## Step 2: Install Dependencies
+
+Install the required packages for HumanWallet integration:
+
+```bash
+# Core dependencies
+npm install @humanwallet/connector viem wagmi
+
+# React Query for caching
+npm install @tanstack/react-query
+
+# Optional: UI library for better components
+npm install @radix-ui/react-dialog @radix-ui/react-alert-dialog
+npm install lucide-react class-variance-authority clsx
+
+# Development dependencies
+npm install --save-dev vite-plugin-node-polyfills
+```
+
+## Step 3: Configure Vite
+
+Update your `vite.config.ts` to include node polyfills:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    nodePolyfills() // Required for Web3 libraries
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    }
+  }
+})
+```
+
+## Step 4: Environment Configuration
+
+Create a `.env.local` file in your project root:
+
+```bash
+# .env.local
+VITE_ZERODEV_PROJECT_ID=your_zerodev_project_id_here
+```
+
+<Alert>
+  <AlertCircle className="h-4 w-4" />
+  <AlertDescription>
+    **Important**: Replace `your_zerodev_project_id_here` with your actual ZeroDev Project ID from the [ZeroDev Dashboard](https://dashboard.zerodev.app/).
+  </AlertDescription>
+</Alert>
+
+## Step 5: Create Wagmi Configuration
+
+Create `src/wagmi/config.ts`:
+
+```typescript
+// src/wagmi/config.ts
+import { createConfig, http } from 'wagmi'
+import { mainnet, sepolia, polygon } from 'wagmi/chains'
+import { humanWalletConnector } from '@humanwallet/connector'
+
+// Get project ID from environment variables
+const ZERODEV_PROJECT_ID = import.meta.env.VITE_ZERODEV_PROJECT_ID
+
+export const config = createConfig({
+  chains: [sepolia, mainnet, polygon],
+  connectors: [
+    humanWalletConnector({
+      projectId: ZERODEV_PROJECT_ID,
+      appName: "My HumanWallet App",
+      passkeyName: "My Wallet",
+      dappMetadata: {
+        name: "My DApp",
+        url: "https://mydapp.com",
+        iconUrl: "https://mydapp.com/icon.png",
+        description: "My awesome DApp"
+      },
+      logging: {
+        developerMode: true // Enable for development
+      }
+    }),
+  ],
+  transports: {
+    [sepolia.id]: http(),
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+  },
+})
+
+// TypeScript module augmentation for better type safety
+declare module 'wagmi' {
+  interface Register {
+    config: typeof config
+  }
+}
+```
+
+## Step 6: Create Wagmi Provider
+
+Create `src/wagmi/provider.tsx`:
+
+```tsx
+// src/wagmi/provider.tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+import { config } from './config'
+
+const queryClient = new QueryClient()
+
+export function WagmiProviders({ children }: { children: React.ReactNode }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </WagmiProvider>
+  )
+}
+```
+
+## Step 7: Update Main Entry Point
+
+Update `src/main.tsx`:
+
+```tsx
+// src/main.tsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { WagmiProviders } from './wagmi/provider'
+import App from './App'
+import './index.css'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <WagmiProviders>
+      <App />
+    </WagmiProviders>
+  </React.StrictMode>,
+)
+```
+
+## Step 8: Create Connection Component
+
+Create `src/components/ConnectWallet.tsx`:
+
+```tsx
+// src/components/ConnectWallet.tsx
+import { useConnect, useAccount, useDisconnect } from 'wagmi'
+import { useState } from 'react'
+
+export function ConnectWallet() {
+  const { connectors, connect, isPending, error } = useConnect()
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const [isConnecting, setIsConnecting] = useState(false)
+
+  const humanWallet = connectors.find(c => c.id === 'humanWallet')
+
+  const handleConnect = async () => {
+    if (!humanWallet) return
+    setIsConnecting(true)
+    try {
+      await connect({ connector: humanWallet })
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  const handleCreateNew = async () => {
+    if (!humanWallet) return
+    setIsConnecting(true)
+    try {
+      // Force create new wallet
+      await (connect as any)({ 
+        connector: humanWallet, 
+        forceCreate: true 
+      })
+    } finally {
+      setIsConnecting(false)
+    }
+  }
+
+  if (isConnected && address) {
+    return (
+      <div className="p-6 border rounded-lg">
+        <h3 className="text-lg font-semibold mb-2">✅ Connected</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Address: {address.slice(0, 6)}...{address.slice(-4)}
+        </p>
+        <button
+          onClick={() => disconnect()}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          Disconnect
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6 border rounded-lg">
+      <h3 className="text-lg font-semibold mb-4">🔐 Connect HumanWallet</h3>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+          <p className="text-red-700 text-sm">{error.message}</p>
+        </div>
+      )}
+
+      <div className="space-y-3">
+        <button
+          onClick={handleConnect}
+          disabled={isConnecting || isPending}
+          className="w-full px-4 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+        >
+          {isConnecting || isPending ? 'Connecting...' : 'Connect with Existing Passkey'}
+        </button>
+
+        <button
+          onClick={handleCreateNew}
+          disabled={isConnecting || isPending}
+          className="w-full px-4 py-3 border border-blue-500 text-blue-500 rounded hover:bg-blue-50 disabled:opacity-50"
+        >
+          {isConnecting || isPending ? 'Creating...' : 'Create New Wallet'}
+        </button>
+      </div>
+
+      <p className="text-xs text-gray-500 mt-3 text-center">
+        🔑 Powered by WebAuthn passkeys
+      </p>
+    </div>
+  )
+}
+```
+
+## Step 9: Create Message Signing Component
+
+Create `src/components/SignMessage.tsx`:
+
+```tsx
+// src/components/SignMessage.tsx
+import { useState } from 'react'
+import { useSignMessage, useAccount } from 'wagmi'
+
+export function SignMessage() {
+  const { address } = useAccount()
+  const { signMessage, isPending, error } = useSignMessage()
+  const [message, setMessage] = useState('Hello, HumanWallet!')
+  const [signature, setSignature] = useState<string | null>(null)
+
+  const handleSign = async () => {
+    if (!message.trim()) return
+
+    try {
+      const sig = await signMessage({ message })
+      setSignature(sig)
+    } catch (err) {
+      console.error('Failed to sign message:', err)
+    }
+  }
+
+  if (!address) {
+    return (
+      <div className="p-6 border rounded-lg opacity-50">
+        <h3 className="text-lg font-semibold mb-2">✍️ Sign Message</h3>
+        <p className="text-sm text-gray-600">Connect your wallet first</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6 border rounded-lg">
+      <h3 className="text-lg font-semibold mb-4">✍️ Sign Message</h3>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+          <p className="text-red-700 text-sm">{error.message}</p>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            Message to sign:
+          </label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full p-3 border rounded resize-none"
+            rows={3}
+            placeholder="Enter your message..."
+          />
+        </div>
+
+        <button
+          onClick={handleSign}
+          disabled={isPending || !message.trim()}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+        >
+          {isPending ? 'Signing...' : 'Sign with Passkey'}
+        </button>
+
+        {signature && (
+          <div className="p-3 bg-green-50 border border-green-200 rounded">
+            <p className="text-sm font-medium text-green-700 mb-1">✅ Signature:</p>
+            <p className="text-xs text-green-600 font-mono break-all">
+              {signature}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
+## Step 10: Update Your App Component
+
+Update `src/App.tsx`:
+
+```tsx
+// src/App.tsx
+import { ConnectWallet } from './components/ConnectWallet'
+import { SignMessage } from './components/SignMessage'
+
+function App() {
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <header className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            🔐 HumanWallet Demo
+          </h1>
+          <p className="text-gray-600">
+            Biometric authentication meets account abstraction
+          </p>
+        </header>
+
+        <div className="space-y-6">
+          <ConnectWallet />
+          <SignMessage />
+        </div>
+
+        <footer className="text-center mt-8 text-sm text-gray-500">
+          <p>Built with HumanWallet • Powered by ZeroDev & WebAuthn</p>
+        </footer>
+      </div>
+    </div>
+  )
+}
+
+export default App
+```
+
+## Step 11: Add Basic Styling
+
+Update `src/index.css`:
+
+```css
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+```
+
+## Step 12: Run Your Application
+
+Start your development server:
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:5173` and you should see your HumanWallet integration!
+
+## Testing Your Integration
+
+### 1. Creating a New Wallet
+1. Click "Create New Wallet"
+2. Enter a wallet name when prompted
+3. Complete the biometric authentication
+4. Your wallet is now created and connected!
+
+### 2. Connecting with Existing Wallet
+1. Click "Connect with Existing Passkey"
+2. Select your passkey from the browser prompt
+3. Complete biometric authentication
+4. You're connected!
+
+### 3. Signing Messages
+1. Ensure you're connected
+2. Enter a message to sign
+3. Click "Sign with Passkey"
+4. Complete biometric authentication
+5. View your signature!
+
+## Advanced Configuration
+
+### Custom Passkey Server
+
+```typescript
+humanWalletConnector({
+  projectId: ZERODEV_PROJECT_ID,
+  passkeyServerUrl: "https://your-custom-passkey-server.com",
+  // ... other options
+})
+```
+
+### Multiple Chain Support
+
+```typescript
+export const config = createConfig({
+  chains: [mainnet, polygon, arbitrum, optimism],
+  connectors: [
+    humanWalletConnector({
+      projectId: ZERODEV_PROJECT_ID,
+      // Connector works across all configured chains
+    }),
+  ],
+  transports: {
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [arbitrum.id]: http(),
+    [optimism.id]: http(),
+  },
+})
+```
+
+### Development Logging
+
+```typescript
+humanWalletConnector({
+  projectId: ZERODEV_PROJECT_ID,
+  logging: {
+    developerMode: true, // Enable detailed logs
+    sdk: true,          // Enable SDK logs
+  },
+})
+```
+
+## Common Issues & Solutions
+
+### 1. "Project ID not found"
+- Verify your ZeroDev project ID is correct
+- Check that your environment variable is properly set
+- Ensure you're not using a test project ID in production
+
+### 2. "WebAuthn not supported"
+- Make sure you're using HTTPS (or localhost for development)
+- Verify the browser supports WebAuthn
+- Check if the device has biometric capabilities
+
+### 3. "Failed to create passkey"
+- Ensure the domain is properly configured in ZeroDev
+- Check browser settings for WebAuthn permissions
+- Verify the user didn't cancel the authentication prompt
+
+## Next Steps
+
+Now that you have a basic integration:
+
+1. **Explore Advanced Features**: Check out our [API Reference](/docs/api) for more connector options
+2. **Add Transaction Handling**: Learn about sending transactions with account abstraction
+3. **Multi-chain Support**: Configure your app to work across multiple networks
+4. **UI Enhancement**: Use our pre-built components for better user experience
+
+## Need Help?
+
+- 📚 **Documentation**: [Read our full API reference](/docs/api)
+- 🐛 **Issues**: [Report bugs on GitHub](https://github.com/HumanWallet/humanwallet/issues)
+- 💬 **Community**: Join our Discord for support and discussions
+
+---
+
+🎉 **Congratulations!** You've successfully integrated HumanWallet into your React application. Your users can now enjoy passwordless, biometric authentication with the security of account abstraction.
