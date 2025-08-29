@@ -35,6 +35,10 @@ export function PasskeyAuthenticationPage() {
             setSignature(signature)
             setIsVerified(true)
           },
+          onError: (error) => {
+            console.error("Failed to sign message:", error)
+            setIsVerified(false)
+          },
         },
       )
     } catch (err) {
