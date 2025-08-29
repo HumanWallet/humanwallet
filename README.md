@@ -24,7 +24,7 @@ HumanWallet is a comprehensive Web3 wallet solution that combines **WebAuthn pas
 ### 🔧 **Developer Experience**
 - **TypeScript First**: Fully typed APIs with comprehensive documentation
 - **Modular Architecture**: Use individual packages or the complete SDK
-- **React Components**: Pre-built UI components for rapid integration
+- **Wagmi Compatible**: Drop-in replacement for traditional wallet connectors
 
 ## 🏗️ Architecture
 
@@ -36,8 +36,7 @@ humanwallet/
 │   ├── connector/     # Wagmi connector for HumanWallet
 │   ├── core/          # Core functionality and business logic
 │   ├── types/         # Shared TypeScript type definitions
-│   ├── sdk/           # High-level SDK combining all packages
-│   └── ui/            # React UI components library
+│   └── sdk/           # High-level SDK combining all packages
 ├── apps/
 │   ├── domain-architecture/  # Domain-driven architecture demo
 │   └── react-architecture/   # React-based demo application
@@ -53,14 +52,13 @@ humanwallet/
 | `@humanwallet/core` | Core business logic and actions | Ethereum interactions, key management, domain architecture |
 | `@humanwallet/types` | Shared TypeScript definitions | Type safety across all packages |
 | `@humanwallet/sdk` | Unified SDK interface | High-level API combining all functionality |
-| `@humanwallet/ui` | React component library | Pre-built UI components with Tailwind CSS |
 
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-npm install @humanwallet/connector @humanwallet/ui viem wagmi
+npm install @humanwallet/connector viem wagmi
 ```
 
 ### Basic Integration
@@ -97,7 +95,6 @@ const config = createConfig({
 
 ```tsx
 import { useConnect, useAccount } from 'wagmi'
-import { Button } from '@humanwallet/ui'
 
 function ConnectWallet() {
   const { connect, connectors } = useConnect()
@@ -110,11 +107,11 @@ function ConnectWallet() {
   }
 
   return (
-    <Button 
+    <button 
       onClick={() => connect({ connector: humanWallet })}
     >
       Connect with HumanWallet
-    </Button>
+    </button>
   )
 }
 ```
@@ -204,8 +201,7 @@ The HumanWallet connector supports standard Ethereum RPC methods:
 - **Viem**: Modern Ethereum library for type-safe blockchain interactions
 - **Wagmi**: React hooks for Ethereum, providing the connector interface
 - **ZeroDev SDK**: Account abstraction and passkey infrastructure
-- **React**: UI framework for components and examples
-- **Tailwind CSS**: Utility-first styling for UI components
+- **React**: UI framework for demo applications and examples
 - **Vitest**: Fast unit testing framework
 
 ## 🔐 Security
