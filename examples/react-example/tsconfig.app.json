@@ -31,5 +31,5 @@
       "@humanwallet/ui/*": ["../../packages/ui/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "postcss.config.mjs"]
 }

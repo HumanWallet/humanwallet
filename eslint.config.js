@@ -12,6 +12,7 @@ export default tseslint.config([
       "**/tsup.config.ts",
       "**/vitest-setup.ts",
       "**/vitest.config.ts",
+      "**/postcss.config.*",
       "node_modules",
       "**/dist/**",
       "**/build/**",

@@ -8,25 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
   Separator,
   Alert,
   AlertDescription,
 } from "@humanwallet/ui"
-import { Wallet, AlertCircle, UserPlus, Shield, Key } from "lucide-react"
+import { Wallet, AlertCircle, UserPlus, Key } from "lucide-react"
 import { useEffect } from "react"
 import { useAuth } from "../../context/auth-context"
 
-interface ConnectDialogProps {
-  readonly children: React.ReactNode
-  readonly className?: string
-}
-
-export function ConnectDialog({ children }: ConnectDialogProps) {
+export function ConnectDialog() {
   const { isAuthenticated } = useAuth()
   const { connectors, connect, isPending, error } = useConnect()
 
@@ -53,8 +43,10 @@ export function ConnectDialog({ children }: ConnectDialogProps) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogTrigger asChild>
+        <Button>Connect</Button>
+      </DialogTrigger>
+      <DialogContent className="px-2 sm:px-4">
         <DialogHeader className="space-y-3 px-1">
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mx-auto">
             <Wallet className="h-6 w-6 text-primary" />
@@ -78,84 +70,67 @@ export function ConnectDialog({ children }: ConnectDialogProps) {
             </Alert>
           )}
 
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex-shrink-0">
-                  <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <CardTitle className="text-base sm:text-lg">Secure Authentication</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">
-                    Login with existing passkey or create a new HumanWallet
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                {connectors.map((connector) => {
-                  if (connector.name === "HumanWallet") {
-                    return (
-                      <div key={connector.uid} className="flex flex-col gap-4">
-                        <Button
-                          variant="outline"
-                          onClick={() => handleConnectHumanWallet(connector)}
-                          disabled={isPending}
-                          className="w-full h-auto p-3 sm:p-4 justify-start"
-                        >
-                          <div className="flex items-start gap-2 sm:gap-3 w-full">
-                            <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex-shrink-0 mt-0.5">
-                              <img src={connector.icon} alt={connector.name} className="w-4 h-4 sm:w-5 sm:h-5" />
-                            </div>
-                            <div className="flex-1 text-left min-w-0">
-                              <div className="font-medium text-sm sm:text-base">Connect with HumanWallet</div>
-                              <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                                Use your existing passkey
-                              </div>
-                            </div>
-                            {isPending && (
-                              <div className="w-3 h-3 sm:w-4 sm:h-4 animate-spin rounded-full border-2 border-primary border-t-transparent flex-shrink-0 mt-0.5" />
-                            )}
-                          </div>
-                        </Button>
-
-                        <div className="flex items-center gap-2 sm:gap-3">
-                          <Separator className="flex-1" />
-                          <span className="text-xs text-muted-foreground">or</span>
-                          <Separator className="flex-1" />
+          <div className="flex flex-col gap-4">
+            {connectors.map((connector) => {
+              if (connector.name === "HumanWallet") {
+                return (
+                  <div key={connector.uid} className="flex flex-col gap-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleConnectHumanWallet(connector)}
+                      disabled={isPending}
+                      className="w-full h-auto p-3 sm:p-4 justify-start"
+                    >
+                      <div className="flex items-center justify-center gap-2 sm:gap-3 w-full">
+                        <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex-shrink-0 mt-0.5">
+                          <img src={connector.icon} alt={connector.name} className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleCreateNewWallet(connector)}
-                          disabled={isPending}
-                          className="w-full text-xs sm:text-sm"
-                        >
-                          <UserPlus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                          Create a new HumanWallet
-                        </Button>
+                        <div className="sm:flex-1 text-left min-w-0">
+                          <div className="font-medium text-sm sm:text-base">Connect with HumanWallet</div>
+                          <div className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                            Use your existing passkey
+                          </div>
+                        </div>
+                        {isPending && (
+                          <div className="w-3 h-3 sm:w-4 sm:h-4 animate-spin rounded-full border-2 border-primary border-t-transparent flex-shrink-0 mt-0.5" />
+                        )}
                       </div>
-                    )
-                  }
-                  return null
-                })}
+                    </Button>
 
-                {connectors.length === 0 && (
-                  <div className="text-center py-6 sm:py-8">
-                    <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-muted mx-auto mb-3 sm:mb-4">
-                      <Wallet className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Separator className="flex-1" />
+                      <span className="text-xs text-muted-foreground">or</span>
+                      <Separator className="flex-1" />
                     </div>
-                    <div className="space-y-2">
-                      <p className="font-medium text-sm sm:text-base">HumanWallet connector not available</p>
-                      <p className="text-xs sm:text-sm text-muted-foreground">Please check your configuration.</p>
-                    </div>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleCreateNewWallet(connector)}
+                      disabled={isPending}
+                      className="w-full text-xs sm:text-sm"
+                    >
+                      <UserPlus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                      Create a new HumanWallet
+                    </Button>
                   </div>
-                )}
+                )
+              }
+              return null
+            })}
+
+            {connectors.length === 0 && (
+              <div className="text-center py-6 sm:py-8">
+                <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-muted mx-auto mb-3 sm:mb-4">
+                  <Wallet className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
+                </div>
+                <div className="space-y-2">
+                  <p className="font-medium text-sm sm:text-base">HumanWallet connector not available</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Please check your configuration.</p>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            )}
+          </div>
 
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">

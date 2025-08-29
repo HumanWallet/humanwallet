@@ -1,7 +1,6 @@
 import type { Connector } from "wagmi"
 import { ModeToggle } from "../mode-toggle"
 import { WalletDropdown } from "./wallet-dropdown"
-import { Button } from "@humanwallet/ui"
 import { ConnectDialog } from "./connect-dialog"
 
 interface ConnectionStatusProps {
@@ -36,9 +35,7 @@ export function ConnectionStatus({
           onLogout={onLogout}
         />
       ) : (
-        <ConnectDialog>
-          <Button>Connect</Button>
-        </ConnectDialog>
+        <ConnectDialog />
       )}
     </div>
   )
