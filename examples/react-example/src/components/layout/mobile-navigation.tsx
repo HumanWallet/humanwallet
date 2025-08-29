@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Wallet, Network, Zap, Menu } from "lucide-react"
+import { Home, TrendingUp, Network, Zap, Menu } from "lucide-react"
 import { Link } from "react-router"
 import {
   Button,
