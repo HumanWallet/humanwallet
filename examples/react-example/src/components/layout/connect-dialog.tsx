@@ -14,11 +14,8 @@ import {
   Typography,
 } from "@humanwallet/ui"
 import { Wallet, AlertCircle, UserPlus, Key } from "lucide-react"
-import { useEffect } from "react"
-import { useAuth } from "../../context/auth-context"
 
-export function ConnectDialog() {
-  const { isAuthenticated } = useAuth()
+export function ConnectDialog({ children }: { children: React.ReactNode }) {
   const { connectors, connect, isPending, error } = useConnect()
 
   const handleConnectHumanWallet = (connector: Connector): void => {
@@ -34,19 +31,9 @@ export function ConnectDialog() {
     })
   }
 
-  // Close dialog after successful connection
-  useEffect(() => {
-    if (isAuthenticated) {
-      // The dialog will automatically close when isAuthenticated changes
-      // due to the conditional rendering in the parent component
-    }
-  }, [isAuthenticated])
-
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button>Connect</Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="px-2 sm:px-4">
         <DialogHeader className="space-y-3 px-1">
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mx-auto">
